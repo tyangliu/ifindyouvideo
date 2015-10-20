@@ -1,3 +1,3 @@
 # ifindyouvideo
 
-# Video application utilizing the YouTube API.
+Video application utilizing the YouTube API.
