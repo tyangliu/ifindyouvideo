@@ -13,10 +13,6 @@ class App extends Component {
     super(props);
   }
 
-  state = {
-    isLoggedIn: false
-  };
-
   render() {
     return (
       <div style={styles.app}>
@@ -29,7 +25,7 @@ class App extends Component {
             didInvalidate: this.props.didInvalidate,
             lastUpdated: this.props.lastUpdated,
             dispatch: this.props.dispatch
-            })}
+          })}
         </main>
       </div>
     );
