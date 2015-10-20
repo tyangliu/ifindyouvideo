@@ -8,7 +8,7 @@ resolvers += "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/
 
 libraryDependencies ++= {
   val akkaVersion = "2.4.0"
-  val akkaHttpVersion = "1.0-M2"
+  val akkaHttpVersion = "1.0"
   val scalaTestVersion = "2.2.4"
 
   Seq(
