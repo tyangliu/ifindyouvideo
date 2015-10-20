@@ -29,7 +29,7 @@ class App extends Component {
             didInvalidate: this.props.didInvalidate,
             lastUpdated: this.props.lastUpdated,
             dispatch: this.props.dispatch
-            })}
+          })}
         </main>
       </div>
     );
