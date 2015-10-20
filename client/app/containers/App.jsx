@@ -13,10 +13,6 @@ class App extends Component {
     super(props);
   }
 
-  state = {
-    isLoggedIn: false
-  };
-
   render() {
     return (
       <div style={styles.app}>
