@@ -1,5 +1,7 @@
 package com.ifindyouvideo.videos
 
-object SchemaDef {
+import sangria.schema._
+import scala.concurrent.Future
 
+object SchemaDef {
 }
