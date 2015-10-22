@@ -1,4 +1,4 @@
-name := "ifindyouevent"
+name := "ifindyouvideo"
 
 version := "1.0"
 
