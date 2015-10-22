@@ -1,5 +1,7 @@
 package com.ifindyouvideo.external
 
+import org.json4s.JsonAST.JValue
+
 import scala.concurrent.Future
 import java.io.IOException
 import akka.actor._
@@ -10,10 +12,14 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.unmarshalling._
 import com.ifindyouvideo.videos._
 
-/**
-  * Created by thomasliu on 10/21/15.
-  */
-class YoutubeService extends Actor {
+import org.json4s.native.JsonMethods._
+import org.json4s._
+
+import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
+
+/*
+
+class YoutubeService extends Actor with YoutubeClient {
 
   case class Search(location: Location, radius: String)
 
@@ -21,13 +27,16 @@ class YoutubeService extends Actor {
     case Search(location, radius) => search(location, radius)
   }
 
-  def search(location: Location, radius: String): Future[Vector[Video]] = {
+}
+
+trait YoutubeClient {
+  def search(location: Location, radius: String): Either[String, JValue] = {
     val params = Map(
       "key"            -> "AIzaSyCyJJILurm5Pf6ZLFCoCfninmObBvqyiWk",
       "part"           -> "id",
       "order"          -> "viewCount",
       "type"           -> "video",
-      "location"       -> location.mkString(","),
+      "location"       -> List(location.latitude,location.longitude).mkString(","),
       "locationRadius" -> radius
     )
 
@@ -35,7 +44,7 @@ class YoutubeService extends Actor {
       request <- HttpRequest(uri = Uri("/").withQuery(params))
       response <- Http().singleRequest(request)
     } yield response.status match {
-      case OK => Unmarshal(response.entity)
+      case OK => Unmarshal(response.entity).to[JValue]
       case BadRequest => Future.successful(Left("Invalid Request"))
       case _ => Unmarshal(response.entity).to[String].flatMap { entity =>
         val error = s"YouTube request failed with status code ${response.status} and entity $entity"
@@ -43,5 +52,6 @@ class YoutubeService extends Actor {
       }
     }
   }
-
 }
+
+*/

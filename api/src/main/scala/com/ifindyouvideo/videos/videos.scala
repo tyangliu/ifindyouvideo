@@ -7,10 +7,10 @@ case class Video(
   id:          String,
   title:       String,
   description: Option[String],
-  tags:        Vector[String],
+  tags:        List[String]/*,
   location:    Location,
   channel:     Channel,
-  thumbnails:  Thumbnails
+  thumbnails:  Thumbnails?*/
 )
 
 case class Location(latitude: Double, longitude: Double, altitude: Double)
@@ -25,3 +25,28 @@ case class Thumbnails(
   standard: Image,
   maxres:   Image
 )
+
+class VideoRepo {
+  import VideoRepo._
+
+  def getVideo(id: String): Option[Video] = videos.find(v => v.id == id)
+}
+
+object VideoRepo {
+  val videos = List(
+
+    Video(
+      id="1000",
+      title="Test",
+      description=Some("test"),
+      tags=List("tag1", "tag2")
+    ),
+    Video(
+      id="1001",
+      title="Video Title",
+      description=Some("test3"),
+      tags=List("tag3", "tag4")
+    )
+
+  )
+}
