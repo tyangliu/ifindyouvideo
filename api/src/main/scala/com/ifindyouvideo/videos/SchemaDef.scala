@@ -12,9 +12,13 @@ object SchemaDef {
         Some("The id of the video."),
         resolve = _.value.id
       ),
-      Field("name", OptionType(StringType),
-        Some("The name of the video."),
-        resolve = _.value.name
+      Field("title", StringType,
+        Some("The title of the video."),
+        resolve = _.value.title
+      ),
+      Field("description", OptionType(StringType),
+        Some("The description of the video."),
+        resolve = _.value.description.getOrElse("")
       )
     )
   )
