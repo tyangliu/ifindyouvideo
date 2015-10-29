@@ -13,6 +13,21 @@ case class User(id: UUID, name: String, avatarUrl: String)
 // Location of User for filtering videos nearby
 case class Location(latitude: BigDecimal, longitude: BigDecimal, altitude: BigDecimal)
 
+/*
+case class Image(url: String, width: Int, height: Int)
+
+case class Video(
+                  id:          String,
+                  title:       String,
+                  description: Option[String],
+                  tags:        List[String],
+                  location:    Location,
+                  channel:     Channel,
+                  thumbnails:  Option[Thumbnails]
+                  )
+
+*/
+
 object User {
   val users = List(
     User(
