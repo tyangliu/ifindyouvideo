@@ -1,7 +1,19 @@
 package com.ifindyouvideo.videos
 
 import scala.concurrent.Future
+import sangria.relay.{Identifiable, Node}
 import com.websudos.phantom.dsl._
+
+case class Video(
+  id:          String,
+  title:       String,
+  description: Option[String],
+  tags:        List[String],
+  location:    Location,
+  channel:     Channel,
+  thumbnails:  Option[Thumbnails],
+  revisionId:  String
+) extends Node
 
 case class Location(latitude: BigDecimal, longitude: BigDecimal, altitude: BigDecimal)
 case class Channel(id: String, title: String)
@@ -15,16 +27,6 @@ case class Thumbnails(
    standard: Image,
    maxres:   Image
  )
-
-case class Video(
-  id:          String,
-  title:       String,
-  description: Option[String],
-  tags:        List[String],
-  location:    Location,
-  channel:     Channel,
-  thumbnails:  Option[Thumbnails]
-)
 
 class VideoRepo {
   import VideoRepo._
@@ -41,7 +43,8 @@ object VideoRepo {
       tags = List("tag1", "tag2"),
       location = Location(5.3289,5.394,3.239),
       channel = Channel("1234", "A Channel Title"),
-      thumbnails = None
+      thumbnails = None,
+      revisionId = "53209523"
     ),
     Video(
       id = "1001",
@@ -50,7 +53,8 @@ object VideoRepo {
       tags = List("tag3", "tag4"),
       location = Location(5.3289,5.394,3.239),
       channel = Channel("1234", "A Channel Title"),
-      thumbnails = None
+      thumbnails = None,
+      revisionId = "53209523"
     ),
     Video(
       id = "1002",
@@ -59,7 +63,8 @@ object VideoRepo {
       tags = List("tag5", "tag6"),
       location = Location(5.3289,5.394,3.239),
       channel = Channel("1234", "A Channel Title"),
-      thumbnails = None
+      thumbnails = None,
+      revisionId = "53209523"
     )
   )
 }

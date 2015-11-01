@@ -16,9 +16,7 @@ import org.json4s.native.JsonMethods._
 import org.json4s._
 
 import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
-
 /*
-
 class YoutubeService extends Actor with YoutubeClient {
 
   case class Search(location: Location, radius: String)
@@ -53,5 +51,4 @@ trait YoutubeClient {
     }
   }
 }
-
 */

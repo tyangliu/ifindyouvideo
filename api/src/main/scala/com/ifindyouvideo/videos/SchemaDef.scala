@@ -1,10 +1,21 @@
 package com.ifindyouvideo.videos
 
+import sangria.relay._
 import sangria.schema._
 import scala.concurrent.Future
 
 object SchemaDef {
-  val Location = ObjectType(
+  val NodeDefinition(nodeInterface, nodeField) = Node.definition((id: GlobalId, ctx: Context[VideoRepo, Unit]) ⇒ {
+    if (id.typeName == "Video") ctx.ctx.getVideo(id.id)
+    else None
+  }, Node.possibleNodeTypes[VideoRepo, Node](VideoType))
+
+  def idFields[T : Identifiable](name: String) = fields[Unit, T](
+    Node.globalIdField(name),
+    Field("rawId", StringType, resolve = ctx ⇒ implicitly[Identifiable[T]].id(ctx.value))
+  )
+
+  val LocationType = ObjectType(
     "Location",
     "A Location containing lat, long, and altitude",
     fields[Unit, Location](
@@ -23,7 +34,7 @@ object SchemaDef {
     )
   )
 
-  val Channel = ObjectType(
+  val ChannelType = ObjectType(
     "Channel",
     "A YouTube channel",
     fields[Unit, Channel](
@@ -38,14 +49,12 @@ object SchemaDef {
     )
   )
 
-  val Video = ObjectType(
+  val VideoType: ObjectType[Unit, Video] = ObjectType(
     "Video",
     "A YouTube video",
+    interfaces[Unit, Video](nodeInterface),
+    idFields[Video]("Video") ++
     fields[Unit, Video](
-      Field("id", StringType,
-        Some("The id of the video"),
-        resolve = _.value.id
-      ),
       Field("title", StringType,
         Some("The title of the video"),
         resolve = _.value.title
@@ -58,24 +67,25 @@ object SchemaDef {
         Some("The video's tags"),
         resolve = _.value.tags
       ),
-      Field("location", Location,
+      Field("location", LocationType,
         Some("The video's recording location"),
         resolve = _.value.location
       ),
-      Field("channel", Channel,
+      Field("channel", ChannelType,
         Some("The video's channel"),
         resolve = _.value.channel
       )
     )
   )
 
-  val Id = Argument("id", StringType, description = "id of the video")
+  val RawId = Argument("rawId", StringType, description = "id of the video")
 
   val Query = ObjectType("Query", fields[VideoRepo, Unit](
-    Field("video", OptionType(Video),
-      arguments = Id :: Nil,
-      resolve = ctx => ctx.ctx.getVideo(ctx arg Id)
-    )
+    Field("video", OptionType(VideoType),
+      arguments = RawId :: Nil,
+      resolve = ctx => ctx.ctx.getVideo(ctx arg RawId)
+    ),
+    nodeField
   ))
 
   val VideoSchema = Schema(Query)
