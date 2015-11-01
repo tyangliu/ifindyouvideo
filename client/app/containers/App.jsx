@@ -1,17 +1,12 @@
 'use strict';
 
 import React, { Component, Children, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import Radium, { Style } from 'radium';
 import styler from 'react-styling';
 import { Router, Link } from 'react-router';
 
 @Radium
-class App extends Component {
-
-  constructor(props) {
-    super(props);
-  }
+export default class App extends Component {
 
   render() {
     return (
@@ -19,12 +14,7 @@ class App extends Component {
         <Style rules={styles.appRules} />
         <main style={styles.main}>
           {React.cloneElement(this.props.children || <div />, {
-            key: this.props.location.pathname,
-            user: this.props.user,
-            isFetching: this.props.isFetching,
-            didInvalidate: this.props.didInvalidate,
-            lastUpdated: this.props.lastUpdated,
-            dispatch: this.props.dispatch
+            key: this.props.location.pathname
           })}
         </main>
       </div>
@@ -32,25 +22,6 @@ class App extends Component {
   }
 
 }
-
-App.propTypes = {
-  user: PropTypes.isRequired,
-  isFetching: PropTypes.bool.isRequired,
-  didInvalidate: PropTypes.bool.isRequired,
-  events: PropTypes.array.isRequired,
-  lastUpdated: PropTypes.number,
-  dispatch: PropTypes.func.isRequired
-};
-
-function mapStateToProps(state) {
-  const { user } = state;
-
-  return {
-    user
-  };
-}
-
-export default connect(mapStateToProps)(App);
 
 const styles = styler`
   app
