@@ -10,8 +10,8 @@ import styler from 'react-styling';
 export default class Map extends Component {
 
   static defaultProps = {
-    center: {lat: 59.938043, lng: 30.337157},
-    zoom: 9
+    center: {lat: 49.2827, lng: -123.1207},
+    zoom: 12
   };
 
   render() {

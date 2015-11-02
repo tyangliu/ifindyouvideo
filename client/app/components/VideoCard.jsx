@@ -20,11 +20,11 @@ export default class VideoCard extends Component {
         let video = this.props.video;
         return (
             <div>
-                <div>(video.title)</div>
-                <div>(video.mapId)</div>
-                <div>(video.thumbnailUrl)</div>
-                <div>(video.views)</div>
-                <div>(video.likes)</div>
+                <div>{video.title}</div>
+                <div>{video.mapId}</div>
+                <div>{video.thumbnailUrl}</div>
+                <div>{video.views}</div>
+                <div>{video.likes}</div>
             </div>
         );
     }

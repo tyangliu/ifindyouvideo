@@ -39,13 +39,13 @@ export default class VideoCardList extends Component{
     let videoList = this.props.videos;
 
     return (
-      <div style={styles.CardList}>
-        <ol>
-          {videoList.map(function(video) {
-            //return VideoCard(video);
+      <div>
+        <ol style={styles.CardList}>
+          {videoList.map(function(videoInfo) {
+            //<VideoCard></VideoCard>;
             return (
-              <li>
-               <VideoCard></VideoCard>
+              <li style={styles.CardStyle}>
+                <VideoCard video={videoInfo} />
               </li>
             );
           })}
@@ -58,8 +58,13 @@ export default class VideoCardList extends Component{
 
 const styles = styler`
   CardList
+    background: #f7f7f7
+    padding: 8px
+    max-height: 300px
     height: 300px
+    width: 100%
 
-  li
-    display: inline;
+  CardStyle
+    display: inline
+    float: left
 `;
