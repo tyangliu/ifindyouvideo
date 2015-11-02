@@ -11,23 +11,23 @@ export default class VideoCardList extends Component {
   static defaultProps = {
     videos: [
       {
-        title: "Vancouver",
-        mapId: 35,
-        thumbnailURL: "testURL",
+        title: "Cool Video",
+        mapId: 1,
+        thumbnailUrl: "http://img.lum.dolimg.com/v1/images/image_8230eadb.jpeg",
         views: 100,
         likes: 500
       },
       {
-        title: "San Fransisco",
-        mapId: 45,
-        thumbnailURL: "testURL",
+        title: "Rainbow Gnome",
+        mapId: 2,
+        thumbnailUrl: "http://themysteryofgravityfalls.com/images/credits/001.jpg",
         views: 100,
         likes: 500
       },
       {
-        title: "Toronto",
-        mapId: 55,
-        thumbnailURL: "testURL",
+        title: "Waddles",
+        mapId: 3,
+        thumbnailUrl: "http://emea.lum.dolimg.com/v1/images/image_2be5e783.jpeg",
         views: 100,
         likes: 500
       }
@@ -37,7 +37,7 @@ export default class VideoCardList extends Component {
   render() {
     let videoCards = this.props.videos.map(video =>
       <li style={styles.cardLi}>
-        <VideoCard />
+        <VideoCard video={video} />
       </li>
     );
 
@@ -58,7 +58,7 @@ const styles = styler`
 
   cardLi
     float: left;
-    width: 220px
+    width: 320px
     height: 100%
 
   clearfix

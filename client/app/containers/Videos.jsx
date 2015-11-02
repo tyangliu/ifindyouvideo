@@ -19,6 +19,7 @@ export default class Videos extends Component {
       <div style={styles.videos}>
         <MapHeader />
         <div style={styles.cardListContainer}>
+          <div style={styles.border} />
           <VideoCardList />
         </div>
       </div>
@@ -44,5 +45,13 @@ const styles = styler`
     left: 0
     box-shadow: 0 -1px 2px rgba(0,0,0,0.2)
     background: rgba(255,255,255,0.9)
-    border-top: 7px solid rgba(240,53,78,0.8)
+    z-index: 2
+
+  border
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 7px
+    background: rgba(240,53,78,0.8)
 `;

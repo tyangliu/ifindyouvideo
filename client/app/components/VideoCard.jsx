@@ -11,7 +11,7 @@ export default class VideoCard extends Component {
     video: {
       title: 'Video Title',
       mapId: 35,
-      thumbnailURL: "testURL",
+      thumbnailUrl: "testURL",
       views: 100,
       likes: 500
     }
@@ -29,7 +29,10 @@ export default class VideoCard extends Component {
           </div>
         </div>
         <div style={styles.clearfix} />
-        <div style={styles.thumbnail} />
+        <div style={[styles.thumbnail, {
+          backgroundImage: `url(${this.props.video.thumbnailUrl})`,
+          backgroundSize: 'cover'
+        }]} />
       </div>
     );
   }
@@ -38,14 +41,21 @@ export default class VideoCard extends Component {
 
 const styles = styler`
   videoCard
+    border-top: 7px solid rgba(240,53,78,0.8)
     width: 100%
     height: 100%
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2)
+    overflow: hidden
     position: relative
 
   heading
     height: 76px
     padding: 14px
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.9) 100%)
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2)
     border-right: 1px solid rgba(0,0,0,0.1)
+    position: relative
+    z-index: 10
 
   title
     color: rgba(76,76,76,1)
@@ -73,10 +83,12 @@ const styles = styler`
   thumbnail
     position: absolute
     width: 100%
-    top: 76px
-    bottom: 0
+    height: 100%
+    top: 0
     left: 0
-    background: rgba(41,171,226,1)
+    background-color: rgba(240,53,78,1)
+    opacity: 0.9
+    z-index: 0
 
   clearfix
     clear: both
