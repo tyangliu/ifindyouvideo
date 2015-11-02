@@ -5,6 +5,7 @@ import Radium, { Style } from 'radium';
 import styler from 'react-styling';
 import { Router, Link } from 'react-router';
 import Map from '../components/Map.jsx';
+import UserWidget from '../components/UserWidget.jsx';
 
 @Radium
 export default class App extends Component {
@@ -14,6 +15,7 @@ export default class App extends Component {
       <div style={styles.app}>
         <Style rules={styles.appRules} />
         <main style={styles.main}>
+          <div style={styles.userContainer}><UserWidget /></div>
           <Map />
           {React.cloneElement(this.props.children || <div />, {
             key: this.props.location.pathname
@@ -33,6 +35,7 @@ const styles = styler`
     display: flex
     flex-direction: column
     min-height: 100vh
+
   appRules
     *
       box-sizing: border-box
@@ -58,6 +61,15 @@ const styles = styler`
     main
       flex: 1 0 auto
       width: 100%
+
   main
     margin-top: 0px
+    position: relative
+
+  userContainer
+    z-index: 1000
+    position: absolute
+    top: 20px
+    left: 50%
+    transform: translateX(-50%)
 `;

@@ -36,6 +36,7 @@ const styles = styler`
 
   header
     width: 100%
+    padding-top: 56px
     background: linear-gradient(to bottom, rgba(239,46,81,0.9) 7%, rgba(240,53,78,0.9) 30%, rgba(244,76,70,0.9) 100%)
 
 

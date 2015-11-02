@@ -58,7 +58,7 @@ const styles = styler`
 
   cardLi
     float: left;
-    width: 300px
+    width: 220px
     height: 100%
 
   clearfix

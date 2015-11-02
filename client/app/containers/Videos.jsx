@@ -33,7 +33,7 @@ const styles = styler`
 
   cardListContainer
     pointer-events: auto
-    height: 270px
+    height: 220px
     width: 100%
     position: absolute
     bottom: 0
