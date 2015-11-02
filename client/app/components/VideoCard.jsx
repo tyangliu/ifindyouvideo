@@ -78,7 +78,7 @@ const styles = styler`
     float: left
     line-height: 18px
     font-size: 14px
-    color: rgba(239,46,81,1)
+    color: rgba(255,72,40,1)
 
   thumbnail
     position: absolute

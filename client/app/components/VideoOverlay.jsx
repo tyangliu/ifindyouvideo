@@ -59,7 +59,7 @@ const styles = styler`
     border-right: 1px solid rgba(0,0,0,0.1)
     padding: 0 10px 0 24px
     display: inline-block
-    color: rgba(239,48,81,1)
+    color: rgba(255,72,40,1)
 
   title
     font-size: 14px
