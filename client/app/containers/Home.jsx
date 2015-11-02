@@ -43,7 +43,19 @@ export default class Home extends Component {
             </div>
           </section>
 
+          <section style={styles.popListContainer}>
+            <h3 style={styles.popListLabel}>Popular Cities</h3>
+            <ul style={styles.popList}>
+              <li style={styles.popListItem}>Vancouver, BC</li>
+              <li style={styles.popListItem}>New York City, NY</li>
+              <li style={styles.popListItem}>San Francisco, CA</li>
+            </ul>
+          </section>
+
         </section>
+        <footer style={styles.footer}>
+          <Link to='' style={styles.footerLink}>About this Project</Link>
+        </footer>
       </div>
     );
   }
@@ -138,6 +150,47 @@ const styles = styler`
     outline: none
     border: none
     padding: 0
+
+  popListContainer
+    max-width: 300px
+    margin: 0 auto
+    padding: 14px 0
+
+  popListLabel
+    font-size: 14px
+    line-height: 30px
+    text-transform: uppercase
+    letter-spacing: 1px
+    border-bottom: 2px solid rgba(255,255,255,0.7)
+    padding: 7px 0
+    margin: 14px 0
+
+  popListItem
+    font-size: 14px
+    font-weight: 700
+    line-height: 30px
+    text-transform: uppercase
+    letter-spacing: 1px
+
+  footer
+    max-width: 300px
+    width: 100%
+    padding: 14px 0
+    border-top: 2px solid rgba(255,255,255,0.7)
+    position: absolute
+    bottom: 0
+    left: 50%
+    text-align: left
+    transform: translateX(-50%)
+
+
+  footerLink
+    color: white
+    font-size: 14px
+    font-weight: 700
+    line-height: 30px
+    text-transform: uppercase
+    letter-spacing: 1px
 
   clearfix
     clear: both
