@@ -5,6 +5,7 @@ import { Router, Route, IndexRoute, Link } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import { App, Test, Home, Map } from './containers';
 
+
 React.render(
   <Router history={createBrowserHistory()}>
     <Route path='/' component={App}>
