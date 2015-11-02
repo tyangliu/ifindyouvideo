@@ -7,6 +7,13 @@ import Radium from 'radium';
 import styler from 'react-styling';
 import VideoOverlay from './VideoOverlay.jsx';
 
+const createMapOptions = maps => ({
+  zoomControlOptions: {
+    position: maps.ControlPosition.RIGHT_CENTER,
+    style: maps.ZoomControlStyle.SMALL
+  }
+});
+
 @Radium
 export default class Map extends Component {
 
@@ -46,7 +53,9 @@ export default class Map extends Component {
 
     return (
       <div style={styles.map}>
-        <GoogleMap defaultCenter={this.props.center} defaultZoom={this.props.zoom}>
+        <GoogleMap defaultCenter={this.props.center}
+                   defaultZoom={this.props.zoom}
+                   options={createMapOptions}>
           {overlays}
         </GoogleMap>
       </div>
