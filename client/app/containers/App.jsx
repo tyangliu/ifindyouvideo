@@ -4,6 +4,7 @@ import React, { Component, Children, PropTypes } from 'react';
 import Radium, { Style } from 'radium';
 import styler from 'react-styling';
 import { Router, Link } from 'react-router';
+import Map from '../components/Map.jsx';
 
 @Radium
 export default class App extends Component {
@@ -13,6 +14,7 @@ export default class App extends Component {
       <div style={styles.app}>
         <Style rules={styles.appRules} />
         <main style={styles.main}>
+          <Map />
           {React.cloneElement(this.props.children || <div />, {
             key: this.props.location.pathname
           })}

@@ -3,11 +3,10 @@
 import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
-
 import VideoCard from './VideoCard.jsx';
 
 @Radium
-export default class VideoCardList extends Component{
+export default class VideoCardList extends Component {
 
   static defaultProps = {
     videos: [
@@ -36,30 +35,33 @@ export default class VideoCardList extends Component{
   }
 
   render() {
-    let videoList = this.props.videos;
+    let videoCards = this.props.videos.map(video =>
+      <li style={styles.cardLi}>
+        <VideoCard />
+      </li>
+    );
 
     return (
-      <div style={styles.CardList}>
-        <ol>
-          {videoList.map(function(video) {
-            //return VideoCard(video);
-            return (
-              <li>
-               <VideoCard></VideoCard>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
+      <ul style={styles.videoCardList}>
+        {videoCards}
+        <div style={styles.clearfix} />
+      </ul>
     );
   }
 
 }
 
 const styles = styler`
-  CardList
-    height: 300px
+  videoCardList
+    width: 100%
+    height: 100%
 
-  li
-    display: inline;
+  cardLi
+    float: left;
+    width: 300px
+    height: 100%
+
+  clearfix
+    clear: both
+    display: table
 `;

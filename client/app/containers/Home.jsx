@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 import DocumentTitle from 'react-document-title';
 import Radium from 'radium';
 import styler from 'react-styling';
@@ -29,9 +30,11 @@ export default class Home extends Component {
             <div style={styles.searchInner}>
               <i className='material-icons' style={[styles.icon, styles.searchIcon]}>search</i>
               <input type='text' style={styles.searchInput} placeholder='Search for a trendy city' />
-              <button style={styles.optionsButton}>
-                <i className='material-icons' style={styles.icon}>more_vert</i>
-              </button>
+              <Link to='/videos'>
+                <button style={styles.optionsButton}>
+                  <i className='material-icons' style={styles.icon}>more_vert</i>
+                </button>
+              </Link>
               <div style={styles.clearfix} />
             </div>
           </section>
@@ -55,7 +58,7 @@ const styles = styler`
     width: 100%
     height: 100%
     position: absolute
-    background: linear-gradient(to bottom, rgba(239,46,81,1) 7%, rgba(241,72,75,1) 30%, rgba(248,152,56,1) 100%)
+    background: linear-gradient(to bottom, rgba(239,46,81,.87) 7%, rgba(241,72,75,.87) 30%, rgba(248,152,56,.87) 100%)
 
   middleContainer
     width: 100%
