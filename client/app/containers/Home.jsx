@@ -10,7 +10,9 @@ export default class Home extends Component {
 
   render() {
     return (
-      <div>Test</div>
+      <div>
+        <div>Test</div>
+      </div>
     );
   }
 
