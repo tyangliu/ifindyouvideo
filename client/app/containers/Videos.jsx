@@ -53,5 +53,5 @@ const styles = styler`
     left: 0
     width: 100%
     height: 7px
-    background: rgba(240,53,78,0.8)
+    background: rgba(255,72,40,0.8)
 `;

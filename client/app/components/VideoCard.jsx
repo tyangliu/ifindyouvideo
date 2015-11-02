@@ -41,7 +41,7 @@ export default class VideoCard extends Component {
 
 const styles = styler`
   videoCard
-    border-top: 7px solid rgba(240,53,78,0.8)
+    border-top: 7px solid rgba(255,72,40,0.8)
     width: 100%
     height: 100%
     box-shadow: 0 1px 2px rgba(0,0,0,0.2)
