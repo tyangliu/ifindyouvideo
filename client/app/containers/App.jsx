@@ -25,7 +25,7 @@ export default class App extends Component {
 
 const styles = styler`
   app
-    font-family: sans-serif
+    font-family: "proxima-nova", sans-serif
     font-size: 15px
     line-height: 1.5em
     display: flex
@@ -49,6 +49,10 @@ const styles = styler`
     a
       text-decoration: none
       font-weight: bold
+
+    ::-webkit-input-placeholder
+      color: rgba(153,153,153,1)
+
     main
       flex: 1 0 auto
       width: 100%
