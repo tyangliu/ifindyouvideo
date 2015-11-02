@@ -4,16 +4,29 @@ import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
 
+/*
 static defaultProps = {
     title: "Vancouver",
     mapId: 35,
     thumbnailURL: "testURL",
     views: 100,
     likes: 500
-};
+}; */
 
 @Radium
 export default class VideoCard extends Component {
+    getDefaultProps() {
+        return {
+            video: {
+                title: "Vancouver",
+                mapId: 35,
+                thumbnailURL: "testURL",
+                views: 100,
+                likes: 500
+            }
+        }
+    };
+
     render() {
         let video = this.props.video;
         return {
