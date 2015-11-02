@@ -4,25 +4,33 @@ import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
 
+import VideoCard from './VideoCard.jsx';
+
 @Radium
 export default class VideoCardList extends Component{
 
   static defaultProps = {
     videos: [
       {
-        videoId: 1,
-        title: "Title 1",
-        mapId: "MapId 1"
+        title: "Vancouver",
+        mapId: 35,
+        thumbnailURL: "testURL",
+        views: 100,
+        likes: 500
       },
       {
-        videoId: 2,
-        title: "Title 2",
-        mapId: "MapId 2"
+        title: "San Fransisco",
+        mapId: 45,
+        thumbnailURL: "testURL",
+        views: 100,
+        likes: 500
       },
       {
-        videoId: 1,
-        title: "Title 2",
-        mapId: "MapId 2"
+        title: "Toronto",
+        mapId: 55,
+        thumbnailURL: "testURL",
+        views: 100,
+        likes: 500
       }
     ]
   }
@@ -31,15 +39,13 @@ export default class VideoCardList extends Component{
     let videoList = this.props.videos;
 
     return (
-      <div>
+      <div style={styles.CardList}>
         <ol>
           {videoList.map(function(video) {
             //return VideoCard(video);
             return (
               <li>
-               <div>{video.videoId}</div>
-               <div>{video.title}</div>
-               <div>{video.mapId}</div>
+               <VideoCard></VideoCard>
               </li>
             );
           })}
@@ -51,4 +57,9 @@ export default class VideoCardList extends Component{
 }
 
 const styles = styler`
+  CardList
+    height: 300px
+
+  li
+    display: inline;
 `;
