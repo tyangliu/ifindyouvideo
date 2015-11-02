@@ -9,7 +9,7 @@ export default class VideoOverlay extends Component {
 
   static defaultProps = {
     video: {
-      title: 'asd',
+      title: 'Video Title',
       mapId: '1'
     }
   };
@@ -19,8 +19,8 @@ export default class VideoOverlay extends Component {
       <div style={styles.videoOverlay}>
         <div style={styles.logoImg}></div>
         <div style={styles.contentBox}>
-          <p style={styles.mapId}>{this.props.video.mapId}</p>
-          <p style={styles.title}>{this.props.video.title}</p>
+          <span style={styles.mapId}>{this.props.video.mapId}</span>
+          <span style={styles.title}>{this.props.video.title}</span>
         </div>
         <div style={styles.clearfix} />
       </div>
@@ -34,9 +34,9 @@ const styles = styler`
 
   logoImg
     background: url(${require('../images/logo-red-outline-shadow.svg')}) no-repeat center;
-    background-size: 65px
-    width: 50px
-    height: 65px
+    background-size: 60px
+    width: 60px
+    height: 60px
     margin-top: -5px
     position: absolute
     left: 0
@@ -44,24 +44,30 @@ const styles = styler`
 
   contentBox
     background: rgba(255,255,255,1)
-    margin-left: 15px
+    margin-left: 30px
     margin-top: 10px
-    box-shadow: 0px 0px 2px 1px rgba(180,180,180,1)
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.4)
+    border-radius: 3px
     float: left
+    white-space: nowrap
+    font-family: 'proxima-nova', sans-serif
 
   mapId
-    display: inline-block
-    border-right: 1px solid rgba(180,180,180,1)
+    font-size: 14px
+    font-weight: 700
     line-height: 30px
-    padding: 0 10px 0 35px
+    border-right: 1px solid rgba(0,0,0,0.1)
+    padding: 0 10px 0 24px
+    display: inline-block
     color: rgba(239,48,81,1)
 
   title
-    display: inline-block
-    line-height: 30px
-    padding: 0 10px
+    font-size: 14px
     font-weight: 700
-    color: rgba(102,102,102,1)
+    line-height: 30px
+    padding: 0 16px 0 10px
+    display: inline-block
+    color: rgba(76,76,76,1)
 
   clearfix
     clear: both

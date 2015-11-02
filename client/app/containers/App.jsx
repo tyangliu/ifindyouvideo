@@ -10,15 +10,20 @@ import UserWidget from '../components/UserWidget.jsx';
 @Radium
 export default class App extends Component {
 
+  state = {
+    showOverlays: false
+  };
+
   render() {
     return (
       <div style={styles.app}>
         <Style rules={styles.appRules} />
         <main style={styles.main}>
           <div style={styles.userContainer}><UserWidget /></div>
-          <Map />
+          <Map showOverlays={this.state.showOverlays} />
           {React.cloneElement(this.props.children || <div />, {
-            key: this.props.location.pathname
+            key: this.props.location.pathname,
+            setShowOverlays: show => this.setState({showOverlays: !!show})
           })}
         </main>
       </div>

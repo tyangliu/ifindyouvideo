@@ -10,6 +10,10 @@ import VideoCardList from '../components/VideoCardList.jsx';
 @Radium
 export default class Videos extends Component {
 
+  componentWillMount() {
+    this.props.setShowOverlays(true);
+  }
+
   render() {
     return (
       <div style={styles.videos}>

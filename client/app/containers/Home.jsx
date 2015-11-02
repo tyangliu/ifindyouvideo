@@ -9,6 +9,10 @@ import styler from 'react-styling';
 @Radium
 export default class Home extends Component {
 
+  componentWillMount() {
+    this.props.setShowOverlays(false);
+  }
+
   render() {
     return (
       <div style={styles.home}>
