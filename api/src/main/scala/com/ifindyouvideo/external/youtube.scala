@@ -11,10 +11,10 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.unmarshalling._
-import com.ifindyouvideo.videos._
-
+import scala.async.Async.{async, await}
 import org.json4s.native.JsonMethods._
 import org.json4s._
+import com.ifindyouvideo.videos._
 
 import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 
@@ -33,7 +33,7 @@ class YoutubeService extends Actor {
     case Search(location, radius) => search(location, radius)
   }
 
-  def search(location: Location, radius: String): Unit = {
+  def search(location: Location, radius: String): Unit = async {
     val locationStr = location match {
       case Location(lat,long,_) => List(lat,long).mkString(",")
     }
@@ -48,13 +48,10 @@ class YoutubeService extends Actor {
     )
 
     val req = HttpRequest(uri = Uri("https://www.googleapis.com/youtube/v3/search").withQuery(params))
-    val resFuture: Future[HttpResponse] = Http(context.system).singleRequest(req)
+    val res: HttpResponse = await { Http(context.system).singleRequest(req) }
 
-    resFuture onComplete {
-      case Success(res) => println(res)
-      case Failure(e) => println("An error has occured: " + e.getMessage)
-    }
-  }
+    println(res)
+  } onFailure { case e => println("An error has occured: " + e.getMessage) }
 /*
   map { response => response.status match {
    case OK => Unmarshal(response.entity).to[JValue]

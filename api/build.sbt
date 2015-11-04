@@ -24,20 +24,22 @@ libraryDependencies ++= {
   val phantomVersion   = "1.12.2"
 
   Seq(
-    "com.typesafe.akka"   %% "akka-actor"                           % akkaVersion,
-    "com.typesafe.akka"   %% "akka-testkit"                         % akkaVersion,
-    "com.typesafe.akka"   %% "akka-http-experimental"               % akkaHttpVersion,
-    "com.typesafe.akka"   %% "akka-http-testkit-experimental"       % akkaHttpVersion,
+    "com.typesafe.akka"      %% "akka-actor"                        % akkaVersion,
+    "com.typesafe.akka"      %% "akka-testkit"                      % akkaVersion,
+    "com.typesafe.akka"      %% "akka-http-experimental"            % akkaHttpVersion,
+    "com.typesafe.akka"      %% "akka-http-testkit-experimental"    % akkaHttpVersion,
 
-    "org.scalatest"       %% "scalatest"                            % scalaTestVersion % "test",
+    "org.scalatest"          %% "scalatest"                         % scalaTestVersion % "test",
 
-    "org.sangria-graphql" %% "sangria"                              % sangriaVersion,
-    "org.sangria-graphql" %% "sangria-relay"                        % sangriaVersion,
+    "org.scala-lang.modules" %% "scala-async"                       % "0.9.6-RC2",
 
-    "com.websudos"        %% "phantom-dsl"                          % phantomVersion,
-    "com.websudos"        %% "phantom-testkit"                      % phantomVersion,
+    "org.sangria-graphql"    %% "sangria"                           % sangriaVersion,
+    "org.sangria-graphql"    %% "sangria-relay"                     % sangriaVersion,
 
-    "org.json4s"          %% "json4s-native"                        % "3.2.11",
-    "de.heikoseeberger"   %% "akka-http-json4s"                     % "1.0.0"
+    "com.websudos"           %% "phantom-dsl"                       % phantomVersion,
+    "com.websudos"           %% "phantom-testkit"                   % phantomVersion,
+
+    "org.json4s"             %% "json4s-native"                     % "3.2.11",
+    "de.heikoseeberger"      %% "akka-http-json4s"                  % "1.0.0"
   )
 }
