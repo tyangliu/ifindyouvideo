@@ -5,7 +5,7 @@ import Radium from 'radium';
 import styler from 'react-styling';
 
 @Radium
-export default class V extends Component {
+export default class VideoModal extends Component {
 
   render() {
     let video = this.props.video;
