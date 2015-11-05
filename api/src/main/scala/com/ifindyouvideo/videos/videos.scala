@@ -7,25 +7,34 @@ import com.websudos.phantom.dsl._
 case class Video(
   id:          String,
   title:       String,
-  description: Option[String],
+  description: String,
+  publishedAt: String,
   tags:        List[String],
   location:    Location,
   channel:     Channel,
-  thumbnails:  Option[Thumbnails],
-  revisionId:  String
+  thumbnails:  Thumbnails,
+  statistics:  Statistics
 ) extends Node
 
 case class Location(latitude: BigDecimal, longitude: BigDecimal, altitude: BigDecimal)
 case class Channel(id: String, title: String)
 
+case class Statistics(
+  viewCount: String,
+  likeCount: String,
+  dislikeCount: String,
+  favoriteCount: String,
+  commentCount: String
+)
+
 case class Image(url: String, width: Int, height: Int)
 
 case class Thumbnails(
-   default:  Image,
-   medium:   Image,
-   high:     Image,
-   standard: Image,
-   maxres:   Image
+   default:  Option[Image],
+   medium:   Option[Image],
+   high:     Option[Image],
+   standard: Option[Image],
+   maxres:   Option[Image]
  )
 
 class VideoRepo {
@@ -39,32 +48,35 @@ object VideoRepo {
     Video(
       id = "1000",
       title = "Awesome Video",
-      description = Some("test"),
+      description = "test",
+      publishedAt = "test",
       tags = List("tag1", "tag2"),
       location = Location(5.3289,5.394,3.239),
       channel = Channel("1234", "A Channel Title"),
-      thumbnails = None,
-      revisionId = "53209523"
+      thumbnails = Thumbnails(None,None,None,None,None),
+      statistics = Statistics("1","2","3","4","5")
     ),
     Video(
       id = "1001",
       title = "Test",
-      description = Some("test 2"),
+      description = "test 2",
+      publishedAt = "test",
       tags = List("tag3", "tag4"),
       location = Location(5.3289,5.394,3.239),
       channel = Channel("1234", "A Channel Title"),
-      thumbnails = None,
-      revisionId = "53209523"
+      thumbnails = Thumbnails(None,None,None,None,None),
+      statistics = Statistics("1","2","3","4","5")
     ),
     Video(
       id = "1002",
       title = "Another Test",
-      description = Some("test 3"),
+      description = "test 3",
+      publishedAt = "test",
       tags = List("tag5", "tag6"),
       location = Location(5.3289,5.394,3.239),
       channel = Channel("1234", "A Channel Title"),
-      thumbnails = None,
-      revisionId = "53209523"
+      thumbnails = Thumbnails(None,None,None,None,None),
+      statistics = Statistics("1","2","3","4","5")
     )
   )
 }

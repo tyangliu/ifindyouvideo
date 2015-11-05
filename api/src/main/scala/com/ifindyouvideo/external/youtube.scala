@@ -57,8 +57,8 @@ class YoutubeService extends Actor {
 
     res.status match {
       case OK => Unmarshal(res.entity).to[JValue] map { resJson =>
-        val ids = (resJson \ "items" \ "id" \ "videoId").values
-        println(ids)
+        val ids = (resJson \ "items" \ "id" \ "videoId").extract[List[String]]
+        getVideoDetails(ids)
       }
       /*
       case BadRequest => Left("Invalid Request")
@@ -67,6 +67,40 @@ class YoutubeService extends Actor {
         new IOException(error)
       }
       */
+    }
+  } onFailure { case e => println("An error has occured: " + e.getMessage) }
+
+  def getVideoDetails(ids: List[String]): Unit = async {
+    val params = Map(
+      "key"  -> "AIzaSyCyJJILurm5Pf6ZLFCoCfninmObBvqyiWk",
+      "part" -> List("id","snippet","statistics","recordingDetails").mkString(","),
+      "id"   -> ids.mkString(",")
+    )
+
+    val req = HttpRequest(uri = Uri("https://www.googleapis.com/youtube/v3/videos").withQuery(params))
+    val res = await { Http(context.system).singleRequest(req) }
+
+    res.status match {
+      case OK => Unmarshal(res.entity).to[JValue] map { resJson =>
+        val results = for {
+          JArray(items)         <- resJson \ "items"
+          item                  <- items
+          snippet               =  item \ "snippet"
+          JString(id)           <- item \ "id"
+          JString(title)        <- snippet \ "title"
+          JString(description)  <- snippet \ "description"
+          JString(publishedAt)  <- snippet \ "publishedAt"
+          tags                  =  (snippet \ "tags").extract[List[String]]
+          location              =  (item \ "recordingDetails" \ "location").extract[Location]
+          JString(channelId)    <- snippet \ "channelId"
+          JString(channelTitle) <- snippet \ "channelTitle"
+          channel               =  Channel(channelId, channelTitle)
+          thumbnails            =  (snippet \ "thumbnails").extract[Thumbnails]
+          statistics            =  (item \ "statistics").extract[Statistics]
+        } yield Video(id, title, description, publishedAt, tags, location, channel, thumbnails, statistics)
+
+        println(results)
+      }
     }
   } onFailure { case e => println("An error has occured: " + e.getMessage) }
 

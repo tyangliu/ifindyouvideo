@@ -49,6 +49,79 @@ object SchemaDef {
     )
   )
 
+  val ImageType = ObjectType(
+    "Image",
+    "Image for a video, with url, width, and height",
+    fields[Unit, Image](
+      Field("url", StringType,
+        Some("The url of the image"),
+        resolve = _.value.url
+      ),
+      Field("width", IntType,
+        Some("The width of the image"),
+        resolve = _.value.width
+      ),
+      Field("height", IntType,
+        Some("The height of the image"),
+        resolve = _.value.height
+      )
+    )
+  )
+
+  val ThumbnailsType = ObjectType(
+    "Thumbnails",
+    "Thumbnails for a video",
+    fields[Unit, Thumbnails](
+      Field("default", OptionType(ImageType),
+        Some("The default thumbnail image of a video"),
+        resolve = _.value.default
+      ),
+      Field("medium", OptionType(ImageType),
+        Some("The medium thumbnail image of a video"),
+        resolve = _.value.medium
+      ),
+      Field("high", OptionType(ImageType),
+        Some("The high thumbnail image of a video"),
+        resolve = _.value.high
+      ),
+      Field("standard", OptionType(ImageType),
+        Some("The standard thumbnail image of a video"),
+        resolve = _.value.standard
+      ),
+      Field("maxres", OptionType(ImageType),
+        Some("The maxres thumbnail image of a video"),
+        resolve = _.value.maxres
+      )
+    )
+  )
+
+  val StatisticsType = ObjectType(
+    "Statistics",
+    "Statistics for a video",
+    fields[Unit, Statistics](
+      Field("viewCount", StringType,
+        Some("The view count of a video"),
+        resolve = _.value.viewCount
+      ),
+      Field("likeCount", StringType,
+        Some("The like count of a video"),
+        resolve = _.value.viewCount
+      ),
+      Field("dislikeCount", StringType,
+        Some("The dislike count of a video"),
+        resolve = _.value.viewCount
+      ),
+      Field("favoriteCount", StringType,
+        Some("The favorite count of a video"),
+        resolve = _.value.viewCount
+      ),
+      Field("commentCount", StringType,
+        Some("The comment count of a video"),
+        resolve = _.value.viewCount
+      )
+    )
+  )
+
   val VideoType: ObjectType[Unit, Video] = ObjectType(
     "Video",
     "A YouTube video",
@@ -59,9 +132,13 @@ object SchemaDef {
         Some("The title of the video"),
         resolve = _.value.title
       ),
-      Field("description", OptionType(StringType),
+      Field("description", StringType,
         Some("The description of the video"),
-        resolve = _.value.description.getOrElse("")
+        resolve = _.value.description
+      ),
+      Field("publishedAt", StringType,
+        Some("The published date of the video"),
+        resolve = _.value.publishedAt
       ),
       Field("tags", ListType(StringType),
         Some("The video's tags"),
@@ -74,6 +151,14 @@ object SchemaDef {
       Field("channel", ChannelType,
         Some("The video's channel"),
         resolve = _.value.channel
+      ),
+      Field("thumbnails", ThumbnailsType,
+        Some("The video's thumbnails"),
+        resolve = _.value.thumbnails
+      ),
+      Field("statistics", StatisticsType,
+        Some("The video's statistics"),
+        resolve = _.value.statistics
       )
     )
   )
