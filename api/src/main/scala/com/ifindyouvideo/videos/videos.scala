@@ -41,6 +41,9 @@ class VideoRepo {
   import VideoRepo._
 
   def getVideo(id: String): Option[Video] = videos.find(v => v.id == id)
+
+  def findVideos(latitude: BigDecimal, longitude: BigDecimal, radius: String) = videos
+
 }
 
 object VideoRepo {

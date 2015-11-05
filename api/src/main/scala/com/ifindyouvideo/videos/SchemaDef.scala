@@ -164,11 +164,24 @@ object SchemaDef {
   )
 
   val RawId = Argument("rawId", StringType, description = "id of the video")
+  val Latitude = Argument("latitude",
+    BigDecimalType,
+    description = "latitude of the search range"
+  )
+  val Longitude = Argument("longitude",
+    BigDecimalType,
+    description = "longitude of the search range"
+  )
+  val Radius = Argument("radius", StringType, "search radius")
 
   val Query = ObjectType("Query", fields[VideoRepo, Unit](
     Field("video", OptionType(VideoType),
       arguments = RawId :: Nil,
       resolve = ctx => ctx.ctx.getVideo(ctx arg RawId)
+    ),
+    Field("videosByLocation", ListType(VideoType),
+      arguments = Latitude :: Longitude :: Radius :: Nil,
+      resolve = ctx => ctx.ctx.findVideos(ctx arg Latitude, ctx arg Longitude, ctx arg Radius)
     ),
     nodeField
   ))
