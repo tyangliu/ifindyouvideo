@@ -7,6 +7,12 @@ import styler from 'react-styling';
 @Radium
 export default class VideoOverlay extends Component {
 
+  getInitialState() {
+    return {
+      selected: false
+    };
+  }
+
   static defaultProps = {
     video: {
       title: 'Video Title',
@@ -14,11 +20,19 @@ export default class VideoOverlay extends Component {
     }
   };
 
+  handleClick = () => {
+    this.setState({selected: true});
+    console.log("Clicked: " + this.state.selected);
+  }
+
   render() {
+    //var overlayStyle = this.state.selected? styles.svideoOverlay:styles.VideoOverlay;
+    console.log("Render: " + this.state.selected);
     return (
-      <div style={styles.videoOverlay}>
-        <div style={styles.logoImg}></div>
-        <div style={styles.contentBox}>
+      <div style={styles.VideoOverlay}
+          onClick={this.handleClick}>
+        <div style={this.state.selected? styles.scaleLogoImg:styles.logoImg}></div>
+        <div style={this.state.selected? styles.scaleContentBox: styles.contentBox}>
           <span style={styles.mapId}>{this.props.video.mapId}</span>
           <span style={styles.title}>{this.props.video.title}</span>
         </div>
@@ -32,6 +46,10 @@ const styles = styler`
   videoOverlay
     position: relative
 
+  sVideoOverlay
+    position: relative
+    transform: scale(2,2)
+
   logoImg
     background: url(${require('../images/logo-red-outline-shadow.svg')}) no-repeat center;
     background-size: 60px
@@ -42,10 +60,34 @@ const styles = styler`
     left: 0
     z-index: 10
 
+  scaleLogoImg
+    background: url(${require('../images/logo-red-outline-shadow.svg')}) no-repeat center;
+    background-size: 60px
+    width: 60px
+    height: 60px
+    transform: scale(1.2)
+    transform-origin: 50% 100%
+    margin-top: -5px
+    position: absolute
+    left: 0
+    z-index: 10
+
   contentBox
     background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 72%,rgba(255,255,255,0.8) 100%)
     margin-left: 30px
     margin-top: 10px
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.4)
+    border-radius: 3px
+    float: left
+    white-space: nowrap
+    font-family: 'proxima-nova', sans-serif
+
+  scaleContentBox
+    background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 72%,rgba(255,255,255,0.8) 100%)
+    margin-left: 30px
+    margin-top: 10px
+    transform: scale(1.2)
+    transform-origin: 0% 100%
     box-shadow: 0px 1px 2px rgba(0,0,0,0.4)
     border-radius: 3px
     float: left
