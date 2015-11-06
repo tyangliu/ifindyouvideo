@@ -60,7 +60,7 @@ abstract class ConcreteVideos extends Videos with RootConnector {
       .future()
   }
 
-  def getById(id: String): Future[Option[User]] = {
+  def getById(id: String): Future[Option[Video]] = {
     select.where(_.id eqs id).one()
   }
 }
