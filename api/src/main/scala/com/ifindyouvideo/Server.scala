@@ -56,19 +56,14 @@ object Server extends App with CorsSupport {
     (post & entity(as[JValue])) { requestJson =>
       val JString(query) = requestJson \ "query"
 
-      println(query);
-
       val operation = requestJson \ "operation" match {
         case JString(op) => Some(op)
-        case JNothing => None
-        // TODO: figure out if this case is getting hit right now
-        case x => { println(x); None }
+        case _           => None
       }
       val vars = requestJson \ "variables" match {
         case JString(s) => parse(s, useBigDecimalForDouble = true)
-        case JNothing => JObject()
-        // TODO: figure out why this case is getting hit
-        case x => { println(x); JObject()}
+        case o: JObject => o
+        case _          => JObject()
       }
 
       QueryParser.parse(query) match {
