@@ -16,12 +16,14 @@ class Videos extends Component {
   }
 
   render() {
+    const {video} = this.props;
+
     return (
       <div style={styles.videos}>
         <MapHeader />
         <div style={styles.cardListContainer}>
           <div style={styles.border} />
-          <VideoCardList />
+          <VideoCardList video={video} />
         </div>
       </div>
     );
@@ -31,7 +33,11 @@ class Videos extends Component {
 
 export default Relay.createContainer(Videos, {
   fragments: {
-
+    video: () => Relay.QL`
+      fragment on Video {
+        ${VideoCardList.getFragment('video')}
+      }
+    `
   }
 });
 

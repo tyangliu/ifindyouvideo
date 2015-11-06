@@ -1,12 +1,13 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
 import VideoCard from './VideoCard.jsx';
 
 @Radium
-export default class VideoCardList extends Component {
+class VideoCardList extends Component {
 
   static defaultProps = {
     videos: [
@@ -36,7 +37,7 @@ export default class VideoCardList extends Component {
 
   render() {
     let videoCards = this.props.videos.map(video =>
-      <li style={styles.cardLi}>
+      <li style={styles.cardLi} key={video.mapId}>
         <VideoCard video={video} />
       </li>
     );
@@ -50,6 +51,16 @@ export default class VideoCardList extends Component {
   }
 
 }
+
+export default Relay.createContainer(VideoCardList, {
+  fragments: {
+    video: () => Relay.QL`
+      fragment on Video {
+        ${VideoCard.getFragment('video')}
+      }
+    `
+  }
+});
 
 const styles = styler`
   videoCardList

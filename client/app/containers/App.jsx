@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component, Children, PropTypes } from 'react';
+import Relay from 'react-relay';
 import Radium, { Style } from 'radium';
 import styler from 'react-styling';
 import { Router, Link } from 'react-router';
@@ -8,20 +9,22 @@ import Map from '../components/Map.jsx';
 import UserWidget from '../components/UserWidget.jsx';
 
 @Radium
-export default class App extends Component {
+class App extends Component {
 
   state = {
     showOverlays: false
   };
 
   render() {
+    const {video, children} = this.props;
+
     return (
       <div style={styles.app}>
         <Style rules={styles.appRules} />
         <main style={styles.main}>
           <div style={styles.userContainer}><UserWidget /></div>
-          <Map showOverlays={this.state.showOverlays} />
-          {React.cloneElement(this.props.children || <div />, {
+          <Map showOverlays={this.state.showOverlays} video={video} />
+          {React.cloneElement(children || <div />, {
             key: this.props.location.pathname,
             setShowOverlays: show => this.setState({showOverlays: !!show})
           })}
@@ -31,6 +34,16 @@ export default class App extends Component {
   }
 
 }
+
+export default Relay.createContainer(App, {
+  fragments: {
+    video: () => Relay.QL`
+      fragment on Video {
+        ${Map.getFragment('video')}
+      }
+    `
+  }
+});
 
 const styles = styler`
   app

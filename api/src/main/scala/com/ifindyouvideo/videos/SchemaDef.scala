@@ -105,19 +105,19 @@ object SchemaDef {
       ),
       Field("likeCount", StringType,
         Some("The like count of a video"),
-        resolve = _.value.viewCount
+        resolve = _.value.likeCount
       ),
       Field("dislikeCount", StringType,
         Some("The dislike count of a video"),
-        resolve = _.value.viewCount
+        resolve = _.value.dislikeCount
       ),
       Field("favoriteCount", StringType,
         Some("The favorite count of a video"),
-        resolve = _.value.viewCount
+        resolve = _.value.favoriteCount
       ),
       Field("commentCount", StringType,
         Some("The comment count of a video"),
-        resolve = _.value.viewCount
+        resolve = _.value.commentCount
       )
     )
   )

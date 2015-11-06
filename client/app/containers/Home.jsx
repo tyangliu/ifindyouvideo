@@ -116,7 +116,7 @@ const styles = styler`
     margin: 0 auto
 
   icon
-    background: linear-gradient(to bottom, rgba(239,46,81,1) 7%, rgba(241,72,75,1) 30%, rgba(248,152,56,1) 100%)
+    background-image: linear-gradient(to bottom, rgba(239,46,81,1) 7%, rgba(241,72,75,1) 30%, rgba(248,152,56,1) 100%)
     background-clip: text
     text-fill-color: transparent
     font-size: 28px

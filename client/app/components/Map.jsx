@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import DocumentTitle from 'react-document-title';
 import GoogleMap from 'google-map-react';
 import Radium from 'radium';
@@ -15,7 +16,7 @@ const createMapOptions = maps => ({
 });
 
 @Radium
-export default class Map extends Component {
+class Map extends Component {
 
   static defaultProps = {
     center: {lat: 59.938043, lng: 30.337157},
@@ -47,8 +48,10 @@ export default class Map extends Component {
   };
 
   render() {
-    let overlays = this.props.showOverlays ? this.props.videos.map((video, index) =>
-      <VideoOverlay lat={59.955413 + index * 0.25} lng={30.337844 - index * 0.25} video={video} />
+    const {video, showOverlays, videos} = this.props;
+
+    let overlays = showOverlays ? videos.map((video, index) =>
+      <VideoOverlay lat={59.955413 + index * 0.25} lng={30.337844 - index * 0.25} video={video} key={video.mapId} />
     ) : [];
 
     return (
@@ -63,6 +66,16 @@ export default class Map extends Component {
   }
 
 }
+
+export default Relay.createContainer(Map, {
+  fragments: {
+    video: () => Relay.QL`
+      fragment on Video {
+        title
+      }
+    `
+  }
+});
 
 const styles = styler`
   map
