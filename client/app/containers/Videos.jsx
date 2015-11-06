@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import DocumentTitle from 'react-document-title';
 import Radium from 'radium';
 import styler from 'react-styling';
@@ -8,7 +9,7 @@ import MapHeader from '../components/MapHeader.jsx';
 import VideoCardList from '../components/VideoCardList.jsx';
 
 @Radium
-export default class Videos extends Component {
+class Videos extends Component {
 
   componentWillMount() {
     this.props.setShowOverlays(true);
@@ -27,6 +28,12 @@ export default class Videos extends Component {
   }
 
 }
+
+export default Relay.createContainer(Videos, {
+  fragments: {
+
+  }
+});
 
 const styles = styler`
   videos

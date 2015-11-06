@@ -97,7 +97,10 @@ class YoutubeService extends Actor {
           channel               =  Channel(channelId, channelTitle)
           thumbnails            =  (snippet \ "thumbnails").extract[Thumbnails]
           statistics            =  (item \ "statistics").extract[Statistics]
-        } yield Video(id, title, description, publishedAt, tags, location, channel, thumbnails, statistics)
+        } yield Video(
+          id, title, description, publishedAt, tags,
+          location, channel, thumbnails, statistics
+        )
 
         println(results)
       }

@@ -7,6 +7,12 @@ import styler from 'react-styling';
 @Radium
 export default class VideoCard extends Component {
 
+  getInitialState() {
+    return {
+      selected:false
+    };
+  }
+
   static defaultProps = {
     video: {
       title: 'Video Title',
@@ -17,10 +23,15 @@ export default class VideoCard extends Component {
     }
   };
 
+  handleClick = () => {
+    this.setState({selected: true});
+    console.log("Clicked: " + this.state.selected);
+  }
+
   render() {
     let video = this.props.video;
     return (
-      <div style={styles.videoCard}>
+      <div style={this.state.selected? styles.scaleVideoCard:styles.videoCard} onClick={this.handleClick}>
         <div style={styles.heading}>
           <h2 style={styles.title}>{this.props.video.title}</h2>
           <div style={styles.idContainer}>
@@ -44,6 +55,16 @@ const styles = styler`
     border-top: 7px solid rgba(255,72,40,0.8)
     width: 100%
     height: 100%
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2)
+    overflow: hidden
+    position: relative
+
+  scaleVideoCard
+    border-top: 7px solid rgba(255,72,40,0.8)
+    width: 100%
+    height: 100%
+    transform: scale(1.1)
+    transform-origin: 0% 100%
     box-shadow: 0 1px 2px rgba(0,0,0,0.2)
     overflow: hidden
     position: relative

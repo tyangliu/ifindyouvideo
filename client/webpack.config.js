@@ -24,7 +24,8 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loaders: ['babel-loader?stage=0']
+        loader: 'babel-loader',
+        query: {stage: 0, plugins: ['./relay.config.js']}
       },
       {
         test: /index\.html$/,
