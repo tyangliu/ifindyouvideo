@@ -8,21 +8,28 @@ import styler from 'react-styling';
 export default class VideoModal extends Component {
 
   render() {
-    let video = this.props.video;
     return (
-      <div style={styles.userWidget}>
-        <div style={styles.avatar} />
+      <div style={styles.Modal}>
         <div style={styles.nameDropdown}>
-          <p style={styles.name}>Tom Liu</p>
-          <i style={styles.dropdownIcon} className='material-icons'>keyboard_arrow_down</i>
+          <p style={styles.name}>uploader</p>
+          <p style={styles.name}>location</p>
         </div>
-        <div style={styles.clearfix} />
+        <div style={styles.} />
       </div>
     );
   }
 
+
+
 }
 
+
 const styles = styler`
+  video
+  title
+  date
+  uploader
+  location
+  description
 
 `;
