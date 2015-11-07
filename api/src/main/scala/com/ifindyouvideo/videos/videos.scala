@@ -82,9 +82,9 @@ object VideoRepo {
       location = Location(55.97379820507658,-137.109375,0.0),
       channel = Channel("UCLct3N3oCeqNW5_J0DycSJw", "Hannah Guggenheim"),
       thumbnails = Thumbnails(
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/default.jpg", 120, 90)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/mqdefault.jpg", 320, 180)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/hqdefault.jpg", 480, 360)),
+        Some(Image("https://i.ytimg.com/vi/CxOIBgE1Z0o/default.jpg", 120, 90)),
+        Some(Image("https://i.ytimg.com/vi/CxOIBgE1Z0o/mqdefault.jpg", 320, 180)),
+        Some(Image("https://i.ytimg.com/vi/CxOIBgE1Z0o/hqdefault.jpg", 480, 360)),
         None,None),
       statistics = Statistics("305079","1347","9","0","106")
     ),
@@ -107,10 +107,10 @@ object VideoRepo {
       location = Location(59.46062,-135.3044,0.0),
       channel = Channel("UCoAOu40g8aE81WCb_lk2gzw", "A Channel Title"),
       thumbnails = Thumbnails(
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/default.jpg", 120, 90)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/mqdefault.jpg", 320, 180)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/hqdefault.jpg", 480, 360)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/sddefault.jpg", 640, 480)),
+        Some(Image("https://i.ytimg.com/vi/IrgSkA8wOSw/default.jpg", 120, 90)),
+        Some(Image("https://i.ytimg.com/vi/IrgSkA8wOSw/mqdefault.jpg", 320, 180)),
+        Some(Image("https://i.ytimg.com/vi/IrgSkA8wOSw/hqdefault.jpg", 480, 360)),
+        Some(Image("https://i.ytimg.com/vi/IrgSkA8wOSw/sddefault.jpg", 640, 480)),
         None),
       statistics = Statistics("300542","544","49","0","95")
     ),
@@ -123,9 +123,9 @@ object VideoRepo {
       location = Location(60.58696734225869,-140.2734375,0.0),
       channel = Channel("UCJYdWZ53F0_M6-FbgpQfsZw", "Ergomanic"),
       thumbnails = Thumbnails(
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/default.jpg", 120, 90)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/mqdefault.jpg", 320, 180)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/hqdefault.jpg", 480, 360)),
+        Some(Image("https://i.ytimg.com/vi/Qm1edxnM8Xc/default.jpg", 120, 90)),
+        Some(Image("https://i.ytimg.com/vi/Qm1edxnM8Xc/mqdefault.jpg", 320, 180)),
+        Some(Image("https://i.ytimg.com/vi/Qm1edxnM8Xc/hqdefault.jpg", 480, 360)),
         None,None),
       statistics = Statistics("275193","1700","49","0","440")
     ),
@@ -138,9 +138,9 @@ object VideoRepo {
       location = Location(59.288331692,-135.637207031,0.0),
       channel = Channel("UC_EUYuKP6AENi7tEcV4HTbw", "Worlds Wildest Wonders"),
       thumbnails = Thumbnails(
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/default.jpg", 120, 90)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/mqdefault.jpg", 320, 180)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/hqdefault.jpg", 480, 360)),
+        Some(Image("https://i.ytimg.com/vi/N0vTrfbK3FM/default.jpg", 120, 90)),
+        Some(Image("https://i.ytimg.com/vi/N0vTrfbK3FM/mqdefault.jpg", 320, 180)),
+        Some(Image("https://i.ytimg.com/vi/N0vTrfbK3FM/hqdefault.jpg", 480, 360)),
         None,None),
       statistics = Statistics("272333","214","56","0","17")
     )
