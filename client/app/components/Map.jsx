@@ -32,11 +32,12 @@ class Map extends Component {
     const {showOverlays, viewer, location, defaultCenter} = this.props;
     const { latitude: lat, longitude: lng } = (location || defaultCenter);
 
-    let overlays = showOverlays ? viewer.videos.map((video, index) =>
+    const overlays = showOverlays ? viewer.videos.map((video, index) =>
       <VideoOverlay lat={video.location.latitude}
                     lng={video.location.longitude}
                     video={video}
-                    key={index} />
+                    index={index + 1}
+                    key={index + 1} />
     ) : [];
 
     return (

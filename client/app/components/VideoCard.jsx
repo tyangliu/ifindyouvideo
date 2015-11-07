@@ -18,27 +18,26 @@ class VideoCard extends Component {
       thumbnails: {
 
       }
-
     }
   };
 
   handleClick = () => {
-    this.setState({selected: true});
+    this.setState({selected: !this.state.selected});
   }
 
   render() {
-    let video = this.props.video
+    const { video, index: mapId } = this.props
       , {title, thumbnails} = video;
 
-    let { url: thumbnailUrl } = thumbnails.high || thumbnails.medium || thumbnails.default;
+    const { url: thumbnailUrl } = thumbnails.high || thumbnails.medium || thumbnails.default;
 
     return (
-      <div style={this.state.selected ? styles.scaleVideoCard:styles.videoCard} onClick={this.handleClick}>
+      <div style={styles.videoCard[this.state.selected ? 'active' : 'normal']} onClick={this.handleClick}>
         <div style={styles.heading}>
           <h2 style={styles.title}>{title}</h2>
           <div style={styles.idContainer}>
             <div style={styles.mapIcon} />
-            <p style={styles.mapId}>{this.props.video.mapId}</p>
+            <p style={styles.mapId}>{mapId}</p>
           </div>
         </div>
         <div style={styles.clearfix} />
@@ -75,22 +74,23 @@ export default Relay.createContainer(VideoCard, {
 
 const styles = styler`
   videoCard
-    border-top: 7px solid rgba(255,72,40,0.8)
-    width: 100%
+    width: 320px
     height: 100%
     box-shadow: 0 1px 2px rgba(0,0,0,0.2)
     overflow: hidden
     position: relative
+    float: left
+    transition: transform 0.12s ease-in-out, z-index 0.12s ease-in-out
+    transform-origin: 50% 100%
 
-  scaleVideoCard
-    border-top: 7px solid rgba(255,72,40,0.8)
-    width: 100%
-    height: 100%
-    transform: scale(1.1)
-    transform-origin: 0% 100%
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2)
-    overflow: hidden
-    position: relative
+    &normal
+      border-top: 7px solid rgba(255,72,40,0.8)
+      transform: scale(1) translateY(0)
+
+    &active
+      border-top: 7px solid rgba(255,72,40,0.8)
+      transform: scale(1.05) translateY(-14px)
+      z-index: 20
 
   heading
     height: 76px

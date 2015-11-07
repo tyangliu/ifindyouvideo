@@ -20,16 +20,18 @@ export default class VideoOverlay extends Component {
   };
 
   handleClick = () => {
-    this.setState({selected: true});
+    this.setState({selected: !this.state.selected});
   }
 
   render() {
+    const { video, index: mapId } = this.props;
+
     return (
-      <div style={styles.VideoOverlay} onClick={this.handleClick}>
-        <div style={styles.logoImg[this.state.selected ? 'selected' : 'normal']}></div>
-        <div style={styles.contentBox[this.state.selected ? 'selected' : 'normal']}>
-          <span style={styles.mapId}>{this.props.video.mapId}</span>
-          <span style={styles.title}>{this.props.video.title}</span>
+      <div style={styles.videoOverlay[this.state.selected ? 'active' : 'normal']} onClick={this.handleClick}>
+        <div style={styles.logoImg}></div>
+        <div style={styles.contentBox}>
+          <span style={styles.mapId}>{mapId}</span>
+          <span style={styles.title}>{video.title}</span>
         </div>
         <div style={styles.clearfix} />
       </div>
@@ -51,10 +53,15 @@ export default Relay.createContainer(VideoOverlay, {
 const styles = styler`
   videoOverlay
     position: relative
+    transition: transform 0.12s ease-in-out, z-index 0.12s ease-in-out
+    transform-origin: 0% 50%
 
-  sVideoOverlay
-    position: relative
-    transform: scale(2,2)
+    &normal
+      transform: scale(1) translate(-29px, -45px)
+
+    &active
+      transform: scale(1.15) translate(-29px, -45px)
+      z-index: 20
 
   logoImg
     background-image: url(${require('../images/logo-red-outline-shadow.svg')});
@@ -68,12 +75,6 @@ const styles = styler`
     left: 0
     z-index: 10
 
-    &normal
-
-    &selected
-      transform: scale(1.2)
-      transform-origin: 50% 100%
-
   contentBox
     background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 72%,rgba(255,255,255,0.8) 100%)
     margin-left: 30px
@@ -83,12 +84,6 @@ const styles = styler`
     float: left
     white-space: nowrap
     font-family: 'proxima-nova', sans-serif
-
-    &normal
-
-    &selected
-      transform: scale(1.2)
-      transform-origin: 0% 100%
 
   mapId
     font-size: 14px

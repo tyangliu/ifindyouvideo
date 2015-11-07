@@ -14,17 +14,15 @@ class VideoCardList extends Component {
   }
 
   render() {
-    let videoCards = this.props.videos.map((video, index) =>
-      <li style={styles.cardLi} key={index}>
-        <VideoCard video={video} />
-      </li>
-    );
+  let videoCards = this.props.videos.map((video, index) =>
+    <VideoCard video={video} key={index + 1} index={index + 1} />
+  );
 
     return (
-      <ul style={styles.videoCardList}>
+      <div style={styles.videoCardList}>
         {videoCards}
         <div style={styles.clearfix} />
-      </ul>
+      </div>
     );
   }
 
@@ -43,11 +41,6 @@ export default Relay.createContainer(VideoCardList, {
 const styles = styler`
   videoCardList
     width: 100%
-    height: 100%
-
-  cardLi
-    float: left;
-    width: 320px
     height: 100%
 
   clearfix
