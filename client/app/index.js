@@ -8,11 +8,9 @@ import ReactRouterRelay from 'react-router-relay';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import { App, Test, Home, Videos } from './containers';
 
-const VideoQueries = {
-  video: () => Relay.QL`
-    query root {
-      video(rawId: "1001")
-    }
+const ViewerQueries = {
+  viewer: () => Relay.QL`
+    query root { viewer }
   `
 }
 
@@ -23,9 +21,9 @@ Relay.injectNetworkLayer(
 ReactDOM.render(
   <Router createElement={ReactRouterRelay.createElement}
           history={createBrowserHistory()}>
-    <Route path='/' component={App} queries={VideoQueries}>
+    <Route path='/' component={App} queries={ViewerQueries}>
       <IndexRoute component={Home} />
-      <Route path='videos' component={Videos} queries={VideoQueries} />
+      <Route path='videos' component={Videos} />
       <Route path='test' component={Test} />
     </Route>
   </Router>,

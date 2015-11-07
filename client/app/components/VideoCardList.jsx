@@ -10,34 +10,12 @@ import VideoCard from './VideoCard.jsx';
 class VideoCardList extends Component {
 
   static defaultProps = {
-    videos: [
-      {
-        title: "Cool Video",
-        mapId: 1,
-        thumbnailUrl: "http://img.lum.dolimg.com/v1/images/image_8230eadb.jpeg",
-        views: 100,
-        likes: 500
-      },
-      {
-        title: "Rainbow Gnome",
-        mapId: 2,
-        thumbnailUrl: "http://themysteryofgravityfalls.com/images/credits/001.jpg",
-        views: 100,
-        likes: 500
-      },
-      {
-        title: "Waddles",
-        mapId: 3,
-        thumbnailUrl: "http://emea.lum.dolimg.com/v1/images/image_2be5e783.jpeg",
-        views: 100,
-        likes: 500
-      }
-    ]
+    videos: []
   }
 
   render() {
-    let videoCards = this.props.videos.map(video =>
-      <li style={styles.cardLi} key={video.mapId}>
+    let videoCards = this.props.videos.map((video, index) =>
+      <li style={styles.cardLi} key={index}>
         <VideoCard video={video} />
       </li>
     );
@@ -54,8 +32,8 @@ class VideoCardList extends Component {
 
 export default Relay.createContainer(VideoCardList, {
   fragments: {
-    video: () => Relay.QL`
-      fragment on Video {
+    videos: () => Relay.QL`
+      fragment on Video @relay(plural: true) {
         ${VideoCard.getFragment('video')}
       }
     `
