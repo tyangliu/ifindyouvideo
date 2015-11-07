@@ -5,12 +5,10 @@ import sangria.schema._
 import scala.concurrent.Future
 
 object SchemaDef {
-  val NodeDefinition(nodeInterface, nodeField) = Node.definition((id: GlobalId, ctx: Context[UserContext, Unit]) ⇒ {
-    if (id.typeName == "Video") ctx.ctx.videoRepo.getVideo(id.id)
-     // TODO: this is hardcoded to current user right now
-    else if (id.typeName == "User") ctx.ctx.userRepo.getUser(id.id)
+  val NodeDefinition(nodeInterface, nodeField) = Node.definition((id: GlobalId, ctx: Context[VideoRepo, Unit]) ⇒ {
+    if (id.typeName == "Video") ctx.ctx.getVideo(id.id)
     else None
-  }, Node.possibleNodeTypes[UserContext, Node](VideoType, UserType))
+  }, Node.possibleNodeTypes[VideoRepo, Node](VideoType))
 
   def idFields[T : Identifiable](name: String) = fields[Unit, T](
     Node.globalIdField(name),
@@ -107,19 +105,19 @@ object SchemaDef {
       ),
       Field("likeCount", StringType,
         Some("The like count of a video"),
-        resolve = _.value.likeCount
+        resolve = _.value.viewCount
       ),
       Field("dislikeCount", StringType,
         Some("The dislike count of a video"),
-        resolve = _.value.dislikeCount
+        resolve = _.value.viewCount
       ),
       Field("favoriteCount", StringType,
         Some("The favorite count of a video"),
-        resolve = _.value.favoriteCount
+        resolve = _.value.viewCount
       ),
       Field("commentCount", StringType,
         Some("The comment count of a video"),
-        resolve = _.value.commentCount
+        resolve = _.value.viewCount
       )
     )
   )
@@ -176,27 +174,14 @@ object SchemaDef {
   )
   val Radius = Argument("radius", StringType, "search radius")
 
-  val UserType: ObjectType[UserContext,User] = ObjectType(
-    "User",
-    "A user",
-    interfaces[UserContext, User](nodeInterface),
-    //idFields[User]("User") ++
-    fields[UserContext, User](
-      Node.globalIdField[UserContext, User]("User"),
-      Field("video", OptionType(VideoType),
-        arguments = RawId :: Nil,
-        resolve = ctx => ctx.ctx.videoRepo.getVideo(ctx arg RawId)
-      ),
-      Field("videosByLocation", ListType(VideoType),
-        arguments = Latitude :: Longitude :: Radius :: Nil,
-        resolve = ctx => ctx.ctx.videoRepo.findVideos(ctx arg Latitude, ctx arg Longitude, ctx arg Radius)
-      )
-    )
-  )
-
-  val Query = ObjectType("Query", fields[UserContext, Unit](
-    Field("viewer", UserType,
-      resolve = ctx => ctx.ctx.user
+  val Query = ObjectType("Query", fields[VideoRepo, Unit](
+    Field("video", OptionType(VideoType),
+      arguments = RawId :: Nil,
+      resolve = ctx => ctx.ctx.getVideo(ctx arg RawId)
+    ),
+    Field("videosByLocation", ListType(VideoType),
+      arguments = Latitude :: Longitude :: Radius :: Nil,
+      resolve = ctx => ctx.ctx.findVideos(ctx arg Latitude, ctx arg Longitude, ctx arg Radius)
     ),
     nodeField
   ))

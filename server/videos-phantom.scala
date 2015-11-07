@@ -4,6 +4,7 @@ import scala.concurrent.Future
 import sangria.relay.{Identifiable, Node}
 import com.websudos.phantom.dsl._
 
+/*
 case class Video(
   id:          String,
   title:       String,
@@ -14,7 +15,70 @@ case class Video(
   channel:     Channel,
   thumbnails:  Thumbnails,
   statistics:  Statistics
-) extends Node
+) extends Node */
+
+class Videos extends CassandraTable[ConcreteVideos, Video] {
+  object id extends StringColumn(this)
+  object title extends StringColumn(this)
+  object description extends StringColumn(this)
+  object publishedAt extends StringColumn(this)
+  object tags extends ListColumn[String](this)
+  object location extends LocationColumn(this)
+  object channel extends ChannelColumn(this)
+  object thumbnails extends ThumbnailsColumn(this)
+  object statistics extends StatisticsColumn(this)
+
+  def fromRow(row: Row): Video = {
+    Video(
+      id(row),
+      title(row),
+      description(row),
+      publishedAt(row),
+      tags(row),
+      location(row),
+      channel(row),
+      thumbnails(row),
+      statistics(row)
+    )
+  }
+}
+
+// The root connector comes from import com.websudos.phantom.dsl._
+abstract class ConcreteVideos extends Videos with RootConnector {
+
+  def store(video : Video): Future[ResultSet] = {
+    //insert.value(_.id, video.id).value(_.email, video.email)
+      .value(_.id, video.id)
+      .value(_.title, video.title)
+      .value(_.description, video.description)
+      .value(_.publishedAt, video.publishedAt)
+      .value(_.tags, video.tags)
+      .value(_.location, video.location)
+      .value(_.channel, video.thumbnails)
+      .value(_.statistics, video.statistics)
+      .consistencyLevel_=(ConsistencyLevel.ALL)
+      .future()
+  }
+
+  def getById(id: String): Future[Option[Video]] = {
+    select.where(_.id eqs id).one()
+  }
+}
+
+// Define connector
+object Defaults {
+  val connector = ContactPoint.local.keySpace("my_keyspace")
+}
+
+class MyDatabase(val keyspace: KeySpaceDef) extends com.websudos.phantom.db.DatabaseImpl(keyspace) {
+  object users extends ConcreteUsers with keyspace.Connector
+}
+
+object MyDatabase extends MyDatabase(Defaults.connector)
+
+
+
+
 
 case class Location(latitude: BigDecimal, longitude: BigDecimal, altitude: BigDecimal)
 case class Channel(id: String, title: String)
@@ -37,22 +101,13 @@ case class Thumbnails(
    maxres:   Option[Image]
  )
 
-case class User(id: String) extends Node
-
-class UserRepo {
-  def getUser(id: String): Option[User] = Some(User("dummy"))
-}
-
 class VideoRepo {
   import VideoRepo._
 
   def getVideo(id: String): Option[Video] = videos.find(v => v.id == id)
 
   def findVideos(latitude: BigDecimal, longitude: BigDecimal, radius: String) = videos
-}
 
-case class UserContext(userRepo: UserRepo, videoRepo: VideoRepo) {
-  def user = User("dummy")
 }
 
 object VideoRepo {
