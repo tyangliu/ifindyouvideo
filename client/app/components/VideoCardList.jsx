@@ -14,9 +14,13 @@ class VideoCardList extends Component {
   }
 
   render() {
-  let videoCards = this.props.videos.map((video, index) =>
-    <VideoCard video={video} key={index + 1} index={index + 1} />
-  );
+    const {activeVideo, setActiveVideo, videos} = this.props;
+
+    let videoCards = videos.map((video, index) =>
+      <VideoCard video={video} key={index + 1} index={index + 1}
+                 isActive={(index + 1) === activeVideo}
+                 setActiveVideo={setActiveVideo} />
+    );
 
     return (
       <div style={styles.videoCardList}>

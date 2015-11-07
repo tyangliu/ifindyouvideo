@@ -29,14 +29,20 @@ class Map extends Component {
   };
 
   render() {
-    const {showOverlays, viewer, location, defaultCenter} = this.props;
-    const { latitude: lat, longitude: lng } = (location || defaultCenter);
+    const {showOverlays, activeVideo, setActiveVideo, viewer, location, defaultCenter} = this.props;
+    const activeVideoLocation = activeVideo !== null
+                              ? viewer.videos[activeVideo-1].location
+                              : null;
+
+    const {latitude: lat, longitude: lng} = (activeVideoLocation || location || defaultCenter);
 
     const overlays = showOverlays ? viewer.videos.map((video, index) =>
       <VideoOverlay lat={video.location.latitude}
                     lng={video.location.longitude}
                     video={video}
                     index={index + 1}
+                    isActive={(index + 1) === activeVideo}
+                    setActiveVideo={setActiveVideo}
                     key={index + 1} />
     ) : [];
 

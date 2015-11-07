@@ -8,11 +8,8 @@ import styler from 'react-styling';
 @Radium
 class VideoCard extends Component {
 
-  state = {
-    selected:false
-  };
-
   static defaultProps = {
+    isActive: false,
     video: {
       title: 'Video Title',
       thumbnails: {
@@ -21,18 +18,16 @@ class VideoCard extends Component {
     }
   };
 
-  handleClick = () => {
-    this.setState({selected: !this.state.selected});
-  }
+  handleClick = () => this.props.setActiveVideo(this.props.index);
 
   render() {
-    const { video, index: mapId } = this.props
-      , {title, thumbnails} = video;
+    const {video, isActive, index: mapId} = this.props
+        , {title, thumbnails} = video;
 
     const { url: thumbnailUrl } = thumbnails.high || thumbnails.medium || thumbnails.default;
 
     return (
-      <div style={styles.videoCard[this.state.selected ? 'active' : 'normal']} onClick={this.handleClick}>
+      <div style={styles.videoCard[isActive ? 'active' : 'normal']} onClick={this.handleClick}>
         <div style={styles.heading}>
           <h2 style={styles.title}>{title}</h2>
           <div style={styles.idContainer}>
@@ -76,7 +71,6 @@ const styles = styler`
   videoCard
     width: 320px
     height: 100%
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2)
     overflow: hidden
     position: relative
     float: left
@@ -85,12 +79,14 @@ const styles = styler`
 
     &normal
       border-top: 7px solid rgba(255,72,40,0.8)
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2)
       transform: scale(1) translateY(0)
 
     &active
       border-top: 7px solid rgba(255,72,40,0.8)
       transform: scale(1.05) translateY(-14px)
       z-index: 20
+      box-shadow: 0px 0px 4px 4px rgba(240,53,78,0.5)
 
   heading
     height: 76px
@@ -110,7 +106,7 @@ const styles = styler`
     white-space: nowrap
     overflow: hidden
     text-overflow: ellipsis
-    max-width: 85%
+    max-width: 240px
 
   idContainer
     float: right
@@ -126,6 +122,7 @@ const styles = styler`
     float: left
     line-height: 18px
     font-size: 14px
+    font-weight: 700
     color: rgba(255,72,40,1)
 
   thumbnail

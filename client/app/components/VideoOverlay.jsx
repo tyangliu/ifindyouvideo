@@ -8,47 +8,32 @@ import styler from 'react-styling';
 @Radium
 export default class VideoOverlay extends Component {
 
-  state = {
-    selected: false
-  };
-
   static defaultProps = {
+    isActive: false,
     video: {
       title: 'Video Title',
       mapId: '1'
     }
   };
 
-  handleClick = () => {
-    this.setState({selected: !this.state.selected});
-  }
+  handleClick = () => this.props.setActiveVideo(this.props.index);
 
   render() {
-    const { video, index: mapId } = this.props;
+    const {video, isActive, index: mapId} = this.props;
 
     return (
-      <div style={styles.videoOverlay[this.state.selected ? 'active' : 'normal']} onClick={this.handleClick}>
+      <div style={styles.videoOverlay[isActive ? 'active' : 'normal']} onClick={this.handleClick}>
         <div style={styles.logoImg}></div>
-        <div style={styles.contentBox}>
+        <div style={styles.contentBox[isActive ? 'active' : 'normal']}>
           <span style={styles.mapId}>{mapId}</span>
           <span style={styles.title}>{video.title}</span>
+          <div style={styles.clearfix} />
         </div>
         <div style={styles.clearfix} />
       </div>
     );
   }
 }
-/*
-export default Relay.createContainer(VideoOverlay, {
-  fragments: {
-    video: () => Relay.QL`
-      fragment on Video {
-        title
-      }
-    `
-  }
-});
-*/
 
 const styles = styler`
   videoOverlay
@@ -85,13 +70,20 @@ const styles = styler`
     white-space: nowrap
     font-family: 'proxima-nova', sans-serif
 
+    &normal
+      box-shadow: 0px 1px 2px rgba(0,0,0,0.4)
+
+    &active
+      box-shadow: 0px 0px 4px 2px rgba(240,53,78,0.7)
+
   mapId
     font-size: 14px
     font-weight: 700
     line-height: 30px
     border-right: 1px solid rgba(0,0,0,0.1)
     padding: 0 10px 0 24px
-    display: inline-block
+    display: block
+    float: left
     color: rgba(255,72,40,1)
 
   title
@@ -99,8 +91,11 @@ const styles = styler`
     font-weight: 700
     line-height: 30px
     padding: 0 16px 0 10px
-    display: inline-block
+    display: block
     color: rgba(76,76,76,1)
+    max-width: 280px
+    overflow-x: hidden
+    text-overflow: ellipsis
 
   clearfix
     clear: both

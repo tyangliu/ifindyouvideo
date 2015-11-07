@@ -13,21 +13,30 @@ import UserWidget from '../components/UserWidget.jsx';
 class App extends Component {
 
   state = {
-    showOverlays: false
+    showOverlays: false,
+    activeVideo: null
   };
 
   render() {
-    const {viewer, children} = this.props;
+    const {viewer, children} = this.props
+        , {showOverlays, activeVideo} = this.state
+        , setActiveVideo  = index => this.setState({activeVideo: index})
+        , setShowOverlays = show => this.setState({showOverlays: !!show});
 
     return (
       <div style={styles.app}>
         <Style rules={styles.appRules} />
         <main style={styles.main}>
           <div style={styles.userContainer}><UserWidget /></div>
-          <Map showOverlays={this.state.showOverlays} viewer={viewer} />
+          <Map showOverlays={showOverlays}
+               activeVideo={activeVideo}
+               setActiveVideo={setActiveVideo}
+               viewer={viewer} />
           {React.cloneElement(children || <div />, {
             key: this.props.location.pathname,
-            setShowOverlays: show => this.setState({showOverlays: !!show}),
+            activeVideo,
+            setShowOverlays,
+            setActiveVideo,
             videos: viewer.videos
           })}
         </main>

@@ -16,14 +16,14 @@ class Videos extends Component {
   }
 
   render() {
-    const {videos} = this.props;
+    const {videos, activeVideo, setActiveVideo} = this.props;
 
     return (
       <div style={styles.videos}>
         <MapHeader />
         <div style={styles.cardListContainer}>
           <div style={styles.border} />
-          <VideoCardList videos={videos} />
+          <VideoCardList videos={videos} activeVideo={activeVideo} setActiveVideo={setActiveVideo} />
         </div>
       </div>
     );
