@@ -45,7 +45,11 @@ class LocationService extends Actor {
 
   def searchLatLong(city : String) : Unit = async {
 
-    val req = HttpRequest(uri = Uri("https://maps.googleapis.com/maps/api/place/textsearch/json?" + "key=AIzaSyDo_kdE05psxggmYqbqMyctx3eL85-axq0&query=" + city))
+    val params = Map(
+      "key" -> "AIzaSyDo_kdE05psxggmYqbqMyctx3eL85-axq0",
+      "query" -> city)
+
+    val req = HttpRequest(uri = Uri("https://maps.googleapis.com/maps/api/place/textsearch/json").withQuery(params))
 
     val res = await {
       Http(context.system).singleRequest(req)
