@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
++import video from 'react-video';
 
 @Radium
 export default class VideoModal extends Component {
