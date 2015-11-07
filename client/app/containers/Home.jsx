@@ -100,8 +100,8 @@ const styles = styler`
 
   textualLogoImg
     background: url(${require('../images/logo-text-white.svg')}) no-repeat left center;
-    height: 48px
-    margin-top: 28px
+    height: 54px
+    margin-top: 24px
     margin-bottom: 10px
 
   tagline

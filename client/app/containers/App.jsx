@@ -94,7 +94,6 @@ const styles = styler`
   userContainer
     z-index: 1000
     position: absolute
-    top: 20px
-    left: 50%
-    transform: translateX(-50%)
+    top: 24px
+    right: 20px
 `;

@@ -36,28 +36,27 @@ const styles = styler`
 
   header
     width: 100%
-    padding-top: 56px
     background: linear-gradient(to bottom, rgba(239,46,81,0.9) 7%, rgba(240,53,78,0.9) 30%, rgba(244,76,70,0.9) 100%)
 
 
   logoContainer
-    width: 196px
-    margin: 0 auto
+    width: 173px
     padding: 14px 0
+    margin-left: 20px
 
   logoImg
-    width: 46px
-    height: 65px
+    width: 30px
+    height: 42px
     background: url(${require('../images/logo-white.svg')}) no-repeat center
     float: left
-    margin-right: 16px
+    margin-right: 10px
 
   textualLogoImg
-    height: 21px
+    height: 23px
     width: 133px
     background: url(${require('../images/logo-text-white.svg')}) no-repeat left center
     float: left
-    margin-top: 13px
+    margin-top: 11px
 
   optionsBar
     height: 44px
