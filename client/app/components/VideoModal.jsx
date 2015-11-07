@@ -56,4 +56,5 @@ const styles = styler`
     location
     description
     mapId
+    clearfix
 `;
