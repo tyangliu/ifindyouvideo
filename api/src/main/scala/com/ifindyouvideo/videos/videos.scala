@@ -53,6 +53,7 @@ class VideoRepo {
 
 case class UserContext(userRepo: UserRepo, videoRepo: VideoRepo) {
   def user = User("dummy")
+  def location = Some(Location(59.288331692,-135.637207031,0))
 }
 
 object VideoRepo {
@@ -67,9 +68,9 @@ object VideoRepo {
       channel = Channel("UC8CXqtQfr_qwE-L3A3XoEGQ", "Worlds Wildest Wonders"),
       thumbnails = Thumbnails(
         Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/default.jpg", 120, 90)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/mqdefault.jpg.jpg", 320, 180)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/hqdefault.jpg.jpg", 480, 360)),
-        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/sddefault.jpg.jpg", 640, 480)),
+        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/mqdefault.jpg", 320, 180)),
+        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/hqdefault.jpg", 480, 360)),
+        Some(Image("https://i.ytimg.com/vi/oODmbz_PJQw/sddefault.jpg", 640, 480)),
         None),
       statistics = Statistics("1340626","1467","1256","0","1144")
     ),

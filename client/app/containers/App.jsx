@@ -24,7 +24,7 @@ class App extends Component {
         <Style rules={styles.appRules} />
         <main style={styles.main}>
           <div style={styles.userContainer}><UserWidget /></div>
-          <Map showOverlays={this.state.showOverlays} videos={viewer.videos} />
+          <Map showOverlays={this.state.showOverlays} viewer={viewer} />
           {React.cloneElement(children || <div />, {
             key: this.props.location.pathname,
             setShowOverlays: show => this.setState({showOverlays: !!show}),
@@ -44,9 +44,9 @@ export default Relay.createContainer(App, {
         videos: videosByLocation(
           latitude: 59.1293, longitude: -129.3984, radius: "200km"
         ) {
-          ${Map.getFragment('videos')}
           ${Videos.getFragment('videos')}
         }
+        ${Map.getFragment('viewer')}
       }
     `
   }

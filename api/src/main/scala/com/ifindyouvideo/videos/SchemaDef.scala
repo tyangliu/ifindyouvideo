@@ -183,6 +183,9 @@ object SchemaDef {
     //idFields[User]("User") ++
     fields[UserContext, User](
       Node.globalIdField[UserContext, User]("User"),
+      Field("location", OptionType(LocationType),
+        resolve = ctx => ctx.ctx.location
+      ),
       Field("video", OptionType(VideoType),
         arguments = RawId :: Nil,
         resolve = ctx => ctx.ctx.videoRepo.getVideo(ctx arg RawId)

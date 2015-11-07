@@ -19,23 +19,31 @@ const createMapOptions = maps => ({
 class Map extends Component {
 
   static defaultProps = {
-    center: {lat: 59.938043, lng: 30.337157},
     zoom: 9,
     showOverlays: true,
-    videos: []
+    videos: [],
+    defaultCenter: {
+      latitude: 59.288331692,
+      longitude: -135.637207031
+    }
   };
 
   render() {
-    const {video, showOverlays, videos} = this.props;
+    const {showOverlays, viewer, location, defaultCenter} = this.props;
+    const { latitude: lat, longitude: lng } = (location || defaultCenter);
 
-    let overlays = showOverlays ? videos.map((video, index) =>
-      <VideoOverlay lat={59.955413 + index * 0.25} lng={30.337844 - index * 0.25} video={video} key={index} />
+    let overlays = showOverlays ? viewer.videos.map((video, index) =>
+      <VideoOverlay lat={video.location.latitude}
+                    lng={video.location.longitude}
+                    video={video}
+                    key={index} />
     ) : [];
 
     return (
       <div style={styles.map}>
-        <GoogleMap defaultCenter={this.props.center}
+        <GoogleMap defaultCenter={defaultCenter}
                    defaultZoom={this.props.zoom}
+                   center={{lat,lng}}
                    options={createMapOptions}>
           {overlays}
         </GoogleMap>
@@ -47,9 +55,15 @@ class Map extends Component {
 
 export default Relay.createContainer(Map, {
   fragments: {
-    videos: () => Relay.QL`
-      fragment on Video @relay(plural: true) {
-        title
+    viewer: () => Relay.QL`
+      fragment on User {
+        videos: videosByLocation(
+          latitude: 59.1293, longitude: -129.3984, radius: "200km"
+        ) {
+          title,
+          location { latitude, longitude }
+        },
+        location { latitude, longitude }
       }
     `
   }

@@ -15,10 +15,10 @@ class VideoCard extends Component {
   static defaultProps = {
     video: {
       title: 'Video Title',
-      mapId: 35,
-      thumbnailUrl: "testURL",
-      views: 100,
-      likes: 500
+      thumbnails: {
+
+      }
+
     }
   };
 
@@ -27,11 +27,15 @@ class VideoCard extends Component {
   }
 
   render() {
-    let video = this.props.video;
+    let video = this.props.video
+      , {title, thumbnails} = video;
+
+    let { url: thumbnailUrl } = thumbnails.high || thumbnails.medium || thumbnails.default;
+
     return (
       <div style={this.state.selected ? styles.scaleVideoCard:styles.videoCard} onClick={this.handleClick}>
         <div style={styles.heading}>
-          <h2 style={styles.title}>{this.props.video.title}</h2>
+          <h2 style={styles.title}>{title}</h2>
           <div style={styles.idContainer}>
             <div style={styles.mapIcon} />
             <p style={styles.mapId}>{this.props.video.mapId}</p>
@@ -39,7 +43,7 @@ class VideoCard extends Component {
         </div>
         <div style={styles.clearfix} />
         <div style={[styles.thumbnail, {
-          backgroundImage: `url(${this.props.video.thumbnailUrl})`,
+          backgroundImage: `url(${thumbnailUrl})`,
           backgroundSize: 'cover'
         }]} />
       </div>
@@ -53,11 +57,11 @@ export default Relay.createContainer(VideoCard, {
     video: () => Relay.QL`
       fragment on Video {
         thumbnails {
-          default {
-            url,
-            width,
-            height
-          }
+          default { url, width, height },
+          high { url, width, height },
+          medium { url, width, height },
+          standard { url, width, height },
+          maxres { url, width, height }
         },
         statistics {
           viewCount,
@@ -103,6 +107,10 @@ const styles = styler`
     line-height: 18px
     font-weight: 700
     float: left
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+    max-width: 85%
 
   idContainer
     float: right
