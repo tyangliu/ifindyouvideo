@@ -45,12 +45,7 @@ class LocationService extends Actor {
 
   def searchLatLong(city : String) : Unit = async {
 
-    val params = Map(
-      "key" -> "AIzaSyCyJJILurm5Pf6ZLFCoCfninmObBvqyiWk",
-      "query" -> "2200 LowerMall, Vancouver, BC, Canada"
-    )
-
-    val req = HttpRequest(uri = Uri("https://maps.googleapis.com/maps/api/place/textsearch/json?" + "key=AIzaSyDo_kdE05psxggmYqbqMyctx3eL85-axq0&query=vancouver,BC,Canada"))
+    val req = HttpRequest(uri = Uri("https://maps.googleapis.com/maps/api/place/textsearch/json?" + "key=AIzaSyDo_kdE05psxggmYqbqMyctx3eL85-axq0&query=" + city))
 
     val res = await {
       Http(context.system).singleRequest(req)
@@ -82,7 +77,7 @@ class LocationService extends Actor {
 
   def MapCenterPoint(lat: Double, long: Double): Unit = async {
   }
-//    (Location(lat long, alt=0), )
+
   def haversineDistance(pointA: (Double, Double), pointB: (Double, Double)): Double = {
     val deltaLat = math.toRadians(pointB._1 - pointA._1)
     val deltaLong = math.toRadians(pointB._2 - pointA._2)
