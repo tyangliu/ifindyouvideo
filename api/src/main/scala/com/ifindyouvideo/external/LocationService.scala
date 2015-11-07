@@ -17,6 +17,8 @@ import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization
 import org.json4s._
 
+import com.ifindyouvideo.videos.Location
+
 /**
  * Created by thomasliu on 10/21/15.
  */
@@ -48,29 +50,49 @@ class LocationService extends Actor {
       "query" -> "2200 LowerMall, Vancouver, BC, Canada"
     )
 
-    val req = HttpRequest(uri = Uri("https://maps.googleapis.com/maps/api/place/textsearch/json?").withQuery(params))
+    val req = HttpRequest(uri = Uri("https://maps.googleapis.com/maps/api/place/textsearch/json?" + "key=AIzaSyDo_kdE05psxggmYqbqMyctx3eL85-axq0&query=vancouver,BC,Canada"))
 
-    val res = await{Http(context.system).singleRequest(req)}
+    val res = await {
+      Http(context.system).singleRequest(req)
+    }
 
     res.status match {
-      case OK => Unmarshal(res.entity).to[JValue] map {
-        resJson => val results = for {
-          JArray(items) <- resJson \ "results" \ "geometry" \ "location"
+      case OK => Unmarshal(res.entity).to[JValue] map { resJson =>
+        println(pretty(render(resJson)))
+        val results = for {
+          JArray(items) <- resJson \ "results"
           item <- items
-          lat = (item \ "lat").extract[String]
-          long = (item \ "long").extract[String]
+          location = item \ "geometry" \ "location"
+          JDouble(lat) <- location \ "lat"
+          JDouble(long) <- location \ "lng"
+          center = Location(lat, long, 0)
+          northEast = item \ "geometry" \ "viewport" \ "northeast"
+          JDouble(neLat) <- northEast \ "lat"
+          JDouble(neLon) <- northEast \ "lng"
+          northEast = item \ "geometry" \ "viewport" \ "southwest"
+          JDouble(swLat) <- northEast \ "lat"
+          JDouble(swLon) <- northEast \ "lng"
+        } {
+          println(haversineDistance((lat, long), (swLat, swLon)))
         }
-        MapCenterPoint(lat, long)
       }
       case _ => val error = "Invalid Request"
     }
+  }
 
-    def MapCenterPoint(lat: String, long: String): Unit = async {
-      // make center location for map to use
-    }
-
+  def MapCenterPoint(lat: Double, long: Double): Unit = async {
+  }
+//    (Location(lat long, alt=0), )
+  def haversineDistance(pointA: (Double, Double), pointB: (Double, Double)): Double = {
+    val deltaLat = math.toRadians(pointB._1 - pointA._1)
+    val deltaLong = math.toRadians(pointB._2 - pointA._2)
+    val a = math.pow(math.sin(deltaLat / 2), 2) + math.cos(math.toRadians(pointA._1)) * math.cos(math.toRadians(pointB._1)) * math.pow(math.sin(deltaLong / 2), 2)
+    val greatCircleDistance = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    3958.761 * 1.60934 * greatCircleDistance
   }
 }
+
+
 
 
 
