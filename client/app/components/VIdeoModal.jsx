@@ -3,9 +3,20 @@
 import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
+import video from 'react-video';
 
 @Radium
 export default class V extends Component {
+
+  static defaultProps = {
+    video: {
+      title: 'Video Title',
+      mapId: 35,
+      thumbnailUrl: "testURL",
+      views: 100,
+      likes: 500
+    }
+  };
 
   render() {
     let video = this.props.video;
