@@ -27,7 +27,7 @@ export default class VideoOverlay extends Component {
     return (
       <div style={styles.VideoOverlay} onClick={this.handleClick}>
         <div style={styles.logoImg[this.state.selected ? 'selected' : 'normal']}></div>
-        <div style={styles.contentBox[this.state.selected ? 'normal' : 'selected']}>
+        <div style={styles.contentBox[this.state.selected ? 'selected' : 'normal']}>
           <span style={styles.mapId}>{this.props.video.mapId}</span>
           <span style={styles.title}>{this.props.video.title}</span>
         </div>
