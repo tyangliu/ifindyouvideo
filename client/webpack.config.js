@@ -14,7 +14,7 @@ module.exports = {
     publicPath: ''
   },
   plugins: [
-    new webpack.DefinePlugin({'process.env': {NODE_ENV: '"production"'}}),
+    new webpack.DefinePlugin({'process.env': {NODE_ENV: '"development"'}}),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     // new webpack.optimize.UglifyJsPlugin({minimize: true})

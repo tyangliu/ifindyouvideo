@@ -1,29 +1,34 @@
 'use strict';
 
 import React, { Component, Children, PropTypes } from 'react';
+import Relay from 'react-relay';
 import Radium, { Style } from 'radium';
 import styler from 'react-styling';
 import { Router, Link } from 'react-router';
 import Map from '../components/Map.jsx';
+import Videos from './Videos.jsx';
 import UserWidget from '../components/UserWidget.jsx';
 
 @Radium
-export default class App extends Component {
+class App extends Component {
 
   state = {
     showOverlays: false
   };
 
   render() {
+    const {viewer, children} = this.props;
+
     return (
       <div style={styles.app}>
         <Style rules={styles.appRules} />
         <main style={styles.main}>
           <div style={styles.userContainer}><UserWidget /></div>
-          <Map showOverlays={this.state.showOverlays} />
-          {React.cloneElement(this.props.children || <div />, {
+          <Map showOverlays={this.state.showOverlays} videos={viewer.videos} />
+          {React.cloneElement(children || <div />, {
             key: this.props.location.pathname,
-            setShowOverlays: show => this.setState({showOverlays: !!show})
+            setShowOverlays: show => this.setState({showOverlays: !!show}),
+            videos: viewer.videos
           })}
         </main>
       </div>
@@ -31,6 +36,21 @@ export default class App extends Component {
   }
 
 }
+
+export default Relay.createContainer(App, {
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on User {
+        videos: videosByLocation(
+          latitude: 59.1293, longitude: -129.3984, radius: "200km"
+        ) {
+          ${Map.getFragment('videos')}
+          ${Videos.getFragment('videos')}
+        }
+      }
+    `
+  }
+});
 
 const styles = styler`
   app

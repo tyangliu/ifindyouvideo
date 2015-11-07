@@ -1,17 +1,16 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
 
 @Radium
-export default class VideoCard extends Component {
+class VideoCard extends Component {
 
-  getInitialState() {
-    return {
-      selected:false
-    };
-  }
+  state = {
+    selected:false
+  };
 
   static defaultProps = {
     video: {
@@ -25,13 +24,12 @@ export default class VideoCard extends Component {
 
   handleClick = () => {
     this.setState({selected: true});
-    console.log("Clicked: " + this.state.selected);
   }
 
   render() {
     let video = this.props.video;
     return (
-      <div style={this.state.selected? styles.scaleVideoCard:styles.videoCard} onClick={this.handleClick}>
+      <div style={this.state.selected ? styles.scaleVideoCard:styles.videoCard} onClick={this.handleClick}>
         <div style={styles.heading}>
           <h2 style={styles.title}>{this.props.video.title}</h2>
           <div style={styles.idContainer}>
@@ -49,6 +47,27 @@ export default class VideoCard extends Component {
   }
 
 }
+
+export default Relay.createContainer(VideoCard, {
+  fragments: {
+    video: () => Relay.QL`
+      fragment on Video {
+        thumbnails {
+          default {
+            url,
+            width,
+            height
+          }
+        },
+        statistics {
+          viewCount,
+          likeCount
+        },
+        title
+      }
+    `
+  }
+});
 
 const styles = styler`
   videoCard

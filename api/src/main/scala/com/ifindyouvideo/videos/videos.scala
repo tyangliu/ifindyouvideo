@@ -37,13 +37,22 @@ case class Thumbnails(
    maxres:   Option[Image]
  )
 
+case class User(id: String) extends Node
+
+class UserRepo {
+  def getUser(id: String): Option[User] = Some(User("dummy"))
+}
+
 class VideoRepo {
   import VideoRepo._
 
   def getVideo(id: String): Option[Video] = videos.find(v => v.id == id)
 
   def findVideos(latitude: BigDecimal, longitude: BigDecimal, radius: String) = videos
+}
 
+case class UserContext(userRepo: UserRepo, videoRepo: VideoRepo) {
+  def user = User("dummy")
 }
 
 object VideoRepo {

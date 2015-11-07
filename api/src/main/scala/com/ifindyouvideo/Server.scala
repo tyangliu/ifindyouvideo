@@ -4,6 +4,8 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.StatusCodes._
+import akka.http.scaladsl.model.HttpHeader
+import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
 
@@ -20,7 +22,7 @@ import scala.util.{Success, Failure}
 
 import com.ifindyouvideo.videos._
 
-object Server extends App {
+object Server extends App with CorsSupport {
   implicit val system = ActorSystem("ifindyouvideo")
   implicit val materializer = ActorMaterializer()
   implicit val serialization = Serialization
@@ -28,23 +30,40 @@ object Server extends App {
 
   import system.dispatcher
 
+  override val corsAllowOrigins = List("*")
+
+  override val corsAllowedHeaders = List(
+    "Origin", "X-Requested-With", "Content-Type", "Accept",
+    "Accept-Encoding", "Accept-Language", "Host", "Referer", "User-Agent"
+  )
+
+  override val corsAllowCredentials = true
+
+  override val optionsCorsHeaders = List[HttpHeader](
+    `Access-Control-Allow-Headers`(corsAllowedHeaders.mkString(", ")),
+    `Access-Control-Max-Age`(60 * 60 * 24 * 20), // cache pre-flight response for 20 days
+    `Access-Control-Allow-Credentials`(corsAllowCredentials)
+  )
+
   val executor = Executor(
     schema = SchemaDef.VideoSchema,
-    userContext = new VideoRepo
+    userContext = new UserContext(new UserRepo, new VideoRepo)
   )
 
   import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 
-  val routes = {
+  val routes = cors {
     (post & entity(as[JValue])) { requestJson =>
       val JString(query) = requestJson \ "query"
+
       val operation = requestJson \ "operation" match {
         case JString(op) => Some(op)
-        case JNothing => None
+        case _           => None
       }
       val vars = requestJson \ "variables" match {
         case JString(s) => parse(s, useBigDecimalForDouble = true)
-        case JNothing => JObject()
+        case o: JObject => o
+        case _          => JObject()
       }
 
       QueryParser.parse(query) match {

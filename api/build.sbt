@@ -43,3 +43,5 @@ libraryDependencies ++= {
     "de.heikoseeberger"      %% "akka-http-json4s"                  % "1.0.0"
   )
 }
+
+Revolver.settings
