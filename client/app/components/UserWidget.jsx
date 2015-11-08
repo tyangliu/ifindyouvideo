@@ -14,7 +14,7 @@ export default class UserWidget extends Component {
         <div style={styles.avatar} />
         <div style={styles.nameDropdown}>
           <p style={styles.name}>Tom Liu</p>
-          <i style={styles.dropdownIcon} className='material-icons'>keyboard_arrow_down</i>
+          <i style={styles.dropdownIcon} className='material-icons'>arrow_drop_down</i>
         </div>
         <div style={styles.clearfix} />
       </div>

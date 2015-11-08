@@ -126,7 +126,6 @@ const styles = styler`
   info
     float: right
     width: 300px
-    border-top: 7px solid rgba(255,72,40,0.8)
 
   heading
     padding: 14px

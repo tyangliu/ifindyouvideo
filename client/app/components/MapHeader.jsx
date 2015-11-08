@@ -18,7 +18,28 @@ export default class MapHeader extends Component {
           </div>
         </section>
         <section style={styles.optionsBar}>
-
+          <div style={styles.search}>
+            <i className='material-icons' style={styles.icon}>search</i>
+            <input type='text' style={styles.searchInput}
+                   placeholder='Search for a trendy city'/>
+            <i className='material-icons' style={styles.icon}>more_vert</i>
+            <div style={styles.clearfix} />
+          </div>
+          <div style={styles.current}>
+            <i className='material-icons' style={styles.icon}>location_city</i>
+            <p style={styles.currentText}>Vancouver, BC</p>
+            <i className='material-icons' style={styles.icon}>close</i>
+          </div>
+          <div style={[styles.dropdown, {float: 'left'}]}>
+            <p style={styles.dropdownText}>Past Week</p>
+            <i className='material-icons' style={styles.icon}>arrow_drop_down</i>
+          </div>
+          <div style={{float: 'right', borderLeft: '1px solid rgba(0,0,0,0.15)', padding: '0 20px 0 14px'}}>
+            <i className='material-icons' style={[styles.icon, {marginRight: '7px'}]}>favorite</i>
+            <p style={styles.dropdownText}>My Locations</p>
+            <i className='material-icons' style={styles.icon}>arrow_drop_down</i>
+          </div>
+          <div style={styles.clearfix} />
         </section>
       </div>
     );
@@ -62,6 +83,61 @@ const styles = styler`
     height: 44px
     background: rgba(255,255,255,0.9)
     box-shadow: 0 1px 2px rgba(0,0,0,0.2)
+
+  search
+    margin-left: 26px
+    padding-right: 20px
+    border-right: 1px solid rgba(0,0,0,0.15)
+    float: left
+    display: none
+
+  icon
+    background-image: linear-gradient(to bottom, rgba(239,46,81,1) 7%, rgba(241,72,75,1) 30%, rgba(248,152,56,1) 100%)
+    background-clip: text
+    text-fill-color: transparent
+    font-size: 20px
+    line-height: 44px
+    float: left
+
+  searchInput
+    background: none
+    border: none
+    outline: none
+    float: left
+    line-height: 44px
+    padding: 0
+    margin-left: 14px
+    font-family: inherit
+    font-size: 13px
+    color: rgba(102,102,102,1)
+    position: relative
+    width: 240px
+
+  current
+    border-right: 1px solid rgba(0,0,0,0.15)
+    float: left
+    padding: 0 20px 0 26px
+
+  currentText
+    color: rgba(90,90,90,1)
+    font-size: 12px
+    font-weight: 700
+    text-transform: uppercase
+    letter-spacing: 1px
+    float: left
+    line-height: 42px
+    margin: 2px 20px 0 14px
+
+  dropdown
+    border-right: 1px solid rgba(0,0,0,0.15)
+    padding: 0 14px
+
+  dropdownText
+    color: rgba(90,90,90,1)
+    font-size: 13px
+    float: left
+    line-height: 42px
+    margin: 2px 7px 0
 
   clearfix
     clear: both

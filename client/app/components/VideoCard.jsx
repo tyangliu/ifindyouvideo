@@ -81,20 +81,18 @@ const styles = styler`
     transform-origin: 50% 100%
 
     &normal
-      border-top: 7px solid rgba(255,72,40,0.8)
       box-shadow: 0 1px 2px rgba(0,0,0,0.2)
       transform: scale(1) translateY(0)
 
     &active
-      border-top: 7px solid rgba(255,72,40,0.8)
       transform: scale(1.05) translateY(-14px)
       z-index: 20
-      box-shadow: 0px 0px 4px 4px rgba(240,53,78,0.5)
+      box-shadow: 0px 0px 4px 4px rgba(240,53,78,0.6)
       border-radius: 4px
 
   heading
     height: 76px
-    padding: 14px
+    padding: 18px 14px 14px
     background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.9) 100%)
     box-shadow: 0 1px 2px rgba(0,0,0,0.2)
     border-right: 1px solid rgba(0,0,0,0.1)
