@@ -18,8 +18,9 @@ class VideoCardList extends Component {
     scrollPosition: 0,
     deltaX: 0,
     mouseDown: false,
+    shouldTransition: true,
     mousePosition: 0
-  }
+  };
 
   handleMouseDown = event => this.setState({
     mouseDown: true,
@@ -40,12 +41,34 @@ class VideoCardList extends Component {
     }
   };
 
-  handleWheel = event => this.updateScrollPosition(event.deltaY);
+  handleTouchStart = event => this.setState({
+    mouseDown: true,
+    mousePosition: event.changedTouches[0].clientX,
+    deltaX: 0
+  });
+
+  handleTouchEnd = event => this.setState({
+    mouseDown: false,
+    mousePosition: event.changedTouches[0].clientX
+  });
+
+  handleTouchMove = event => {
+    if (this.state.mouseDown) {
+      let prevPosition = this.state.mousePosition
+        , touchObj = event.changedTouches[0];
+      this.setState({mousePosition: touchObj.clientX});
+      this.updateScrollPosition(prevPosition - touchObj.clientX);
+    }
+  };
+
+  handleWheel = event => this.updateScrollPosition(
+    Math.abs(event.deltaY) > Math.abs(event.deltaX) ? event.deltaY : event.deltaX
+  );
 
   scrollToCard = index => {
     if (index > 0 && index < this.props.videos.length + 1) {
       let newPos = this.normalizePosition((index - 1) * 320);
-      this.setState({scrollPosition: newPos});
+      this.setState({scrollPosition: newPos, shouldTransition: true});
     }
   };
 
@@ -53,6 +76,7 @@ class VideoCardList extends Component {
     let newPos = this.normalizePosition(this.state.scrollPosition + deltaX);
     this.setState({
       scrollPosition: newPos,
+      shouldTransition: false,
       // refresh deltaX only if new abs(deltaX) > 2,
       // used to ensure that mouse drag scrolling does not trigger a card click
       deltaX: (Math.abs(deltaX) > 2) ? deltaX : this.state.deltaX
@@ -105,13 +129,16 @@ class VideoCardList extends Component {
         <div style={[styles.videoCardList, {
                width: videoCards.length * 320 + 'px',
                marginLeft: 0 - this.state.scrollPosition + 'px',
-               transition: this.state.mouseDown ? null : 'margin-left 0.15s linear'
+               transition: this.state.shouldTransition ? 'margin-left 0.15s linear' : null
              }]}
              onWheel={this.handleWheel}
              onMouseDown={this.handleMouseDown}
              onMouseUp={this.handleMouseUp}
              onMouseLeave={this.handleMouseUp}
-             onMouseMove={this.handleMouseMove}>
+             onMouseMove={this.handleMouseMove}
+             onTouchStart={this.handleTouchStart}
+             onTouchEnd={this.handleTouchEnd}
+             onTouchMove={this.handleTouchMove}>
           {videoCards}
           <div style={styles.clearfix} />
         </div>
