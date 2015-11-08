@@ -67,7 +67,7 @@ class VideoCardList extends Component {
 
   scrollToCard = index => {
     if (index > 0 && index < this.props.videos.length + 1) {
-      let newPos = this.normalizePosition((index - 1) * 320);
+      let newPos = this.normalizePosition((index - 1) * 320 + 320/2 - window.innerWidth/2);
       this.setState({scrollPosition: newPos, shouldTransition: true});
     }
   };
