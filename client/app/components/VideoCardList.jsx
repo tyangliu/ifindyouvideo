@@ -114,13 +114,14 @@ class VideoCardList extends Component {
   }
 
   render() {
-    const {activeVideo, setActiveVideo, videos} = this.props;
+    const {activeVideo, setActiveVideo, setOpenVideo, videos} = this.props;
 
     let videoCards = videos.map((video, index) =>
       <VideoCard video={video} key={index + 1} index={index + 1}
                  isActive={(index + 1) === activeVideo}
                  ignoreClicks={Math.abs(this.state.deltaX) > 0}
-                 setActiveVideo={setActiveVideo} />
+                 setActiveVideo={setActiveVideo}
+                 setOpenVideo={setOpenVideo} />
     );
 
     return (

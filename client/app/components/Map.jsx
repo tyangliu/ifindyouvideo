@@ -29,7 +29,7 @@ class Map extends Component {
   };
 
   render() {
-    const {showOverlays, activeVideo, setActiveVideo, viewer, location, defaultCenter} = this.props;
+    const {showOverlays, activeVideo, setActiveVideo, setOpenVideo, viewer, location, defaultCenter} = this.props;
     const activeVideoLocation = activeVideo !== null
                               ? viewer.videos[activeVideo-1].location
                               : null;
@@ -43,6 +43,7 @@ class Map extends Component {
                     index={index + 1}
                     isActive={(index + 1) === activeVideo}
                     setActiveVideo={setActiveVideo}
+                    setOpenVideo={setOpenVideo}
                     key={index + 1} />
     ) : [];
 

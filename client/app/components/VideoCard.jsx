@@ -20,7 +20,7 @@ class VideoCard extends Component {
   };
 
   handleClick = () => {
-    this.props.ignoreClicks || this.props.setActiveVideo(this.props.index);
+    this.props.ignoreClicks || this.props[this.props.isActive ? 'setOpenVideo' : 'setActiveVideo'](this.props.index);
   };
 
   render() {

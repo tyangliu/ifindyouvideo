@@ -15,14 +15,17 @@ class App extends Component {
 
   state = {
     showOverlays: false,
-    activeVideo: null
+    activeVideo: null,
+    openVideo: null
   };
+
+  setActiveVideo  = index => this.setState({activeVideo: index});
+  setOpenVideo    = index => this.setState({openVideo: index});
+  setShowOverlays = show  => this.setState({showOverlays: !!show});
 
   render() {
     const {viewer, children} = this.props
-        , {showOverlays, activeVideo} = this.state
-        , setActiveVideo  = index => this.setState({activeVideo: index})
-        , setShowOverlays = show => this.setState({showOverlays: !!show});
+        , {showOverlays, activeVideo, openVideo} = this.state;
 
     return (
       <div style={styles.app}>
@@ -31,7 +34,8 @@ class App extends Component {
           <div style={styles.userContainer}><UserWidget /></div>
           <Map showOverlays={showOverlays}
                activeVideo={activeVideo}
-               setActiveVideo={setActiveVideo}
+               setActiveVideo={this.setActiveVideo}
+               setOpenVideo={this.setOpenVideo}
                viewer={viewer} />
           <ReactCSSTransitionGroup transitionName='main'
                                    transitionEnterTimeout={500}
@@ -39,8 +43,10 @@ class App extends Component {
             {React.cloneElement(children || <div />, {
               key: this.props.location.pathname,
               activeVideo,
-              setShowOverlays,
-              setActiveVideo,
+              openVideo,
+              setShowOverlays: this.setShowOverlays,
+              setActiveVideo: this.setActiveVideo,
+              setOpenVideo: this.setOpenVideo,
               videos: viewer.videos
             })}
           </ReactCSSTransitionGroup>
@@ -138,7 +144,7 @@ const styles = styler`
     position: relative
 
   userContainer
-    z-index: 1000
+    z-index: 10
     position: absolute
     top: 24px
     right: 20px

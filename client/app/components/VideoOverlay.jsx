@@ -16,7 +16,7 @@ export default class VideoOverlay extends Component {
     }
   };
 
-  handleClick = () => this.props.setActiveVideo(this.props.index);
+  handleClick = () => this.props[this.props.isActive ? 'setOpenVideo' : 'setActiveVideo'](this.props.index);
 
   render() {
     const {video, isActive, index: mapId} = this.props;

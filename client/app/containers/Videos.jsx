@@ -7,6 +7,7 @@ import Radium from 'radium';
 import styler from 'react-styling';
 import MapHeader from '../components/MapHeader.jsx';
 import VideoCardList from '../components/VideoCardList.jsx';
+import VideoModal from '../components/VideoModal.jsx';
 
 @Radium
 class Videos extends Component {
@@ -16,13 +17,20 @@ class Videos extends Component {
   }
 
   render() {
-    const {videos, activeVideo, setActiveVideo} = this.props;
+    const {videos, activeVideo, openVideo, setActiveVideo, setOpenVideo} = this.props;
 
     return (
       <div style={styles.videos}>
+        <VideoModal isOpen={openVideo !== null}
+                    video={openVideo ? videos[openVideo - 1] : videos[0]}
+                    index={openVideo}
+                    setOpenVideo={setOpenVideo} />
         <MapHeader />
         <div style={styles.cardListContainer}>
-          <VideoCardList videos={videos} activeVideo={activeVideo} setActiveVideo={setActiveVideo} />
+          <VideoCardList videos={videos}
+                         activeVideo={activeVideo}
+                         setActiveVideo={setActiveVideo}
+                         setOpenVideo={setOpenVideo} />
         </div>
       </div>
     );
@@ -34,6 +42,7 @@ export default Relay.createContainer(Videos, {
   fragments: {
     videos: () => Relay.QL`
       fragment on Video @relay(plural: true) {
+        ${VideoModal.getFragment('video')}
         ${VideoCardList.getFragment('videos')}
       }
     `
