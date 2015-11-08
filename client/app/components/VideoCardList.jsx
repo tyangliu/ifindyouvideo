@@ -16,12 +16,22 @@ class VideoCardList extends Component {
   state = {
     windowWidth: window.innerWidth,
     scrollPosition: 0,
+    deltaX: 0,
     mouseDown: false,
     mousePosition: 0
   }
 
-  handleMouseDown = event => this.setState({mouseDown: true, mousePosition: event.clientX});
-  handleMouseUp   = event => this.setState({mouseDown: false, mousePosition: event.clientX});
+  handleMouseDown = event => this.setState({
+    mouseDown: true,
+    mousePosition: event.clientX,
+    deltaX: 0
+  });
+
+  handleMouseUp = event => this.setState({
+    mouseDown: false,
+    mousePosition: event.clientX
+  });
+
   handleMouseMove = event => {
     if (this.state.mouseDown) {
       let prevPosition = this.state.mousePosition;
@@ -41,11 +51,17 @@ class VideoCardList extends Component {
 
   updateScrollPosition = deltaX => {
     let newPos = this.normalizePosition(this.state.scrollPosition + deltaX);
-    this.setState({scrollPosition: newPos});
+    this.setState({
+      scrollPosition: newPos,
+      // refresh deltaX only if new abs(deltaX) > 2,
+      // used to ensure that mouse drag scrolling does not trigger a card click
+      deltaX: (Math.abs(deltaX) > 2) ? deltaX : this.state.deltaX
+    });
   };
 
   normalizePosition = pos => {
-    let minPos = 0, maxPos = this.props.videos.length * 320 - window.innerWidth
+    let minPos = 0
+      , maxPos = this.props.videos.length * 320 - window.innerWidth
       , newPos = pos;
 
     maxPos = (maxPos < 0) ? 0 : maxPos;
@@ -79,22 +95,23 @@ class VideoCardList extends Component {
     let videoCards = videos.map((video, index) =>
       <VideoCard video={video} key={index + 1} index={index + 1}
                  isActive={(index + 1) === activeVideo}
+                 ignoreClicks={Math.abs(this.state.deltaX) > 0}
                  setActiveVideo={setActiveVideo} />
     );
 
     return (
-      <div style={styles.videoCardListContainer}
-           onWheel={this.handleWheel}
-           onMouseDown={this.handleMouseDown}
-           onMouseUp={this.handleMouseUp}
-           onMouseLeave={this.handleMouseUp}
-           onMouseMove={this.handleMouseMove}>
+      <div style={styles.videoCardListContainer}>
         <div style={styles.border} />
         <div style={[styles.videoCardList, {
-            width: videoCards.length * 320 + 'px',
-            marginLeft: 0 - this.state.scrollPosition + 'px',
-            transition: this.state.mouseDown ? null : 'margin-left 0.15s linear'
-          }]}>
+               width: videoCards.length * 320 + 'px',
+               marginLeft: 0 - this.state.scrollPosition + 'px',
+               transition: this.state.mouseDown ? null : 'margin-left 0.15s linear'
+             }]}
+             onWheel={this.handleWheel}
+             onMouseDown={this.handleMouseDown}
+             onMouseUp={this.handleMouseUp}
+             onMouseLeave={this.handleMouseUp}
+             onMouseMove={this.handleMouseMove}>
           {videoCards}
           <div style={styles.clearfix} />
         </div>
@@ -122,6 +139,7 @@ const styles = styler`
     overflow-x: hidden
     overflow-y: hidden
     user-select: none
+    pointer-events: none
 
   border
     position: absolute

@@ -50,7 +50,7 @@ const styles = styler`
 
   cardListContainer
     width: 100%
-    pointer-events: auto
+    pointer-events: none
     position: absolute
     bottom: 0
     left: 0

@@ -10,6 +10,7 @@ class VideoCard extends Component {
 
   static defaultProps = {
     isActive: false,
+    ignoreClicks: false,
     video: {
       title: 'Video Title',
       thumbnails: {
@@ -18,7 +19,9 @@ class VideoCard extends Component {
     }
   };
 
-  handleClick = () => this.props.setActiveVideo(this.props.index);
+  handleClick = () => {
+    this.props.ignoreClicks || this.props.setActiveVideo(this.props.index);
+  }
 
   render() {
     const {video, isActive, index: mapId} = this.props
