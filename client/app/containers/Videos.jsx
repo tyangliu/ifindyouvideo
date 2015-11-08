@@ -22,7 +22,6 @@ class Videos extends Component {
       <div style={styles.videos}>
         <MapHeader />
         <div style={styles.cardListContainer}>
-          <div style={styles.border} />
           <VideoCardList videos={videos} activeVideo={activeVideo} setActiveVideo={setActiveVideo} />
         </div>
       </div>
@@ -50,21 +49,10 @@ const styles = styler`
     pointer-events: none
 
   cardListContainer
-    pointer-events: auto
-    height: 220px
     width: 100%
+    pointer-events: auto
     position: absolute
     bottom: 0
     left: 0
-    box-shadow: 0 -1px 2px rgba(0,0,0,0.2)
-    background: rgba(255,255,255,0.9)
     z-index: 2
-
-  border
-    position: absolute
-    top: 0
-    left: 0
-    width: 100%
-    height: 7px
-    background: rgba(255,72,40,0.8)
 `;

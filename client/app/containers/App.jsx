@@ -92,6 +92,19 @@ const styles = styler`
     ::-webkit-input-placeholder
       color: rgba(153,153,153,1)
 
+    ::-webkit-scrollbar
+      width: 10px
+      height: 10px
+      position: absolute
+      bottom: 0
+      left: 0
+      background-color: rgba(230,230,230,1)
+
+    ::-webkit-scrollbar-thumb
+      border: 3px solid rgba(230,230,230,1)
+      background-color: rgba(240,53,78,0.5)
+      border-radius: 5px
+
     main
       flex: 1 0 auto
       width: 100%

@@ -29,11 +29,11 @@ class VideoCard extends Component {
     return (
       <div style={styles.videoCard[isActive ? 'active' : 'normal']} onClick={this.handleClick}>
         <div style={styles.heading}>
-          <h2 style={styles.title}>{title}</h2>
           <div style={styles.idContainer}>
             <div style={styles.mapIcon} />
             <p style={styles.mapId}>{mapId}</p>
           </div>
+          <h2 style={styles.title}>{title}</h2>
         </div>
         <div style={styles.clearfix} />
         <div style={[styles.thumbnail, {
@@ -73,7 +73,7 @@ const styles = styler`
     height: 100%
     overflow: hidden
     position: relative
-    float: left
+    display: inline-block
     transition: transform 0.12s ease-in-out, z-index 0.12s ease-in-out
     transform-origin: 50% 100%
 
@@ -106,10 +106,13 @@ const styles = styler`
     white-space: nowrap
     overflow: hidden
     text-overflow: ellipsis
-    max-width: 240px
+    max-width: 220px
 
   idContainer
-    float: right
+    float: left
+    padding-right: 10px
+    margin-right: 10px
+    border-right: 1px solid rgba(0,0,0,0.2)
 
   mapIcon
     background: url(${require('../images/logo-red.svg')}) no-repeat center
