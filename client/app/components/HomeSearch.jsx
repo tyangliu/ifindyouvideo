@@ -23,11 +23,9 @@ export default class HomeSearch extends Component {
         <input type='text' style={styles.searchInput}
                placeholder='Search for a trendy city'
                onChange={this.handleChange}/>
-        <Link to='/videos'>
-          <button style={styles.optionsButton}>
-            <i className='material-icons' style={styles.icon}>more_vert</i>
-          </button>
-        </Link>
+        <button style={styles.optionsButton}>
+          <i className='material-icons' style={styles.icon}>more_vert</i>
+        </button>
         <div style={styles.clearfix} />
       </div>
     );

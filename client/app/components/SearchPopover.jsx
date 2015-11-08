@@ -26,7 +26,9 @@ export default class SearchPopover extends Component {
         , items = matchable.filter(word =>
             st != '' && word.trim().toLowerCase().indexOf(st) >= 0
           ).map((word, index) =>
-            <li key={'searchResult' + index}>{word}</li>
+            <Link to='/videos'>
+              <li style={styles.resultListItem} key={'searchResult' + index}>{word}</li>
+            </Link>
           );
 
     const noResultsEl = <li style={{color: 'rgba(0,0,0,0.3)'}}>No results found</li>
@@ -64,11 +66,14 @@ const styles = styler`
 
   resultList
     margin-left: 24px
-    color: rgba(255,72,40,0.8)
     text-transform: uppercase
     letter-spacing: 1px
     font-weight: 700
-    line-height: 36px
+    line-height: 28px
+
+  resultListItem
+    color: rgba(255,72,40,0.8)
+    margin-bottom: 8px
 
   clearfix
     clear: both
