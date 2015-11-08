@@ -21,7 +21,7 @@ class VideoCard extends Component {
 
   handleClick = () => {
     this.props.ignoreClicks || this.props.setActiveVideo(this.props.index);
-  }
+  };
 
   render() {
     const {video, isActive, index: mapId} = this.props
@@ -77,7 +77,7 @@ const styles = styler`
     overflow: hidden
     position: relative
     display: inline-block
-    transition: transform 0.12s ease-in-out, z-index 0.12s ease-in-out
+    transition: transform 0.12s ease-in-out, z-index 0.12s ease-in-out, border-radius 0.12s ease-in-out
     transform-origin: 50% 100%
 
     &normal
@@ -90,6 +90,7 @@ const styles = styler`
       transform: scale(1.05) translateY(-14px)
       z-index: 20
       box-shadow: 0px 0px 4px 4px rgba(240,53,78,0.5)
+      border-radius: 4px
 
   heading
     height: 76px
@@ -101,7 +102,7 @@ const styles = styler`
     z-index: 10
 
   title
-    color: rgba(76,76,76,1)
+    color: rgba(90,90,90,1)
     font-size: 16px
     line-height: 18px
     font-weight: 700

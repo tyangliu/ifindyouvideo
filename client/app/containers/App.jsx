@@ -5,6 +5,7 @@ import Relay from 'react-relay';
 import Radium, { Style } from 'radium';
 import styler from 'react-styling';
 import { Router, Link } from 'react-router';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Map from '../components/Map.jsx';
 import Videos from './Videos.jsx';
 import UserWidget from '../components/UserWidget.jsx';
@@ -32,13 +33,17 @@ class App extends Component {
                activeVideo={activeVideo}
                setActiveVideo={setActiveVideo}
                viewer={viewer} />
-          {React.cloneElement(children || <div />, {
-            key: this.props.location.pathname,
-            activeVideo,
-            setShowOverlays,
-            setActiveVideo,
-            videos: viewer.videos
-          })}
+          <ReactCSSTransitionGroup transitionName='main'
+                                   transitionEnterTimeout={500}
+                                   transitionLeaveTimeout={300} >
+            {React.cloneElement(children || <div />, {
+              key: this.props.location.pathname,
+              activeVideo,
+              setShowOverlays,
+              setActiveVideo,
+              videos: viewer.videos
+            })}
+          </ReactCSSTransitionGroup>
         </main>
       </div>
     );
@@ -108,6 +113,25 @@ const styles = styler`
     main
       flex: 1 0 auto
       width: 100%
+      overflow: hidden
+
+    div.main-enter
+      opacity: 0.01
+      transform: scale(2)
+
+    div.main-enter.main-enter-active
+      opacity: 1
+      transition: opacity 300ms ease-in-out, transform 300ms ease-in-out
+      transform: scale(1)
+
+    div.main-leave
+      opacity: 1
+      transform: scale(1)
+
+    div.main-leave.main-leave-active
+      opacity: 0.01
+      transform: scale(2)
+      transition: opacity 300ms ease-in-out, transform 300ms ease-in-out
 
   main
     margin-top: 0px

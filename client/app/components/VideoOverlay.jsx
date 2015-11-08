@@ -92,7 +92,7 @@ const styles = styler`
     line-height: 30px
     padding: 0 16px 0 10px
     display: block
-    color: rgba(76,76,76,1)
+    color: rgba(90,90,90,1)
     max-width: 280px
     overflow-x: hidden
     text-overflow: ellipsis
