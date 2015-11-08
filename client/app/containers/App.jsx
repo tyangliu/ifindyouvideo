@@ -144,7 +144,7 @@ const styles = styler`
     position: relative
 
   userContainer
-    z-index: 10
+    z-index: 15
     position: absolute
     top: 24px
     right: 20px
