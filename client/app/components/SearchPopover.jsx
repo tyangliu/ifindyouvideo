@@ -47,14 +47,14 @@ export default class SearchPopover extends Component {
 const styles = styler`
   popOver
     position: absolute
-    top: -10px
+    top: -7px
     left: 126px
     right: 126px
-    padding-top: 84px
-    padding-bottom: 16px
-    background: rgba(255,255,255,0.95)
+    padding-top: 81px
+    padding-bottom: 10px
+    background: linear-gradient(to top, rgba(255,255,255,.95) 0%,rgba(255,255,255,0.75) 100%)
     box-shadow: 0px 2px 3px 3px rgba(0,0,0,0.1)
-    border-radius: 4px
+    border-radius: 3px
     transition: opacity 0.08s ease-in-out
 
     &active

@@ -87,8 +87,8 @@ const styles = styler`
     &active
       transform: scale(1.05) translateY(-14px)
       z-index: 20
-      box-shadow: 0px 0px 4px 4px rgba(240,53,78,0.6)
-      border-radius: 4px
+      box-shadow: 0px 0px 4px 3px rgba(240,53,78,0.7)
+      border-radius: 3px
 
   heading
     height: 76px

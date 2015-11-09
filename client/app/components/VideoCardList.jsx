@@ -176,12 +176,12 @@ const styles = styler`
     width: 100%
     height: 7px
     background: rgba(255,72,40,0.8)
+    box-shadow: 0 -1px 2px rgba(0,0,0,0.2)
 
   videoCardList
     min-width: 100%
     margin-top: 7px
     height: 213px
-    box-shadow: 0 -1px 2px rgba(0,0,0,0.2)
     background: rgba(255,255,255,0.9)
     white-space: nowrap
     pointer-events: auto
