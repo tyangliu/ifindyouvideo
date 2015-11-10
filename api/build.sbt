@@ -40,7 +40,9 @@ libraryDependencies ++= {
     "com.websudos"           %% "phantom-testkit"                   % phantomVersion,
 
     "org.json4s"             %% "json4s-native"                     % "3.2.11",
-    "de.heikoseeberger"      %% "akka-http-json4s"                  % "1.0.0"
+    "de.heikoseeberger"      %% "akka-http-json4s"                  % "1.0.0",
+
+    "com.github.davidmoten"  %  "geo"                               % "0.7.1"
   )
 }
 
