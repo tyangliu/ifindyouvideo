@@ -5,12 +5,10 @@ import com.websudos.phantom.dsl._
 import com.websudos.phantom.testkit._
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization
+import org.json4s.native.Serialization.{read, write}
 import org.json4s._
 
 class VideoTable extends CassandraTable[VideoTable, Video] {
-
-  import scala.concurrent.ExecutionContext.Implicits.global
-  import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 
   implicit val serialization = Serialization
   implicit val formats = DefaultFormats
@@ -19,46 +17,26 @@ class VideoTable extends CassandraTable[VideoTable, Video] {
   object title extends StringColumn(this)
   object description extends StringColumn(this)
   object publishedAt extends StringColumn(this)
-  object tags extends ListColumn[String](this)
+  object tags extends ListColumn[VideoTable, Video, String](this)
 
   object location extends JsonColumn[VideoTable, Video, Location](this) {
-    override def fromJson(obj: String): Location = {
-      // TODO
-    }
-
-    override def toJson(obj: Location): String = {
-      // TODO
-    }
+    override def fromJson(obj: String): Location = read[Location](obj)
+    override def toJson(obj: Location): String = write(obj)
   }
 
   object channel extends JsonColumn[VideoTable, Video, Channel](this) {
-    override def fromJson(obj: String): Channel = {
-      // TODO
-    }
-
-    override def toJson(obj: Channel): String = {
-      // TODO
-    }
+    override def fromJson(obj: String): Channel = read[Channel](obj)
+    override def toJson(obj: Channel): String = write(obj)
   }
 
   object thumbnails extends JsonColumn[VideoTable, Video, Thumbnails](this) {
-    override def fromJson(obj: String): Thumbnails = {
-      // TODO
-    }
-
-    override def toJson(obj: Thumbnails): String = {
-      // TODO
-    }
+    override def fromJson(obj: String): Thumbnails = read[Thumbnails](obj)
+    override def toJson(obj: Thumbnails): String = write(obj)
   }
 
   object statistics extends JsonColumn[VideoTable, Video, Statistics](this) {
-    override def fromJson(obj: String): Statistics = {
-      // TODO
-    }
-
-    override def toJson(obj: Statistics): String = {
-      // TODO
-    }
+    override def fromJson(obj: String): Statistics = read[Statistics](obj)
+    override def toJson(obj: Statistics): String = write(obj)
   }
 
   def fromRow(row: Row): Video = {
@@ -78,15 +56,21 @@ class VideoTable extends CassandraTable[VideoTable, Video] {
 }
 
 object VideoTable extends VideoTable with PhantomCassandraConnector {
-  def store(obj: Video): InsertQuery.Default[VideoTable, Video] = {
-    // TODO
+  def store(video: Video): InsertQuery.Default[VideoTable, Video] = {
+    insert
+      .value(_.id, video.id)
+      .value(_.title, video.title)
+      .value(_.description, video.description)
+      .value(_.publishedAt, video.publishedAt)
+      .value(_.tags, video.tags)
+      .value(_.location, video.location)
+      .value(_.channel, video.channel)
+      .value(_.thumbnails, video.thumbnails)
+      .value(_.statistics, video.statistics)
   }
 }
 
 class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
-
-  import scala.concurrent.ExecutionContext.Implicits.global
-  import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 
   implicit val serialization = Serialization
   implicit val formats = DefaultFormats
@@ -111,46 +95,26 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
 
   object title extends StringColumn(this)
   object description extends StringColumn(this)
-  object tags extends ListColumn[String](this)
+  object tags extends ListColumn[VideoByGeohashTable, Video, String](this)
 
   object location extends JsonColumn[VideoByGeohashTable, Video, Location](this) {
-    override def fromJson(obj: String): Location = {
-      // TODO
-    }
-
-    override def toJson(obj: Location): String = {
-      // TODO
-    }
+    override def fromJson(obj: String): Location = read[Location](obj)
+    override def toJson(obj: Location): String = write(obj)
   }
 
   object channel extends JsonColumn[VideoByGeohashTable, Video, Channel](this) {
-    override def fromJson(obj: String): Channel = {
-      // TODO
-    }
-
-    override def toJson(obj: Channel): String = {
-      // TODO
-    }
+    override def fromJson(obj: String): Channel = read[Channel](obj)
+    override def toJson(obj: Channel): String = write(obj)
   }
 
   object thumbnails extends JsonColumn[VideoByGeohashTable, Video, Thumbnails](this) {
-    override def fromJson(obj: String): Thumbnails = {
-      // TODO
-    }
-
-    override def toJson(obj: Thumbnails): String = {
-      // TODO
-    }
+    override def fromJson(obj: String): Thumbnails = read[Thumbnails](obj)
+    override def toJson(obj: Thumbnails): String = write(obj)
   }
 
   object statistics extends JsonColumn[VideoByGeohashTable, Video, Statistics](this) {
-    override def fromJson(obj: String): Statistics = {
-      // TODO
-    }
-
-    override def toJson(obj: Statistics): String = {
-      // TODO
-    }
+    override def fromJson(obj: String): Statistics = read[Statistics](obj)
+    override def toJson(obj: Statistics): String = write(obj)
   }
 
   def fromRow(row: Row): Video = {
@@ -170,7 +134,35 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
 }
 
 object VideoByGeohashTable extends VideoByGeohashTable with PhantomCassandraConnector {
-  def store(obj: Video): InsertQuery.Default[VideoByGeohashTable, Video] = {
-    // TODO
+  def store(video: Video): InsertQuery.Default[VideoByGeohashTable, Video] = {
+    val location = video.location
+    // TODO: need a geohash function from somewhere lol
+    val hashChars = geohash((location.latitude, location.longitude), 12).toList
+
+    insert
+      .value(_.geohashA, hashChars(0))
+      .value(_.geohashB, hashChars(1))
+      .value(_.geohashC, hashChars(2))
+      .value(_.geohashD, hashChars(3))
+
+      .value(_.geohashE, hashChars(4))
+      .value(_.geohashF, hashChars(5))
+      .value(_.geohashG, hashChars(6))
+      .value(_.geohashH, hashChars(7))
+
+      .value(_.geohashI, hashChars(8))
+      .value(_.geohashJ, hashChars(9))
+      .value(_.geohashK, hashChars(10))
+      .value(_.geohashL, hashChars(11))
+
+      .value(_.publishedAt, video.publishedAt)
+      .value(_.id, video.id)
+      .value(_.title, video.title)
+      .value(_.description, video.description)
+      .value(_.tags, video.tags)
+      .value(_.location, video.location)
+      .value(_.channel, video.channel)
+      .value(_.thumbnails, video.thumbnails)
+      .value(_.statistics, video.statistics)
   }
 }
