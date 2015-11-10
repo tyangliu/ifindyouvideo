@@ -7,6 +7,82 @@ import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization
 import org.json4s._
 
+class VideoTable extends CassandraTable[VideoTable, Video] {
+
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
+
+  implicit val serialization = Serialization
+  implicit val formats = DefaultFormats
+
+  object id extends StringColumn(this) with PartitionKey[String]
+  object title extends StringColumn(this)
+  object description extends StringColumn(this)
+  object publishedAt extends StringColumn(this)
+  object tags extends ListColumn[String](this)
+
+  object location extends JsonColumn[VideoTable, Video, Location](this) {
+    override def fromJson(obj: String): Location = {
+      // TODO
+    }
+
+    override def toJson(obj: Location): String = {
+      // TODO
+    }
+  }
+
+  object channel extends JsonColumn[VideoTable, Video, Channel](this) {
+    override def fromJson(obj: String): Channel = {
+      // TODO
+    }
+
+    override def toJson(obj: Channel): String = {
+      // TODO
+    }
+  }
+
+  object thumbnails extends JsonColumn[VideoTable, Video, Thumbnails](this) {
+    override def fromJson(obj: String): Thumbnails = {
+      // TODO
+    }
+
+    override def toJson(obj: Thumbnails): String = {
+      // TODO
+    }
+  }
+
+  object statistics extends JsonColumn[VideoTable, Video, Statistics](this) {
+    override def fromJson(obj: String): Statistics = {
+      // TODO
+    }
+
+    override def toJson(obj: Statistics): String = {
+      // TODO
+    }
+  }
+
+  def fromRow(row: Row): Video = {
+    Video(
+      id(row),
+      title(row),
+      description(row),
+      publishedAt(row),
+      tags(row),
+      location(row),
+      channel(row),
+      thumbnails(row),
+      statistics(row)
+    )
+  }
+
+}
+
+object VideoTable extends VideoTable with PhantomCassandraConnector {
+  def store(obj: Video): InsertQuery.Default[VideoTable, Video] = {
+    // TODO
+  }
+}
+
 class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
 
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,11 +106,11 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
   object geohashK extends StringColumn(this) with ClusteringOrder[String] with Ascending
   object geohashL extends StringColumn(this) with ClusteringOrder[String] with Ascending
 
+  object publishedAt extends StringColumn(this) with ClusteringOrder[String] with Ascending
   object id extends StringColumn(this) with ClusteringOrder[String] with Ascending
 
   object title extends StringColumn(this)
   object description extends StringColumn(this)
-  object publishedAt extends StringColumn(this)
   object tags extends ListColumn[String](this)
 
   object location extends JsonColumn[VideoByGeohashTable, Video, Location](this) {
