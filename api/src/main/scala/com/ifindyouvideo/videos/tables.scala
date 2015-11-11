@@ -1,5 +1,6 @@
 package com.ifindyouvideo.videos
 
+import scala.concurrent.Future
 import com.websudos.phantom.builder.query.InsertQuery
 import com.websudos.phantom.dsl._
 import com.websudos.phantom.testkit._
@@ -57,6 +58,11 @@ class VideoTable extends CassandraTable[VideoTable, Video] {
 }
 
 object VideoTable extends VideoTable with PhantomCassandraConnector {
+
+  def getById(id: String): Future[Option[Video]] = {
+    select.where(_.id eqs id).one
+  }
+
   def store(video: Video): InsertQuery.Default[VideoTable, Video] = {
     insert
       .value(_.id, video.id)
@@ -69,6 +75,7 @@ object VideoTable extends VideoTable with PhantomCassandraConnector {
       .value(_.thumbnails, video.thumbnails)
       .value(_.statistics, video.statistics)
   }
+
 }
 
 class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
@@ -76,20 +83,20 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
   implicit val serialization = Serialization
   implicit val formats = DefaultFormats
 
-  object geohashA extends StringColumn(this) with PartitionKey[String]
-  object geohashB extends StringColumn(this) with ClusteringOrder[String] with Ascending
-  object geohashC extends StringColumn(this) with ClusteringOrder[String] with Ascending
-  object geohashD extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharA extends StringColumn(this) with PartitionKey[String]
+  object geoCharB extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharC extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharD extends StringColumn(this) with ClusteringOrder[String] with Ascending
 
-  object geohashE extends StringColumn(this) with ClusteringOrder[String] with Ascending
-  object geohashF extends StringColumn(this) with ClusteringOrder[String] with Ascending
-  object geohashG extends StringColumn(this) with ClusteringOrder[String] with Ascending
-  object geohashH extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharE extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharF extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharG extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharH extends StringColumn(this) with ClusteringOrder[String] with Ascending
 
-  object geohashI extends StringColumn(this) with ClusteringOrder[String] with Ascending
-  object geohashJ extends StringColumn(this) with ClusteringOrder[String] with Ascending
-  object geohashK extends StringColumn(this) with ClusteringOrder[String] with Ascending
-  object geohashL extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharI extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharJ extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharK extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object geoCharL extends StringColumn(this) with ClusteringOrder[String] with Ascending
 
   object publishedAt extends StringColumn(this) with ClusteringOrder[String] with Ascending
   object id extends StringColumn(this) with ClusteringOrder[String] with Ascending
@@ -135,6 +142,9 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
 }
 
 object VideoByGeohashTable extends VideoByGeohashTable with PhantomCassandraConnector {
+
+  def getByLocationAndTime(bounds: (Location, Location), radius: String): Future[List[Video]] = ???
+
   def store(video: Video): InsertQuery.Default[VideoByGeohashTable, Video] = {
     val location = video.location
     val hashChars: List[String] = GeoHash.encodeHash(
@@ -144,20 +154,20 @@ object VideoByGeohashTable extends VideoByGeohashTable with PhantomCassandraConn
     ).toList map (_.toString)
 
     insert
-      .value(_.geohashA, hashChars(0))
-      .value(_.geohashB, hashChars(1))
-      .value(_.geohashC, hashChars(2))
-      .value(_.geohashD, hashChars(3))
+      .value(_.geoCharA, hashChars(0))
+      .value(_.geoCharB, hashChars(1))
+      .value(_.geoCharC, hashChars(2))
+      .value(_.geoCharD, hashChars(3))
 
-      .value(_.geohashE, hashChars(4))
-      .value(_.geohashF, hashChars(5))
-      .value(_.geohashG, hashChars(6))
-      .value(_.geohashH, hashChars(7))
+      .value(_.geoCharE, hashChars(4))
+      .value(_.geoCharF, hashChars(5))
+      .value(_.geoCharG, hashChars(6))
+      .value(_.geoCharH, hashChars(7))
 
-      .value(_.geohashI, hashChars(8))
-      .value(_.geohashJ, hashChars(9))
-      .value(_.geohashK, hashChars(10))
-      .value(_.geohashL, hashChars(11))
+      .value(_.geoCharI, hashChars(8))
+      .value(_.geoCharJ, hashChars(9))
+      .value(_.geoCharK, hashChars(10))
+      .value(_.geoCharL, hashChars(11))
 
       .value(_.publishedAt, video.publishedAt)
       .value(_.id, video.id)
@@ -169,4 +179,5 @@ object VideoByGeohashTable extends VideoByGeohashTable with PhantomCassandraConn
       .value(_.thumbnails, video.thumbnails)
       .value(_.statistics, video.statistics)
   }
+
 }

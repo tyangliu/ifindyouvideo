@@ -29,11 +29,11 @@ case class Statistics(
 case class Image(url: String, width: Int, height: Int)
 
 case class Thumbnails(
-   default:  Option[Image],
-   medium:   Option[Image],
-   high:     Option[Image],
-   standard: Option[Image],
-   maxres:   Option[Image]
- )
+  default:  Option[Image],
+  medium:   Option[Image],
+  high:     Option[Image],
+  standard: Option[Image],
+  maxres:   Option[Image]
+)
 
 case class User(id: String) extends Node
