@@ -26,8 +26,8 @@ export default class SearchPopover extends Component {
         , items = matchable.filter(word =>
             st != '' && word.trim().toLowerCase().indexOf(st) >= 0
           ).map((word, index) =>
-            <Link to='/videos'>
-              <li style={styles.resultListItem} key={'searchResult' + index}>{word}</li>
+            <Link to={`/videos?city=${word}`} key={'searchResult' + index}>
+              <li style={styles.resultListItem}>{word}</li>
             </Link>
           );
 

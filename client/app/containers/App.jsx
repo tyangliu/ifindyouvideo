@@ -16,12 +16,14 @@ class App extends Component {
   state = {
     showOverlays: false,
     activeVideo: null,
-    openVideo: null
+    openVideo: null,
+    city: null
   };
 
   setActiveVideo  = index => this.setState({activeVideo: index});
   setOpenVideo    = index => this.setState({openVideo: index});
   setShowOverlays = show  => this.setState({showOverlays: !!show});
+  setCityName     = name => this.setState({city: name});
 
   render() {
     const {viewer, children} = this.props
@@ -47,6 +49,7 @@ class App extends Component {
               setShowOverlays: this.setShowOverlays,
               setActiveVideo: this.setActiveVideo,
               setOpenVideo: this.setOpenVideo,
+              setCityName: this.setCityName,
               videos: viewer.videos
             })}
           </ReactCSSTransitionGroup>

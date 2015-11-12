@@ -11,6 +11,7 @@
   "dependencies": {
     "chunk": "0.0.2",
     "google-map-react": "^0.9.2",
+    "googleapis": "^2.1.6",
     "graphql": "^0.4.12",
     "graphql-relay": "^0.3.5",
     "history": "^1.9.0",
