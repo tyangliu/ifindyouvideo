@@ -94,6 +94,21 @@ object VideoRepo {
       statistics = Statistics("275193","1700","49","0","440")
     ),
     Video(
+      id = "fRh_vgS2dFE",
+      title = "Justin Bieber - Sorry (Dance Video)",
+      description = "Best song of 2015.",
+      publishedAt = new DateTime("2015-10-22T14:31:55.000Z"),
+      tags = List("sorry","justin","bieber","hot","music","2015","justin bieber","jb","top","song","best","ever","love","heart","forever"),
+      location = Location(60.58696734225869,-140.2734375,0.0),
+      channel = Channel("UCHkj014U2CQ2Nv0UZeYpE_A", "JustinBieberVEVO"),
+      thumbnails = Thumbnails(
+        Some(Image("https://i.ytimg.com/vi/fRh_vgS2dFE/default.jpg", 120, 90)),
+        Some(Image("https://i.ytimg.com/vi/fRh_vgS2dFE/mqdefault.jpg", 320, 180)),
+        Some(Image("https://i.ytimg.com/vi/fRh_vgS2dFE/hqdefault.jpg", 480, 360)),
+        None,None),
+      statistics = Statistics("104426975","1426800","48","0","21")
+    ),
+    Video(
       id = "N0vTrfbK3FM",
       title = "Chicka Chicka Boom Boom Song By John Archambault",
       description = "Copied from Cassette Tape.  Chicka Chicka Boom Boom is a book written by Bill Martin, Jr, and John Archambault.  The song is composed and arranged by John Archambault and David Plummer.  \\n\\nThis is my son and daughter's favorite book and song, but our cassette tape player broke... what's a dad to do?  Digitize it!   Sorry for the poor video, we were after the audio track.",
