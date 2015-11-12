@@ -166,6 +166,21 @@ object SchemaDef {
     )
   )
 
+  val BoundsType = ObjectType(
+    "Bounds",
+    "A geographic bound with northwest and southeast lat/long coordinates",
+    fields[Unit, Bounds](
+      Field("nw", LocationType,
+        Some("The northwest location point"),
+        resolve = _.value.nw
+      ),
+      Field("se", LocationType,
+        Some("The southeast location point"),
+        resolve = _.value.se
+      )
+    )
+  )
+
   val RawId = Argument("rawId", StringType, description = "id of the video")
   val Latitude = Argument("latitude",
     BigDecimalType,
@@ -177,6 +192,10 @@ object SchemaDef {
   )
   val Radius = Argument("radius", StringType, "search radius")
 
+  val City = Argument("city", StringType, "name of a city")
+  val Year = Argument("year", IntType, "year to find videos from")
+  val Month = Argument("month", IntType, "month to find videos from")
+
   val UserType: ObjectType[UserContext,User] = ObjectType(
     "User",
     "A user",
@@ -184,13 +203,28 @@ object SchemaDef {
     //idFields[User]("User") ++
     fields[UserContext, User](
       Node.globalIdField[UserContext, User]("User"),
+      // TODO: remove
       Field("location", OptionType(LocationType),
         resolve = ctx => ctx.ctx.location
       ),
+      Field("cityBounds", OptionType(BoundsType),
+        arguments = City :: Nil,
+        resolve = ctx => ctx.ctx.getCityBounds(ctx arg City)
+      ),
+      Field("cities", ListType(StringType),
+        resolve = ctx => ctx.ctx.getAvailableCities
+      ),
       Field("video", OptionType(VideoType),
         arguments = RawId :: Nil,
-        resolve = ctx => ctx.ctx.videoRepo.getVideo(ctx arg RawId)
+        resolve = ctx => ctx.ctx.videoRepo.get(ctx arg RawId)
       ),
+      Field("videosByCity", ListType(VideoType),
+        arguments = Year :: Month :: City :: Nil,
+        resolve = ctx => ctx.ctx.videoRepo.getByYearMonthCity(
+          ctx arg Year, ctx arg Month, ctx arg City
+        )
+      ),
+      // TODO: remove
       Field("videosByLocation", ListType(VideoType),
         arguments = Latitude :: Longitude :: Radius :: Nil,
         resolve = ctx => ctx.ctx.videoRepo.findVideos(ctx arg Latitude, ctx arg Longitude, ctx arg Radius)

@@ -67,6 +67,10 @@ class VideoTable extends CassandraTable[VideoTable, Video] {
 
 abstract class ConcreteVideoTable extends VideoTable with RootConnector {
 
+  def getById(id: String): Future[Option[Video]] = {
+    select.where(_.id eqs id).one()
+  }
+
   def store(video: Video): Future[ResultSet] = {
     insert
       .value(_.id, video.id)
@@ -81,8 +85,8 @@ abstract class ConcreteVideoTable extends VideoTable with RootConnector {
       .future
   }
 
-  def getById(id: String): Future[Option[Video]] = {
-    select.where(_.id eqs id).one()
+  def multiStore(videos: List[Video]): Future[List[ResultSet]] = {
+    Future.sequence(videos map {store(_)})
   }
 
 }
@@ -225,6 +229,10 @@ abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with Root
       .value(_.thumbnails, video.thumbnails)
       .value(_.statistics, video.statistics)
       .future
+  }
+
+  def multiStore(videos: List[Video]): Future[List[ResultSet]] = {
+    Future.sequence(videos map {store(_)})
   }
 
 }

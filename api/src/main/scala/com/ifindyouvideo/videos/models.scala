@@ -38,3 +38,4 @@ case class Thumbnails(
 )
 
 case class User(id: String) extends Node
+case class Bounds(nw: Location, se: Location)
