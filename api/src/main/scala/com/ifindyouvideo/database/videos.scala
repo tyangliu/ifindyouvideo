@@ -1,24 +1,29 @@
-package com.ifindyouvideo.videos
+package com.ifindyouvideo.database
 
 import scala.concurrent.Future
 import com.websudos.phantom.builder.query.InsertQuery
 import com.websudos.phantom.dsl._
-import com.websudos.phantom.testkit._
+import com.websudos.phantom.db.DatabaseImpl
+import com.websudos.phantom.connectors._
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization
 import org.json4s.native.Serialization.{read, write}
 import org.json4s._
+import org.json4s.ext.JodaTimeSerializers
 import com.github.davidmoten.geo.GeoHash
+import org.joda.time.DateTime
+
+import com.ifindyouvideo.videos._
 
 class VideoTable extends CassandraTable[VideoTable, Video] {
 
   implicit val serialization = Serialization
-  implicit val formats = DefaultFormats
+  implicit val formats = DefaultFormats ++ JodaTimeSerializers.all
 
   object id extends StringColumn(this) with PartitionKey[String]
   object title extends StringColumn(this)
   object description extends StringColumn(this)
-  object publishedAt extends StringColumn(this)
+  object publishedAt extends DateTimeColumn(this)
   object tags extends ListColumn[VideoTable, Video, String](this)
 
   object location extends JsonColumn[VideoTable, Video, Location](this) {
@@ -57,13 +62,13 @@ class VideoTable extends CassandraTable[VideoTable, Video] {
 
 }
 
-object VideoTable extends VideoTable with PhantomCassandraConnector {
+abstract class ConcreteVideoTable extends VideoTable with RootConnector {
 
   def getById(id: String): Future[Option[Video]] = {
     select.where(_.id eqs id).one
   }
 
-  def store(video: Video): InsertQuery.Default[VideoTable, Video] = {
+  def store(video: Video): Future[ResultSet] = {
     insert
       .value(_.id, video.id)
       .value(_.title, video.title)
@@ -74,6 +79,7 @@ object VideoTable extends VideoTable with PhantomCassandraConnector {
       .value(_.channel, video.channel)
       .value(_.thumbnails, video.thumbnails)
       .value(_.statistics, video.statistics)
+      .future
   }
 
 }
@@ -98,7 +104,7 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
   object geoCharK extends StringColumn(this) with ClusteringOrder[String] with Ascending
   object geoCharL extends StringColumn(this) with ClusteringOrder[String] with Ascending
 
-  object publishedAt extends StringColumn(this) with ClusteringOrder[String] with Ascending
+  object publishedAt extends DateTimeColumn(this) with ClusteringOrder[DateTime] with Ascending
   object id extends StringColumn(this) with ClusteringOrder[String] with Ascending
 
   object title extends StringColumn(this)
@@ -141,11 +147,11 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
 
 }
 
-object VideoByGeohashTable extends VideoByGeohashTable with PhantomCassandraConnector {
+abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with RootConnector {
 
   def getByLocationAndTime(bounds: (Location, Location), radius: String): Future[List[Video]] = ???
 
-  def store(video: Video): InsertQuery.Default[VideoByGeohashTable, Video] = {
+  def store(video: Video): Future[ResultSet] = {
     val location = video.location
     val hashChars: List[String] = GeoHash.encodeHash(
       location.latitude.toDouble,
@@ -178,6 +184,7 @@ object VideoByGeohashTable extends VideoByGeohashTable with PhantomCassandraConn
       .value(_.channel, video.channel)
       .value(_.thumbnails, video.thumbnails)
       .value(_.statistics, video.statistics)
+      .future
   }
 
 }

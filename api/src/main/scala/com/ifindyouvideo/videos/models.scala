@@ -1,5 +1,6 @@
 package com.ifindyouvideo.videos
 
+import org.joda.time.DateTime
 import scala.concurrent.Future
 import sangria.relay.{Identifiable, Node}
 
@@ -7,7 +8,7 @@ case class Video(
   id:          String,
   title:       String,
   description: String,
-  publishedAt: String,
+  publishedAt: DateTime,
   tags:        List[String],
   location:    Location,
   channel:     Channel,

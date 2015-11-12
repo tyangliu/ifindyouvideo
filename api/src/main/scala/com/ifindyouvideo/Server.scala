@@ -11,6 +11,7 @@ import akka.stream.ActorMaterializer
 
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization
+import org.json4s.ext.JodaTimeSerializers
 import org.json4s._
 
 import sangria.parser.{SyntaxError, QueryParser}
@@ -26,7 +27,7 @@ object Server extends App with CorsSupport {
   implicit val system = ActorSystem("ifindyouvideo")
   implicit val materializer = ActorMaterializer()
   implicit val serialization = Serialization
-  implicit val formats = DefaultFormats
+  implicit val formats = DefaultFormats ++ JodaTimeSerializers.all
 
   import system.dispatcher
 

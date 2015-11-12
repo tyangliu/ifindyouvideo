@@ -3,6 +3,7 @@ package com.ifindyouvideo.external
 import scala.concurrent.Future
 import scala.util.{Success, Failure}
 import java.io.IOException
+import org.joda.time.DateTime
 
 import akka.actor._
 import akka.stream.ActorMaterializer
@@ -16,6 +17,7 @@ import scala.async.Async.{async, await}
 
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization
+import org.json4s.ext.JodaTimeSerializers
 import org.json4s._
 
 import com.ifindyouvideo.videos._
@@ -32,7 +34,7 @@ class YoutubeService extends Actor {
 
   implicit val materializer = ActorMaterializer()
   implicit val serialization = Serialization
-  implicit val formats = DefaultFormats
+  implicit val formats = DefaultFormats ++ JodaTimeSerializers.all
 
   def receive = {
     case Search(location, radius) => search(location, radius)
@@ -89,7 +91,7 @@ class YoutubeService extends Actor {
           JString(id)           <- item \ "id"
           JString(title)        <- snippet \ "title"
           JString(description)  <- snippet \ "description"
-          JString(publishedAt)  <- snippet \ "publishedAt"
+          publishedAt           =  (snippet \ "publishedAt").extract[DateTime]
           tags                  =  (snippet \ "tags").extract[List[String]]
           location              =  (item \ "recordingDetails" \ "location").extract[Location]
           JString(channelId)    <- snippet \ "channelId"

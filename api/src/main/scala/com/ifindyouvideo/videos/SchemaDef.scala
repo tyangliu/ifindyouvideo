@@ -3,6 +3,7 @@ package com.ifindyouvideo.videos
 import sangria.relay._
 import sangria.schema._
 import scala.concurrent.Future
+import org.joda.time.format.ISODateTimeFormat
 
 object SchemaDef {
   val NodeDefinition(nodeInterface, nodeField) = Node.definition((id: GlobalId, ctx: Context[UserContext, Unit]) ⇒ {
@@ -140,7 +141,7 @@ object SchemaDef {
       ),
       Field("publishedAt", StringType,
         Some("The published date of the video"),
-        resolve = _.value.publishedAt
+        resolve = v => ISODateTimeFormat.dateTime().print(v.value.publishedAt)
       ),
       Field("tags", ListType(StringType),
         Some("The video's tags"),
