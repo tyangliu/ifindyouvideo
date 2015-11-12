@@ -1,6 +1,9 @@
 package com.ifindyouvideo.database
 
+import scala.collection.JavaConverters._
+import scala.util.{Try, Success, Failure}
 import scala.concurrent.Future
+import scala.concurrent.Promise
 import com.websudos.phantom.builder.query.InsertQuery
 import com.websudos.phantom.dsl._
 import com.websudos.phantom.db.DatabaseImpl
@@ -89,7 +92,9 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
   implicit val serialization = Serialization
   implicit val formats = DefaultFormats
 
-  object geoCharA extends StringColumn(this) with PartitionKey[String]
+  object yearMonth extends IntColumn(this) with PartitionKey[Int]
+
+  object geoCharA extends StringColumn(this) with ClusteringOrder[String] with Ascending
   object geoCharB extends StringColumn(this) with ClusteringOrder[String] with Ascending
   object geoCharC extends StringColumn(this) with ClusteringOrder[String] with Ascending
   object geoCharD extends StringColumn(this) with ClusteringOrder[String] with Ascending
@@ -104,11 +109,17 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
   object geoCharK extends StringColumn(this) with ClusteringOrder[String] with Ascending
   object geoCharL extends StringColumn(this) with ClusteringOrder[String] with Ascending
 
-  object publishedAt extends DateTimeColumn(this) with ClusteringOrder[DateTime] with Ascending
+  val hashColumns = List(
+    geoCharA, geoCharB, geoCharC, geoCharD,
+    geoCharE, geoCharF, geoCharG, geoCharH,
+    geoCharI, geoCharJ, geoCharK, geoCharL
+  )
+
   object id extends StringColumn(this) with ClusteringOrder[String] with Ascending
 
   object title extends StringColumn(this)
   object description extends StringColumn(this)
+  object publishedAt extends DateTimeColumn(this)
   object tags extends ListColumn[VideoByGeohashTable, Video, String](this)
 
   object location extends JsonColumn[VideoByGeohashTable, Video, Location](this) {
@@ -149,7 +160,32 @@ class VideoByGeohashTable extends CassandraTable[VideoByGeohashTable, Video] {
 
 abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with RootConnector {
 
-  def getByLocationAndTime(bounds: (Location, Location), radius: String): Future[List[Video]] = ???
+  def futureToFutureTry[T](f: Future[T]): Future[Try[T]] = {
+    f map(Success(_)) recover {case e => Failure(e)}
+  }
+
+  def getByYearMonthLocation(year: Int, month: Int, nw: Location, se: Location): Future[List[Video]] = {
+    val yearMonth = year * 100 + month
+    val hashes = GeoHash.coverBoundingBoxMaxHashes(
+      nw.latitude.toDouble,
+      nw.longitude.toDouble,
+      se.latitude.toDouble,
+      se.longitude.toDouble,
+      12
+    ).getHashes.asScala.toList
+
+    val futures = hashes map {_.toList map { _.toString}} map { hashChars =>
+      val charsWithIndex = hashChars.zipWithIndex
+      (select.where(_.yearMonth eqs yearMonth) /: charsWithIndex) { (a,b) =>
+        val (char, index) = b
+        a.and(_.hashColumns(index) eqs char)
+      }
+    } map {_.fetch map {_.toList}} map {futureToFutureTry(_)}
+
+    Future.sequence(futures) map { listOfTry =>
+      (listOfTry collect {case Success(x) => x}).flatten
+    }
+  }
 
   def store(video: Video): Future[ResultSet] = {
     val location = video.location
@@ -157,9 +193,15 @@ abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with Root
       location.latitude.toDouble,
       location.longitude.toDouble,
       12
-    ).toList map (_.toString)
+    ).toList map {_.toString}
+
+    val date = video.publishedAt
+    val yearMonth = date.getYear * 100 + date.getMonthOfYear
+
+    println(yearMonth)
 
     insert
+      .value(_.yearMonth, yearMonth)
       .value(_.geoCharA, hashChars(0))
       .value(_.geoCharB, hashChars(1))
       .value(_.geoCharC, hashChars(2))
