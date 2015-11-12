@@ -60,6 +60,7 @@ class App extends Component {
 
 }
 
+/*
 export default Relay.createContainer(App, {
   fragments: {
     viewer: () => Relay.QL`
@@ -70,6 +71,32 @@ export default Relay.createContainer(App, {
           ${Videos.getFragment('videos')}
         }
         ${Map.getFragment('viewer')}
+      }
+    `
+  }
+});
+*/
+
+export default Relay.createContainer(App, {
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on User {
+        videos: videosByCity(year:0, month:0, city: $city) {
+          rawId,
+          title,
+          description
+        },
+        cities,
+        bounds: cityBounds(city: $city){
+          nw {
+            latitude,
+            longitude
+          }
+          se {
+            latitude,
+            longitude
+          }
+        }
       }
     `
   }

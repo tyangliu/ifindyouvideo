@@ -21,7 +21,9 @@ Relay.injectNetworkLayer(
 ReactDOM.render(
   <Router createElement={ReactRouterRelay.createElement}
           history={createBrowserHistory()}>
-    <Route path='/' component={App} queries={ViewerQueries}>
+    <Route path='/' component={App}
+           queries={ViewerQueries}
+           queryParams={['city']}>
       <IndexRoute component={Home} />
       <Route path='videos' component={Videos} />
       <Route path='test' component={Test} />
