@@ -14,13 +14,12 @@ class Videos extends Component {
 
   componentWillMount() {
     this.props.setShowOverlays(true);
-    var city = this.props.location.query.city;
-    this.props.setCityName(city);
+    let city = this.props.location.query.city;
+    this.props.initVideos(city);
   }
 
   render() {
     const {videos, activeVideo, openVideo, setActiveVideo, setOpenVideo} = this.props;
-    //var city = this.props.param.city;
 
     return (
       <div style={styles.videos}>

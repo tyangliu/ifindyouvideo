@@ -19,12 +19,9 @@ Relay.injectNetworkLayer(
 );
 
 function prepareVideoParams(params, route) {
-  console.log(params);
-  console.log(route);
   return {
-    ...params,
     city: params.city || 'Vancouver, BC'
-  }
+  };
 }
 
 ReactDOM.render(

@@ -23,9 +23,14 @@ class App extends Component {
   setActiveVideo  = index => this.setState({activeVideo: index});
   setOpenVideo    = index => this.setState({openVideo: index});
   setShowOverlays = show  => this.setState({showOverlays: !!show});
-  setCityName     = name  => this.setState({city: name});
+  initVideos      = name  => {
+    this.props.history.replaceState(
+      {city: name},
+      `/videos?city=${name}`
+    );
+  };
 
-  render() {    
+  render() {
     const {viewer, children} = this.props
         , {showOverlays, activeVideo, openVideo} = this.state;
 
@@ -50,7 +55,7 @@ class App extends Component {
               setShowOverlays: this.setShowOverlays,
               setActiveVideo: this.setActiveVideo,
               setOpenVideo: this.setOpenVideo,
-              setCityName: this.setCityName,
+              initVideos: this.initVideos,
               videos: viewer.videos,
               cities: viewer.cities
             })}
