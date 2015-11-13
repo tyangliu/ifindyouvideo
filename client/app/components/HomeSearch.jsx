@@ -18,7 +18,7 @@ export default class HomeSearch extends Component {
   render() {
     return (
       <div style={styles.homeSearch}>
-        <SearchPopover searchTerm={this.state.searchTerm} />
+        <SearchPopover searchTerm={this.state.searchTerm} cities={this.props.cities} />
         <i className='material-icons' style={[styles.icon, styles.searchIcon]}>search</i>
         <input type='text' style={styles.searchInput}
                placeholder='Search for a trendy city'

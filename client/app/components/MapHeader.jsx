@@ -89,7 +89,6 @@ const styles = styler`
     padding-right: 20px
     border-right: 1px solid rgba(0,0,0,0.15)
     float: left
-    display: none
 
   icon
     background-image: linear-gradient(to bottom, rgba(239,46,81,1) 7%, rgba(241,72,75,1) 30%, rgba(248,152,56,1) 100%)

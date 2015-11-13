@@ -17,15 +17,15 @@ class App extends Component {
     showOverlays: false,
     activeVideo: null,
     openVideo: null,
-    city: null
+    city: ''
   };
 
   setActiveVideo  = index => this.setState({activeVideo: index});
   setOpenVideo    = index => this.setState({openVideo: index});
   setShowOverlays = show  => this.setState({showOverlays: !!show});
-  setCityName     = name => this.setState({city: name});
+  setCityName     = name  => this.setState({city: name});
 
-  render() {
+  render() {    
     const {viewer, children} = this.props
         , {showOverlays, activeVideo, openVideo} = this.state;
 
@@ -38,7 +38,8 @@ class App extends Component {
                activeVideo={activeVideo}
                setActiveVideo={this.setActiveVideo}
                setOpenVideo={this.setOpenVideo}
-               viewer={viewer} />
+               videos={viewer.videos}
+               bounds={viewer.bounds} />
           <ReactCSSTransitionGroup transitionName='main'
                                    transitionEnterTimeout={500}
                                    transitionLeaveTimeout={300} >
@@ -50,7 +51,8 @@ class App extends Component {
               setActiveVideo: this.setActiveVideo,
               setOpenVideo: this.setOpenVideo,
               setCityName: this.setCityName,
-              videos: viewer.videos
+              videos: viewer.videos,
+              cities: viewer.cities
             })}
           </ReactCSSTransitionGroup>
         </main>
@@ -60,42 +62,20 @@ class App extends Component {
 
 }
 
-/*
 export default Relay.createContainer(App, {
+  initialVariables: {
+    city: 'Vancouver, BC'
+  },
   fragments: {
     viewer: () => Relay.QL`
       fragment on User {
-        videos: videosByLocation(
-          latitude: 59.1293, longitude: -129.3984, radius: "200km"
-        ) {
+        videos: videosByCity(year: 0, month: 0, city: $city) {
           ${Videos.getFragment('videos')}
-        }
-        ${Map.getFragment('viewer')}
-      }
-    `
-  }
-});
-*/
-
-export default Relay.createContainer(App, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on User {
-        videos: videosByCity(year:0, month:0, city: $city) {
-          rawId,
-          title,
-          description
+          ${Map.getFragment('videos')}
         },
         cities,
-        bounds: cityBounds(city: $city){
-          nw {
-            latitude,
-            longitude
-          }
-          se {
-            latitude,
-            longitude
-          }
+        bounds: cityBounds(city: $city) {
+          ${Map.getFragment('bounds')}
         }
       }
     `

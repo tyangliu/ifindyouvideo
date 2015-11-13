@@ -25,7 +25,7 @@ class Videos extends Component {
     return (
       <div style={styles.videos}>
         <VideoModal isOpen={openVideo !== null}
-                    video={openVideo ? videos[openVideo - 1] : videos[0]}
+                    video={openVideo ? videos[openVideo - 1] : null}
                     index={openVideo}
                     setOpenVideo={setOpenVideo} />
         <MapHeader />

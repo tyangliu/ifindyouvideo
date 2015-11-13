@@ -200,7 +200,7 @@ abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with Root
     ).toList map {_.toString}
 
     val date = video.publishedAt
-    val yearMonth = date.getYear * 100 + date.getMonthOfYear
+    val yearMonth = 0 // date.getYear * 100 + date.getMonthOfYear
 
     insert
       .value(_.yearMonth, yearMonth)

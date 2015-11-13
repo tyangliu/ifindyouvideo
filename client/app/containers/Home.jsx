@@ -32,7 +32,7 @@ export default class Home extends Component {
           </section>
 
           <section style={styles.search}>
-            <HomeSearch />
+            <HomeSearch cities={this.props.cities} />
           </section>
 
           <section style={styles.popListContainer}>

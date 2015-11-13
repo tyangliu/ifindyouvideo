@@ -18,12 +18,22 @@ Relay.injectNetworkLayer(
   new Relay.DefaultNetworkLayer('http://127.0.0.1:8080')
 );
 
+function prepareVideoParams(params, route) {
+  console.log(params);
+  console.log(route);
+  return {
+    ...params,
+    city: params.city || 'Vancouver, BC'
+  }
+}
+
 ReactDOM.render(
   <Router createElement={ReactRouterRelay.createElement}
           history={createBrowserHistory()}>
     <Route path='/' component={App}
            queries={ViewerQueries}
-           queryParams={['city']}>
+           prepareParams={prepareVideoParams}
+           stateParams={['city']}>
       <IndexRoute component={Home} />
       <Route path='videos' component={Videos} />
       <Route path='test' component={Test} />

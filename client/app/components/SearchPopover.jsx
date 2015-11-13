@@ -10,7 +10,7 @@ export default class SearchPopover extends Component {
 
   static defaultProps = {
     searchTerm: '',
-    matchable: [
+    cities: [
       'Vancouver, BC',
       'Vatican City',
       'San Francisco, CA',
@@ -21,9 +21,9 @@ export default class SearchPopover extends Component {
   };
 
   render() {
-    const {searchTerm, matchable} = this.props
+    const {searchTerm, cities} = this.props
         , st = searchTerm.trim().toLowerCase()
-        , items = matchable.filter(word =>
+        , items = cities.filter(word =>
             st != '' && word.trim().toLowerCase().indexOf(st) >= 0
           ).map((word, index) =>
             <Link to={`/videos?city=${word}`} key={'searchResult' + index}>

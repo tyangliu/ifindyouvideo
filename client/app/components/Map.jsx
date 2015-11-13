@@ -29,14 +29,18 @@ class Map extends Component {
   };
 
   render() {
-    const {showOverlays, activeVideo, setActiveVideo, setOpenVideo, viewer, location, defaultCenter} = this.props;
+    const {
+      showOverlays, activeVideo, setActiveVideo, setOpenVideo,
+      videos, bounds, defaultCenter
+    } = this.props;
+
     const activeVideoLocation = activeVideo !== null
-                              ? viewer.videos[activeVideo-1].location
+                              ? videos[activeVideo-1].location
                               : null;
 
-    const {latitude: lat, longitude: lng} = (activeVideoLocation || location || defaultCenter);
+    const {latitude: lat, longitude: lng} = (activeVideoLocation || defaultCenter);
 
-    const overlays = showOverlays ? viewer.videos.map((video, index) =>
+    const overlays = showOverlays ? videos.map((video, index) =>
       <VideoOverlay lat={video.location.latitude}
                     lng={video.location.longitude}
                     video={video}
@@ -63,15 +67,16 @@ class Map extends Component {
 
 export default Relay.createContainer(Map, {
   fragments: {
-    viewer: () => Relay.QL`
-      fragment on User {
-        videos: videosByLocation(
-          latitude: 59.1293, longitude: -129.3984, radius: "200km"
-        ) {
-          title,
-          location { latitude, longitude }
-        },
+    videos: () => Relay.QL`
+      fragment on Video @relay(plural: true) {
+        title,
         location { latitude, longitude }
+      }
+    `,
+    bounds: () => Relay.QL`
+      fragment on Bounds {
+        nw {latitude, longitude},
+        se {latitude, longitude}
       }
     `
   }

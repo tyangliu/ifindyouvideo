@@ -47,8 +47,10 @@ class VideoModal extends Component {
   }
 
   render() {
-    const {isOpen, video, index: mapId} = this.props
+    const {isOpen, index: mapId} = this.props
         , {width, height} = this.state;
+
+    let video = this.props.video || {};
 
     const contentStyles = {
       position: 'absolute',
