@@ -19,8 +19,6 @@ export default class Video extends Component {
   // build the youtube iframe outside of the DOM, then append to
   // avoid browser history spam from iframe
   makeFrame = videoId => {
-    if (!videoId) return;
-
     const baseUrl = baseUrls.youtube;
 
     let iframe = document.createElement('iframe');

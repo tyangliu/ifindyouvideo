@@ -1,6 +1,7 @@
 package com.ifindyouvideo.external
 
 import scala.concurrent.Future
+import scala.concurrent.future
 import scala.util.{Success, Failure}
 import java.io.IOException
 import org.joda.time.DateTime
@@ -37,10 +38,10 @@ class YoutubeService extends Actor {
   implicit val formats = DefaultFormats ++ JodaTimeSerializers.all
 
   def receive = {
-    case Search(location, radius) => search(location, radius)
+    case Search(location, radius) => sender ! search(location, radius)
   }
 
-  def search(location: Location, radius: String): Unit = async {
+  def search(location: Location, radius: String): Future[List[Video]] = async {
     val locationStr = location match {
       case Location(lat,long,_) => List(lat,long).mkString(",")
     }
@@ -50,6 +51,7 @@ class YoutubeService extends Actor {
       "part"           -> "id",
       "order"          -> "viewCount",
       "type"           -> "video",
+      "maxResults"     -> "50",
       "location"       -> locationStr,
       "locationRadius" -> radius
     )
@@ -58,21 +60,15 @@ class YoutubeService extends Actor {
     val res = await { Http(context.system).singleRequest(req) }
 
     res.status match {
-      case OK => Unmarshal(res.entity).to[JValue] map { resJson =>
+      case OK => await { Unmarshal(res.entity).to[JValue] flatMap { resJson =>
         val ids = (resJson \ "items" \ "id" \ "videoId").extract[List[String]]
         getVideoDetails(ids)
-      }
-      /*
-      case BadRequest => Left("Invalid Request")
-      case _ => Unmarshal(response.entity).to[String].flatMap { entity =>
-        val error = s"YouTube request failed with status code ${response.status} and entity $entity"
-        new IOException(error)
-      }
-      */
+      } }
+      case _ => Nil
     }
-  } onFailure { case e => println("An error has occured: " + e.getMessage) }
+  }
 
-  def getVideoDetails(ids: List[String]): Unit = async {
+  def getVideoDetails(ids: List[String]): Future[List[Video]] = async {
     val params = Map(
       "key"  -> "AIzaSyCyJJILurm5Pf6ZLFCoCfninmObBvqyiWk",
       "part" -> List("id","snippet","statistics","recordingDetails").mkString(","),
@@ -83,8 +79,8 @@ class YoutubeService extends Actor {
     val res = await { Http(context.system).singleRequest(req) }
 
     res.status match {
-      case OK => Unmarshal(res.entity).to[JValue] map { resJson =>
-        val results = for {
+      case OK => await { Unmarshal(res.entity).to[JValue] map { resJson =>
+        for {
           JArray(items)         <- resJson \ "items"
           item                  <- items
           snippet               =  item \ "snippet"
@@ -103,10 +99,9 @@ class YoutubeService extends Actor {
           id, title, description, publishedAt, tags,
           location, channel, thumbnails, statistics
         )
-
-        println(results)
-      }
+      } }
+      case _ => Nil
     }
-  } onFailure { case e => println("An error has occured: " + e.getMessage) }
+  }
 
 }

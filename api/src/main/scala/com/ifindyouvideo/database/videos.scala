@@ -191,7 +191,7 @@ abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with Root
     }
   }
 
-  def store(video: Video): Future[ResultSet] = {
+  def store(video: Video, allTime: Boolean = false): Future[ResultSet] = {
     val location = video.location
     val hashChars: List[String] = GeoHash.encodeHash(
       location.latitude.toDouble,
@@ -200,7 +200,7 @@ abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with Root
     ).toList map {_.toString}
 
     val date = video.publishedAt
-    val yearMonth = 0 // date.getYear * 100 + date.getMonthOfYear
+    val yearMonth = if (allTime) 0 else date.getYear * 100 + date.getMonthOfYear
 
     insert
       .value(_.yearMonth, yearMonth)
