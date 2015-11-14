@@ -3,11 +3,17 @@
 import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
-import HomeSearch from '../components/HomeSearch.jsx';
-
+import SearchPopover from './SearchPopover.jsx';
 
 @Radium
 export default class MapHeader extends Component {
+
+  state = {
+    searchTerm: ''
+  };
+
+  handleChange = event => this.setState({searchTerm: event.target.value});
+
 
   render() {
     return (
@@ -22,12 +28,15 @@ export default class MapHeader extends Component {
 
         <section style={styles.optionsBar}>
 
+
           <div style={styles.search}>
-            <i className='material-icons' style={styles.icon}>search</i>
-            <HomeSearch cities={this.props.cities} />
-          /*  <input type='text' style={styles.searchInput}
-                   placeholder='Search for a trendy city'/>
-            <i className='material-icons' style={styles.icon}>more_vert</i> */
+            <SearchPopover searchTerm={this.state.searchTerm}
+                           cities={this.props.cities} />
+            <i className='material-icons' style={[styles.icon,styles.searchIcon]}>search</i>
+            <input type='text' style={styles.searchInput}
+                   placeholder='Search for a trendy city'
+                   onChange={this.handleChange}/>
+            <i className='material-icons' style={styles.icon}>more_vert</i>
             <div style={styles.clearfix} />
           </div>
 
@@ -48,7 +57,6 @@ export default class MapHeader extends Component {
           </div>
           <div style={styles.clearfix} />
         </section>
-
       </div>
     );
   }
