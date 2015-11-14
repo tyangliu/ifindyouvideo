@@ -7,6 +7,7 @@ import GoogleMap from 'google-map-react';
 import Radium from 'radium';
 import styler from 'react-styling';
 import VideoOverlay from './VideoOverlay.jsx';
+import { fitBounds } from 'google-map-react/utils';
 
 const createMapOptions = maps => ({
   zoomControlOptions: {
@@ -18,6 +19,11 @@ const createMapOptions = maps => ({
 @Radium
 class Map extends Component {
 
+  state = {
+    width: window.innerWidth,
+    height: window.innerHeight
+  };
+
   static defaultProps = {
     zoom: 9,
     showOverlays: true,
@@ -28,11 +34,29 @@ class Map extends Component {
     }
   };
 
+  handleResize = event => {
+    this.setState({
+      width: window.innerWidth,
+      height: window.innerHeight
+    })
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
   render() {
+    console.log(this.props.bounds);
     const {
       showOverlays, activeVideo, setActiveVideo, setOpenVideo,
       videos, bounds, defaultCenter
     } = this.props;
+
+    const { width, height } = this.state;
 
     const activeVideoLocation = activeVideo !== null && videos[activeVideo-1]
                               ? videos[activeVideo-1].location
@@ -51,11 +75,19 @@ class Map extends Component {
                     key={index + 1} />
     ) : [];
 
+    const {center, zoom} = (bounds) ?  fitBounds({
+      nw : { lat: bounds.nw.latitude, lng: bounds.nw.longitude},
+      se : { lat: bounds.se.latitude, lng: bounds.se.longitude}
+    }, {width, height}) : {defaultCenter, defaultZoom: this.props.zoom}
+
+    console.log({center, zoom});
+
     return (
       <div style={styles.map}>
         <GoogleMap defaultCenter={defaultCenter}
                    defaultZoom={this.props.zoom}
-                   center={{lat,lng}}
+                   zoom={zoom}
+                   center={(activeVideoLocation) ? {lat, lng} : center}
                    options={createMapOptions}>
           {overlays}
         </GoogleMap>
