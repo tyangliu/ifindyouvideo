@@ -82,7 +82,7 @@ class Map extends Component {
         <GoogleMap defaultCenter={defaultCenter}
                    defaultZoom={defaultZoom}
                    zoom={zoom}
-                   center={activeLocation ? { activeLat, activeLng } : center}
+                   center={activeLocation ? { lat: activeLat, lng: activeLng } : center}
                    options={createMapOptions}>
           {overlays}
         </GoogleMap>
