@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
+import HomeSearch from '../components/HomeSearch.jsx';
+
 
 @Radium
 export default class MapHeader extends Component {
@@ -17,14 +19,19 @@ export default class MapHeader extends Component {
             <div style={styles.clearfix} />
           </div>
         </section>
+
         <section style={styles.optionsBar}>
+
           <div style={styles.search}>
             <i className='material-icons' style={styles.icon}>search</i>
-            <input type='text' style={styles.searchInput}
+            <HomeSearch cities={this.props.cities} />
+          /*  <input type='text' style={styles.searchInput}
                    placeholder='Search for a trendy city'/>
-            <i className='material-icons' style={styles.icon}>more_vert</i>
+            <i className='material-icons' style={styles.icon}>more_vert</i> */
             <div style={styles.clearfix} />
           </div>
+
+
           <div style={styles.current}>
             <i className='material-icons' style={styles.icon}>location_city</i>
             <p style={styles.currentText}>Vancouver, BC</p>
@@ -41,6 +48,7 @@ export default class MapHeader extends Component {
           </div>
           <div style={styles.clearfix} />
         </section>
+
       </div>
     );
   }
