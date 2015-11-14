@@ -16,16 +16,38 @@ export default class Video extends Component {
     videoId: 'CxOIBgE1Z0o'
   };
 
+  // build the youtube iframe outside of the DOM, then append to
+  // avoid browser history spam from iframe
+  makeFrame = videoId => {
+    if (!videoId) return;
+
+    const baseUrl = baseUrls.youtube;
+
+    let iframe = document.createElement('iframe');
+    iframe.setAttribute('src', baseUrl + videoId);
+    iframe.style.position = 'absolute';
+    iframe.style.top = 0;
+    iframe.style.left = 0;
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+
+    document.getElementById('iframeContainer').appendChild(iframe);
+  }
+
+  componentDidMount() {
+    this.makeFrame(this.props.videoId);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.makeFrame(nextProps.videoId);
+  }
+
   render() {
     const {videoId} = this.props
         , baseUrl = baseUrls.youtube;
     return (
       <div style={styles.video}>
-        <iframe src={baseUrl + videoId}
-                style={styles.iFrame}
-                height='900px' width='1600px'
-                allowFullScreen=''
-                frameBorder='0' />
+        <div id='iframeContainer' />
       </div>
     );
   }

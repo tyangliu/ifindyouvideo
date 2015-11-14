@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import Relay from 'react-relay';
 import Radium from 'radium';
-import Modal from 'react-modal';
 import styler from 'react-styling';
 import Video from './Video.jsx';
 
@@ -52,44 +51,29 @@ class VideoModal extends Component {
 
     let video = this.props.video || {};
 
-    const contentStyles = {
-      position: 'absolute',
-      boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
-      top: '50%',
-      left: '50%',
-      right: null,
-      bottom: null,
-      width: width + 'px',
-      height: height + 'px',
-      transform: 'translate(-50%, -50%)',
-      backgroundColor: 'rgba(255,255,255,1)',
-      padding: 0,
-      outline: 'none',
-      border: 'none',
-      overflow: 'hidden',
-      fontFamily: '"proxima-nova", sans-serif'
-    };
-
     return (
-      <Modal isOpen={isOpen} style={{overlay: styles.overlay, content: contentStyles}}>
-        <div style={{
-               width: width - 300 + 'px',
-               height: height + 'px',
-               float: 'left'
-             }}>
-          <Video videoId={video.videoId} />
-        </div>
-        <div style={styles.info}>
-          <div style={styles.heading}>
-            <div style={styles.idContainer}>
-              <div style={styles.mapIcon} />
-              <p style={styles.mapId}>{mapId}</p>
-            </div>
-            <h2 style={styles.title}>{video.title}</h2>
+      <div style={styles.modalContainer}>
+        <div style={styles.overlay[isOpen ? 'open' : 'hidden']} />
+        <div style={[styles.modal[isOpen ? 'open' : 'hidden'], {width, height}]}>
+          <div style={{
+                 width: width - 300 + 'px',
+                 height: height + 'px',
+                 float: 'left'
+               }}>
+            {isOpen ? <Video videoId={video.videoId} /> : null}
           </div>
+          <div style={styles.info}>
+            <div style={styles.heading}>
+              <div style={styles.idContainer}>
+                <div style={styles.mapIcon} />
+                <p style={styles.mapId}>{mapId}</p>
+              </div>
+              <h2 style={styles.title}>{video.title}</h2>
+            </div>
+          </div>
+          <div style={styles.clearfix} />
         </div>
-        <div style={styles.clearfix} />
-      </Modal>
+      </div>
     );
   }
 
@@ -116,6 +100,9 @@ export default Relay.createContainer(VideoModal, {
 });
 
 const styles = styler`
+  modalContainer
+    pointer-events: none
+
   overlay
     position: fixed
     zIndex: 20
@@ -124,6 +111,34 @@ const styles = styler`
     right: 0
     bottom: 0
     background-color: rgba(0,0,0,0.7)
+    transition: opacity 0.15s ease-in-out
+
+    &open
+      pointer-events: auto
+      opacity: 1
+
+    &hidden
+      opacity: 0
+
+  modal
+    position: absolute
+    boxShadow: 0 1px 2px rgba(0,0,0,0.2)
+    top: 50%
+    left: 50%
+    backgroundColor: rgba(255,255,255,1)
+    padding: 0
+    overflow: hidden
+    z-index: 21
+    transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out
+
+    &open
+      pointer-events: auto
+      opacity: 1
+      transform: translate(-50%, -50%)
+
+    &hidden
+      opacity: 0
+      transform: translate(-50%, 100%)
 
   info
     float: right
