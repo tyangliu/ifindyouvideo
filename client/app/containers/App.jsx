@@ -16,17 +16,15 @@ class App extends Component {
   state = {
     showOverlays: false,
     activeVideo: null,
-    openVideo: null,
-    city: ''
+    openVideo: null
   };
 
   setActiveVideo  = index => this.setState({activeVideo: index});
   setOpenVideo    = index => this.setState({openVideo: index});
   setShowOverlays = show  => this.setState({showOverlays: !!show});
-  initVideos      = name  => {
-    this.props.history.replaceState(
-      {city: name},
-      `/videos?city=${name}`
+  initVideos      = city  => {
+    this.props.history.replaceState({city},
+      (city && city.length > 0) ? `/videos?city=${city}` : '/videos'
     );
   };
 
@@ -69,7 +67,7 @@ class App extends Component {
 
 export default Relay.createContainer(App, {
   initialVariables: {
-    city: 'Vancouver, BC'
+    city: ''
   },
   fragments: {
     viewer: () => Relay.QL`

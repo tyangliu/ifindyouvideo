@@ -14,7 +14,7 @@ class Videos extends Component {
 
   componentWillMount() {
     this.props.setShowOverlays(true);
-    let city = this.props.location.query.city;
+    let city = this.props.location.query.city || '';
     this.props.initVideos(city);
   }
 

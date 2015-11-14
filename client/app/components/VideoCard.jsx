@@ -13,9 +13,7 @@ class VideoCard extends Component {
     ignoreClicks: false,
     video: {
       title: 'Video Title',
-      thumbnails: {
-
-      }
+      thumbnails: {}
     }
   };
 

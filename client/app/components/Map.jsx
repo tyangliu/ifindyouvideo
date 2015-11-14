@@ -34,7 +34,7 @@ class Map extends Component {
       videos, bounds, defaultCenter
     } = this.props;
 
-    const activeVideoLocation = activeVideo !== null
+    const activeVideoLocation = activeVideo !== null && videos[activeVideo-1]
                               ? videos[activeVideo-1].location
                               : null;
 
@@ -75,8 +75,8 @@ export default Relay.createContainer(Map, {
     `,
     bounds: () => Relay.QL`
       fragment on Bounds {
-        nw {latitude, longitude},
-        se {latitude, longitude}
+        nw { latitude, longitude },
+        se { latitude, longitude }
       }
     `
   }

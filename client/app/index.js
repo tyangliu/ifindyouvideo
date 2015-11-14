@@ -18,11 +18,7 @@ Relay.injectNetworkLayer(
   new Relay.DefaultNetworkLayer('http://127.0.0.1:8080')
 );
 
-function prepareVideoParams(params, route) {
-  return {
-    city: params.city || 'Vancouver, BC'
-  };
-}
+const prepareVideoParams = (params, route) => ({city: params.city || ''});
 
 ReactDOM.render(
   <Router createElement={ReactRouterRelay.createElement}
