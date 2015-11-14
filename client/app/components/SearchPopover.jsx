@@ -17,26 +17,46 @@ export default class SearchPopover extends Component {
       'Virginia',
       'New York City, NY',
       'Seattle, WA'
-    ]
+    ],
+    index: -1
+  };
+
+  componentWillMount = () => this.setState({matches: []});
+
+  componentWillReceiveProps = (nextProps) => {
+    if(nextProps.searchTerm == this.props.searchTerm){
+      if(nextProps.index > this.state.matches.length-1){
+        this.props.reduceIndex();
+      }
+      return true;
+    }
+
+    const {searchTerm, cities} = nextProps
+        , st = searchTerm.trim().toLowerCase()
+        , items = cities.filter(word =>
+            st != '' && word.trim().toLowerCase().indexOf(st) >= 0);
+    this.setState({matches : items});
+    if(nextProps.index > items.length-1){
+      this.props.reduceIndex();
+    }
+    return true;
   };
 
   render() {
-    const {searchTerm, cities} = this.props
-        , st = searchTerm.trim().toLowerCase()
-        , items = cities.filter(word =>
-            st != '' && word.trim().toLowerCase().indexOf(st) >= 0
-          ).map((word, index) =>
-            <Link to={`/videos?city=${word}`} key={'searchResult' + index}>
-              <li style={styles.resultListItem}>{word}</li>
-            </Link>
-          );
+    var result = [];
+    for (var i=0; i<this.state.matches.length; i++){
+      var word = this.state.matches[i];
+
+      result.push(<Link to={`/videos?city=${word}`} key={'searchResult' + i}>
+                    <li style={styles.resultListItem[(i==this.props.index) ? 'active' : 'normal']}>{word}</li>
+                  </Link>)
+    }
 
     const noResultsEl = <li style={{color: 'rgba(0,0,0,0.3)'}}>No results found</li>
-
     return (
-      <div style={styles.popOver[st.length <= 0 ? 'hidden' : 'active']}>
+      <div style={styles.popOver[this.props.searchTerm.length <= 0 ? 'hidden' : 'active']}>
         <ul style={styles.resultList}>
-          {items.length <= 0 ? noResultsEl : items }
+          {this.state.matches.length <= 0 ? noResultsEl : result }
         </ul>
       </div>
     );
@@ -72,8 +92,13 @@ const styles = styler`
     line-height: 28px
 
   resultListItem
-    color: rgba(255,72,40,0.8)
     margin-bottom: 8px
+
+    &normal
+      color: rgba(255,72,40,0.8)
+
+    &active
+      color: rgba(0,180,130,0.8)
 
   clearfix
     clear: both

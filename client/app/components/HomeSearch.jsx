@@ -10,20 +10,53 @@ import SearchPopover from './SearchPopover.jsx';
 export default class HomeSearch extends Component {
 
   state = {
-    searchTerm: ''
+    searchTerm: '',
+    index: -1,
+    cities: [
+      'Vancouver, BC',
+      'Vatican City',
+      'San Francisco, CA',
+      'Virginia',
+      'New York City, NY',
+      'Seattle, WA'
+    ]
   };
 
-  handleChange = event => this.setState({searchTerm: event.target.value});
+  handleChange = event => {
+    this.setState({searchTerm: event.target.value});
+  };
+
+  keyTyped = event => {
+    var keyCode = event.keyCode | event.which;
+    var oldIndex = this.state.index;
+
+    if(event.keyCode == 38){
+      if (oldIndex >= 0){
+        this.setState({index: oldIndex-1});
+      }
+    }
+    else if (event.keyCode == 40){
+      this.setState({index: oldIndex + 1});
+    }
+  };
+
+  reduceIndex = () => {
+    var oldIndex = this.state.index;
+    this.setState({index: oldIndex-1})
+  }
 
   render() {
     return (
       <div style={styles.homeSearch}>
         <SearchPopover searchTerm={this.state.searchTerm}
-                       cities={this.props.cities} />
+                       cities={this.props.cities}
+                       index={this.state.index}
+                       reduceIndex={this.reduceIndex} />
         <i className='material-icons' style={[styles.icon, styles.searchIcon]}>search</i>
         <input type='text' style={styles.searchInput}
                placeholder='Search for a trendy city'
-               onChange={this.handleChange}/>
+               onChange={this.handleChange}
+               onKeyDown={this.keyTyped}/>
         <button style={styles.optionsButton}>
           <i className='material-icons' style={styles.icon}>more_vert</i>
         </button>
