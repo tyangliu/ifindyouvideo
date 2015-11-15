@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
 import SearchPopover from './SearchPopover.jsx';
+import CurrentCity from './CurrentCity.jsx'
 
 @Radium
 export default class MapHeader extends Component {
@@ -40,12 +41,8 @@ export default class MapHeader extends Component {
             <div style={styles.clearfix} />
           </div>
 
+          <CurrentCity city={this.props.city} />
 
-          <div style={styles.current}>
-            <i className='material-icons' style={styles.icon}>location_city</i>
-            <p style={styles.currentText}>Vancouver, BC</p>
-            <i className='material-icons' style={styles.icon}>close</i>
-          </div>
           <div style={[styles.dropdown, {float: 'left'}]}>
             <p style={styles.dropdownText}>Past Week</p>
             <i className='material-icons' style={styles.icon}>arrow_drop_down</i>
