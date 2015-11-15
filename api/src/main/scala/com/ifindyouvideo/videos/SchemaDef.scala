@@ -102,23 +102,23 @@ object SchemaDef {
     "Statistics",
     "Statistics for a video",
     fields[Unit, Statistics](
-      Field("viewCount", StringType,
+      Field("viewCount", OptionType(StringType),
         Some("The view count of a video"),
         resolve = _.value.viewCount
       ),
-      Field("likeCount", StringType,
+      Field("likeCount", OptionType(StringType),
         Some("The like count of a video"),
         resolve = _.value.likeCount
       ),
-      Field("dislikeCount", StringType,
+      Field("dislikeCount", OptionType(StringType),
         Some("The dislike count of a video"),
         resolve = _.value.dislikeCount
       ),
-      Field("favoriteCount", StringType,
+      Field("favoriteCount", OptionType(StringType),
         Some("The favorite count of a video"),
         resolve = _.value.favoriteCount
       ),
-      Field("commentCount", StringType,
+      Field("commentCount", OptionType(StringType),
         Some("The comment count of a video"),
         resolve = _.value.commentCount
       )

@@ -156,8 +156,8 @@ abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with Root
       .future
   }
 
-  def multiStore(videos: List[Video]): Future[List[ResultSet]] = {
-    Future.sequence(videos map {store(_)})
+  def multiStore(videos: List[Video], allTime: Boolean = false): Future[List[ResultSet]] = {
+    Future.sequence(videos map {store(_, allTime)})
   }
 
 }

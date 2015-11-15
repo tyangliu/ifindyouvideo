@@ -2,8 +2,9 @@ package com.ifindyouvideo.external
 
 import scala.concurrent.Future
 import scala.concurrent.future
-import scala.util.{Success, Failure}
+import scala.util.{Try, Success, Failure}
 import java.io.IOException
+import java.text._
 import org.joda.time.DateTime
 
 import akka.actor._
@@ -25,21 +26,23 @@ import com.ifindyouvideo.videos._
 
 object YoutubeProtocol {
   case class Search(location: Location, radius: String)
+  case class Result(videos: List[Video])
 }
 
-class YoutubeService extends Actor {
+class YoutubeService(implicit val system: ActorSystem) {
+
+  import system.dispatcher
 
   import YoutubeProtocol._
-  import scala.concurrent.ExecutionContext.Implicits.global
   import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 
   implicit val materializer = ActorMaterializer()
   implicit val serialization = Serialization
-  implicit val formats = DefaultFormats ++ JodaTimeSerializers.all
-
-  def receive = {
-    case Search(location, radius) => sender ! search(location, radius)
-  }
+  implicit val formats = new DefaultFormats {
+    override def dateFormatter = {
+      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    }
+  } ++ JodaTimeSerializers.all
 
   def search(location: Location, radius: String): Future[List[Video]] = async {
     val locationStr = location match {
@@ -57,13 +60,14 @@ class YoutubeService extends Actor {
     )
 
     val req = HttpRequest(uri = Uri("https://www.googleapis.com/youtube/v3/search").withQuery(params))
-    val res = await { Http(context.system).singleRequest(req) }
+    val res = await { Http(system).singleRequest(req) }
 
     res.status match {
-      case OK => await { Unmarshal(res.entity).to[JValue] flatMap { resJson =>
+      case OK => {
+        val resJson = await { Unmarshal(res.entity).to[JValue] }
         val ids = (resJson \ "items" \ "id" \ "videoId").extract[List[String]]
-        getVideoDetails(ids)
-      } }
+        await { getVideoDetails(ids) }
+      }
       case _ => Nil
     }
   }
@@ -76,10 +80,11 @@ class YoutubeService extends Actor {
     )
 
     val req = HttpRequest(uri = Uri("https://www.googleapis.com/youtube/v3/videos").withQuery(params))
-    val res = await { Http(context.system).singleRequest(req) }
+    val res = await { Http(system).singleRequest(req) }
 
     res.status match {
-      case OK => await { Unmarshal(res.entity).to[JValue] map { resJson =>
+      case OK => {
+        val resJson = await { Unmarshal(res.entity).to[JValue] }
         for {
           JArray(items)         <- resJson \ "items"
           item                  <- items
@@ -99,7 +104,7 @@ class YoutubeService extends Actor {
           id, title, description, publishedAt, tags,
           location, channel, thumbnails, statistics
         )
-      } }
+      }
       case _ => Nil
     }
   }
