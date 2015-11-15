@@ -9,13 +9,17 @@ export default class CurrentCity extends Component {
 
 
   render() {
-    console.log('city is: ' + this.props.city);
+    const { city, initVideos } = this.props;
 
     return (
       <div style={styles.current}>
         <i className='material-icons' style={styles.icon}>location_city</i>
-        <p style={styles.currentText}>{this.props.city}</p>
-        <i className='material-icons' style={styles.icon}>close</i>
+        <p style={styles.currentText}>{city}</p>
+        <i className='material-icons'
+           style={[styles.icon, {cursor: 'pointer'}]}
+           onClick={() => initVideos('')}>
+          close
+        </i>
       </div>
     );
   }

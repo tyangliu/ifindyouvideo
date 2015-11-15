@@ -14,8 +14,8 @@ class VideoModal extends Component {
       , height = window.innerHeight;
 
     return {
-      width: width - 80,
-      height: (width - 300 - 80) * 9/16
+      width: (height - 180 - 80) * 16/9,
+      height: height - 80
     };
   };
 
@@ -31,6 +31,10 @@ class VideoModal extends Component {
     if (event.key == ESC || event.code == 'Escape' || event.keyCode == ESC) {
       this.props.setOpenVideo(null);
     }
+  };
+
+  handleClose = () => {
+    this.props.setOpenVideo(null);
   };
 
   handleResize = event => this.setState(this.calcDimensions());
@@ -53,23 +57,25 @@ class VideoModal extends Component {
 
     return (
       <div style={styles.modalContainer}>
-        <div style={styles.overlay[isOpen ? 'open' : 'hidden']} />
+        <div style={styles.overlay[isOpen ? 'open' : 'hidden']} onClick={this.handleClose} />
         <div style={[styles.modal[isOpen ? 'open' : 'hidden'], {width, height}]}>
-          <div style={{
-                 width: width - 300 + 'px',
-                 height: height + 'px',
-                 float: 'left'
-               }}>
-            {isOpen ? <Video videoId={video.videoId} /> : null}
-          </div>
           <div style={styles.info}>
             <div style={styles.heading}>
               <div style={styles.idContainer}>
                 <div style={styles.mapIcon} />
                 <p style={styles.mapId}>{mapId}</p>
               </div>
-              <h2 style={styles.title}>{video.title}</h2>
+              <h2 style={[styles.title, {width: width - 165 + 'px'}]}>{video.title}</h2>
+              <i style={styles.closeIcon} className='material-icons' onClick={this.handleClose}>
+                close
+              </i>
             </div>
+          </div>
+          <div style={{
+                 width: width + 'px',
+                 height: height - 180 + 'px'
+               }}>
+            {isOpen ? <Video videoId={video.videoId} /> : null}
           </div>
           <div style={styles.clearfix} />
         </div>
@@ -110,7 +116,7 @@ const styles = styler`
     left: 0
     right: 0
     bottom: 0
-    background-color: rgba(0,0,0,0.7)
+    background-color: rgba(0,0,0,0.55)
     transition: opacity 0.15s ease-in-out
 
     &open
@@ -122,10 +128,11 @@ const styles = styler`
 
   modal
     position: absolute
-    boxShadow: 0 1px 2px rgba(0,0,0,0.2)
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2)
+    border-radius: 3px
     top: 50%
     left: 50%
-    backgroundColor: rgba(255,255,255,1)
+    background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.65) 50%,rgba(255,255,255,0.9) 100%)
     padding: 0
     overflow: hidden
     z-index: 21
@@ -141,42 +148,51 @@ const styles = styler`
       transform: translate(-50%, 100%)
 
   info
-    float: right
-    width: 300px
+    height: 120px
+    width: 100%
 
   heading
-    padding: 14px
+    padding: 20px 18px
 
   title
     color: rgba(90,90,90,1)
-    font-size: 16px
-    line-height: 18px
+    font-size: 21px
+    line-height: 30px
     font-weight: 700
     float: left
     white-space: nowrap
     overflow: hidden
     text-overflow: ellipsis
-    max-width: 220px
 
   idContainer
     float: left
-    padding-right: 10px
-    margin-right: 10px
+    padding-right: 16px
+    margin-right: 16px
     border-right: 1px solid rgba(0,0,0,0.2)
 
   mapIcon
     background: url(${require('../images/logo-red.svg')}) no-repeat center
-    width: 14px
-    height: 18px
+    width: 24px
+    height: 30px
     float: left
-    margin-right: 5px
+    margin-right: 8px
 
   mapId
     float: left
-    line-height: 18px
-    font-size: 14px
+    line-height: 30px
+    font-size: 21px
     font-weight: 700
     color: rgba(255,72,40,1)
+
+  closeIcon
+    background-image: linear-gradient(to bottom, rgba(239,46,81,1) 7%, rgba(241,72,75,1) 30%, rgba(248,152,56,1) 100%)
+    background-clip: text
+    text-fill-color: transparent
+    font-size: 28px
+    line-height: 30px
+    margin-top: -2px
+    float: right
+    cursor: pointer
 
   clearfix
     clear: both

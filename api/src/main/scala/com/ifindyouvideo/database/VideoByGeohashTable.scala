@@ -112,7 +112,7 @@ abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with Root
     } map {_.fetch map {_.toList}} map {futureToFutureTry(_)}
 
     Future.sequence(futures) map { listOfTry =>
-      (listOfTry collect {case Success(x) => x}).flatten
+      (listOfTry collect {case Success(x) => x}).flatten.take(20)
     }
   }
 

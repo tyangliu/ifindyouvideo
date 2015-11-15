@@ -24,11 +24,6 @@ import org.json4s._
 
 import com.ifindyouvideo.videos._
 
-object YoutubeProtocol {
-  case class Search(location: Location, radius: String)
-  case class Result(videos: List[Video])
-}
-
 class YoutubeService(implicit val system: ActorSystem) {
 
   import system.dispatcher

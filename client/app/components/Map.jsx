@@ -4,10 +4,10 @@ import React, { Component } from 'react';
 import Relay from 'react-relay';
 import DocumentTitle from 'react-document-title';
 import GoogleMap from 'google-map-react';
+import { fitBounds } from 'google-map-react/utils';
 import Radium from 'radium';
 import styler from 'react-styling';
 import VideoOverlay from './VideoOverlay.jsx';
-import { fitBounds } from 'google-map-react/utils';
 
 const createMapOptions = maps => ({
   zoomControlOptions: {
@@ -29,8 +29,8 @@ class Map extends Component {
     showOverlays: true,
     videos: [],
     defaultCenter: {
-      latitude: 59.288331692,
-      longitude: -135.637207031
+      lat: 59.288331692,
+      lng: -135.637207031
     }
   };
 
@@ -66,7 +66,10 @@ class Map extends Component {
                     key={index + 1} />
     ) : [];
 
-    const { center, zoom } = !bounds ? { defaultCenter, defaultZoom } : fitBounds({
+    const { center, zoom } = !bounds ? {
+      center: defaultCenter,
+      zoom: defaultZoom
+    } : fitBounds({
       nw : { lat: bounds.nw.latitude, lng: bounds.nw.longitude},
       se : { lat: bounds.se.latitude, lng: bounds.se.longitude}
     }, { width, height });

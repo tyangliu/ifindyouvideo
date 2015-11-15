@@ -110,6 +110,8 @@ class VideoCardList extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.activeVideo !== this.props.activeVideo) {
       this.scrollToCard(nextProps.activeVideo);
+    } else if (!nextProps.videos || nextProps.videos.length <= 0) {
+      this.scrollToCard(1);
     }
   }
 
@@ -125,8 +127,9 @@ class VideoCardList extends Component {
     );
 
     return (
-      <div style={styles.videoCardListContainer}>
+      <div style={styles.videoCardListContainer[videos.length > 0 ? 'normal' : 'hidden']}>
         <div style={styles.border} />
+        <div style={styles.bg} />
         <div style={[styles.videoCardList, {
                width: videoCards.length * 320 + 'px',
                marginLeft: 0 - this.state.scrollPosition + 'px',
@@ -168,6 +171,13 @@ const styles = styler`
     overflow-y: hidden
     user-select: none
     pointer-events: none
+    transition: transform 0.15s ease-in-out
+
+    &normal
+      transform: translateY(0)
+
+    &hidden
+      transform: translateY(100%)
 
   border
     position: absolute
@@ -178,11 +188,18 @@ const styles = styler`
     background: rgba(255,72,40,0.8)
     box-shadow: 0 -1px 2px rgba(0,0,0,0.2)
 
+  bg
+    position: absolute
+    top: 43px
+    left: 0
+    right: 0
+    bottom: 0
+    background: rgba(255,255,255,0.9)
+
   videoCardList
     min-width: 100%
     margin-top: 7px
     height: 213px
-    background: rgba(255,255,255,0.9)
     white-space: nowrap
     pointer-events: auto
 

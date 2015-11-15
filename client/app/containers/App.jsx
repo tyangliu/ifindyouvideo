@@ -26,6 +26,7 @@ class App extends Component {
     this.props.history.replaceState({city},
       (city && city.length > 0) ? `/videos?city=${city}` : '/videos'
     );
+    this.setState({openVideo: null, activeVideo: null});
   };
 
   render() {
