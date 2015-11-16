@@ -206,7 +206,7 @@ const styles = styler`
     width: 100%
 
   heading
-    padding: 20px 18px
+    padding: 22px 18px 20px
 
   title
     color: rgba(90,90,90,1)
@@ -244,12 +244,12 @@ const styles = styler`
     text-fill-color: transparent
     font-size: 28px
     line-height: 30px
-    margin-top: -2px
+    margin-top: 0px
     float: right
     cursor: pointer
 
   details
-    margin: 22px -18px 0
+    margin: 20px -18px 0
     border-top: 1px solid rgba(0,0,0,0.18)
 
   infoBar
