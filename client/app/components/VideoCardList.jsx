@@ -67,7 +67,7 @@ class VideoCardList extends Component {
 
   scrollToCard = index => {
     if (index > 0 && index < this.props.videos.length + 1) {
-      let newPos = this.normalizePosition((index - 1) * 320 + 320/2 - window.innerWidth/2);
+      let newPos = this.normalizePosition((index - 1) * 340 + 340/2 - window.innerWidth/2);
       this.setState({scrollPosition: newPos, shouldTransition: true});
     }
   };
@@ -85,7 +85,7 @@ class VideoCardList extends Component {
 
   normalizePosition = pos => {
     let minPos = 0
-      , maxPos = this.props.videos.length * 320 - window.innerWidth
+      , maxPos = this.props.videos.length * 340 - window.innerWidth
       , newPos = pos;
 
     maxPos = (maxPos < 0) ? 0 : maxPos;
@@ -110,7 +110,7 @@ class VideoCardList extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.activeVideo !== this.props.activeVideo) {
       this.scrollToCard(nextProps.activeVideo);
-    } else if (!nextProps.videos || nextProps.videos.length <= 0) {
+    } else if (!nextProps.videos || nextProps.videos.length != this.props.videos.length) {
       this.scrollToCard(1);
     }
   }
@@ -131,7 +131,7 @@ class VideoCardList extends Component {
         <div style={styles.border} />
         <div style={styles.bg} />
         <div style={[styles.videoCardList, {
-               width: videoCards.length * 320 + 'px',
+               width: videoCards.length * 340 + 'px',
                marginLeft: 0 - this.state.scrollPosition + 'px',
                transition: this.state.shouldTransition ? 'margin-left 0.15s linear' : null
              }]}
@@ -166,7 +166,7 @@ const styles = styler`
   videoCardListContainer
     width: 100%
     padding-top: 36px
-    height: 256px
+    height: 276px
     overflow-x: hidden
     overflow-y: hidden
     user-select: none
@@ -195,11 +195,12 @@ const styles = styler`
     right: 0
     bottom: 0
     background: rgba(255,255,255,0.9)
+    pointer-events: auto
 
   videoCardList
     min-width: 100%
     margin-top: 7px
-    height: 213px
+    height: 233px
     white-space: nowrap
     pointer-events: auto
 

@@ -6,12 +6,13 @@ import styler from 'react-styling';
 import SearchPopover from './SearchPopover.jsx';
 import CurrentCity from './CurrentCity.jsx';
 import MapHeaderSearch from './MapHeaderSearch.jsx';
+import MapHeaderDateFilter from './MapHeaderDateFilter.jsx';
 
 @Radium
 export default class MapHeader extends Component {
 
   render() {
-    const { city, cities, initVideos } = this.props;
+    const { city, year, month, cities, initVideos } = this.props;
     return (
       <div style={styles.mapHeader}>
         <section style={styles.header}>
@@ -25,14 +26,12 @@ export default class MapHeader extends Component {
         <section style={styles.optionsBar}>
 
           {city && city.length > 0 ?
-            <CurrentCity city={city} initVideos={initVideos} /> :
-            <MapHeaderSearch cities={cities} initVideos={initVideos} />
+            <CurrentCity city={city} initVideos={initVideos} year={year} month={month} /> :
+            <MapHeaderSearch cities={cities} year={year} month={month} initVideos={initVideos} />
           }
 
-          <div style={[styles.dropdown, {float: 'left'}]}>
-            <p style={styles.dropdownText}>Past Week</p>
-            <i className='material-icons' style={styles.icon}>arrow_drop_down</i>
-          </div>
+          <MapHeaderDateFilter initVideos={initVideos} year={year} month={month} city={city} />
+
           <div style={{float: 'right', borderLeft: '1px solid rgba(0,0,0,0.15)', padding: '0 20px 0 14px'}}>
             <i className='material-icons' style={[styles.icon, {marginRight: '7px'}]}>favorite</i>
             <p style={styles.dropdownText}>My Locations</p>

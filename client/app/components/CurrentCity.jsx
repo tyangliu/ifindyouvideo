@@ -9,7 +9,7 @@ export default class CurrentCity extends Component {
 
 
   render() {
-    const { city, initVideos } = this.props;
+    const { city, year, month, initVideos } = this.props;
 
     return (
       <div style={styles.current}>
@@ -17,7 +17,7 @@ export default class CurrentCity extends Component {
         <p style={styles.currentText}>{city}</p>
         <i className='material-icons'
            style={[styles.icon, {cursor: 'pointer'}]}
-           onClick={() => initVideos('')}>
+           onClick={() => initVideos('', year, month)}>
           close
         </i>
       </div>

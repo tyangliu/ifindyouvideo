@@ -4,6 +4,18 @@ import React, { Component } from 'react';
 import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
+import XDate from 'xdate';
+
+function roundCount(x) {
+  let len = x.toString().length
+    , magnitude = Math.pow(10, len - 1);
+
+  return Math.floor(x / magnitude) * magnitude;
+}
+
+function formatCount(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 @Radium
 class VideoCard extends Component {
@@ -23,9 +35,12 @@ class VideoCard extends Component {
 
   render() {
     const {video, isActive, index: mapId} = this.props
-        , {title, thumbnails} = video;
+        , {title, thumbnails, publishedAt, statistics } = video
+        , { viewCount } = statistics
+        , { url: thumbnailUrl } = thumbnails.high || thumbnails.medium || thumbnails.default;
 
-    const { url: thumbnailUrl } = thumbnails.high || thumbnails.medium || thumbnails.default;
+    const publishedAtStr = (new XDate(publishedAt)).toString('MMM M, yyyy')
+        , viewCountStr   = viewCount ? formatCount(roundCount(viewCount)) : 0;
 
     return (
       <div style={styles.videoCard[isActive ? 'active' : 'normal']} onClick={this.handleClick}>
@@ -35,6 +50,20 @@ class VideoCard extends Component {
             <p style={styles.mapId}>{mapId}</p>
           </div>
           <h2 style={styles.title}>{title}</h2>
+          <div style={styles.details}>
+            <p style={[styles.infoBar, styles.date]}>
+              <i className='material-icons' style={styles.infoBarIcon}>event</i>
+              <span style={styles.infoBarText}>
+                {publishedAtStr}
+              </span>
+            </p>
+            <p style={styles.infoBar}>
+              <span style={[styles.infoBarText, {float: 'right'}]}>
+                {viewCountStr}+ Views
+              </span>
+            </p>
+            <div style={styles.clearfix} />
+          </div>
         </div>
         <div style={styles.clearfix} />
         <div style={[styles.thumbnail, {
@@ -62,7 +91,8 @@ export default Relay.createContainer(VideoCard, {
           viewCount,
           likeCount
         },
-        title
+        title,
+        publishedAt
       }
     `
   }
@@ -70,7 +100,7 @@ export default Relay.createContainer(VideoCard, {
 
 const styles = styler`
   videoCard
-    width: 320px
+    width: 340px
     height: 100%
     overflow: hidden
     position: relative
@@ -89,7 +119,7 @@ const styles = styler`
       border-radius: 3px
 
   heading
-    height: 76px
+    height: 93px
     padding: 18px 14px 14px
     background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.9) 100%)
     box-shadow: 0 1px 2px rgba(0,0,0,0.2)
@@ -106,7 +136,35 @@ const styles = styler`
     white-space: nowrap
     overflow: hidden
     text-overflow: ellipsis
-    max-width: 220px
+    max-width: 240px
+
+  details
+    width: 340px
+    margin: 36px -14px 0
+    border-top: 1px solid rgba(0,0,0,0.1)
+
+  infoBar
+    float: left
+    width: 50%
+    padding: 7px 15px
+
+  infoBarIcon
+    float: left
+    display: block
+    font-size: 16px
+    line-height: 24px
+    margin-right: 8px
+    margin-left: -2px
+    text-align: left
+    color: rgba(0,0,0,0.4)
+
+  infoBarText
+    display: block
+    line-height: 24px
+    color: rgba(0,0,0,0.6)
+    font-size: 11px
+    text-transform: uppercase
+    letter-spacing: 1px
 
   idContainer
     float: left

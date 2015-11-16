@@ -8,7 +8,6 @@ import styler from 'react-styling';
 export default class UserWidget extends Component {
 
   render() {
-    let video = this.props.video;
     return (
       <div style={styles.userWidget}>
         <div style={styles.avatar} />

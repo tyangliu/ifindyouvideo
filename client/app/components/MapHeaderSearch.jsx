@@ -15,13 +15,15 @@ export default class MapHeaderSearch extends Component {
   handleChange = event => this.setState({searchTerm: event.target.value});
 
   render() {
-    const { cities, initVideos } = this.props;
+    const { cities, year, month, initVideos } = this.props;
 
     return (
       <div style={styles.search}>
         <MapHeaderSearchPopover searchTerm={this.state.searchTerm}
                                 cities={cities}
-                                initVideos={initVideos} />
+                                initVideos={initVideos}
+                                year={year}
+                                month={month} />
         <i className='material-icons' style={[styles.icon,styles.searchIcon]}>search</i>
         <input type='text' style={styles.searchInput}
                placeholder='Search for a trendy city'

@@ -27,8 +27,6 @@ import com.ifindyouvideo.videos._
 class YoutubeService(implicit val system: ActorSystem) {
 
   import system.dispatcher
-
-  import YoutubeProtocol._
   import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 
   implicit val materializer = ActorMaterializer()

@@ -20,14 +20,14 @@ export default class MapHeaderSearchPopover extends Component {
   };
 
   render() {
-    const {searchTerm, cities, initVideos} = this.props
+    const {searchTerm, cities, year, month, initVideos} = this.props
         , st = searchTerm.trim().toLowerCase()
         , items = cities.filter(word =>
             st != '' && word.trim().toLowerCase().indexOf(st) >= 0
           ).map((word, index) =>
             <li style={styles.resultListItem}
                 key={'searchResult' + index}
-                onClick={() => initVideos(word)}>
+                onClick={() => initVideos(word, year, month)}>
               {word}
             </li>
           );
