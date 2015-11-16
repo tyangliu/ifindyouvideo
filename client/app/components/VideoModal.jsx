@@ -4,7 +4,9 @@ import React, { Component } from 'react';
 import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
+import XDate from 'xdate';
 import Video from './Video.jsx';
+import { roundCount, formatCount } from '../utils/numUtils.js';
 
 @Radium
 class VideoModal extends Component {
@@ -14,7 +16,7 @@ class VideoModal extends Component {
       , height = window.innerHeight;
 
     return {
-      width: (height - 180 - 80) * 16/9,
+      width: (height - 170 - 80) * 16/9,
       height: height - 80
     };
   };
@@ -55,27 +57,75 @@ class VideoModal extends Component {
 
     let video = this.props.video || {};
 
+    const {title, thumbnails, publishedAt, statistics, channel } = video
+        , viewCount = statistics ? statistics.viewCount : 0
+        , channelTitle = channel ? channel.title : '';
+
+    const publishedAtStr = publishedAt ? (new XDate(publishedAt)).toString('MMM M, yyyy') : ''
+        , viewCountStr   = viewCount ? formatCount(roundCount(viewCount)) : 0;
+
     return (
       <div style={styles.modalContainer}>
         <div style={styles.overlay[isOpen ? 'open' : 'hidden']} onClick={this.handleClose} />
         <div style={[styles.modal[isOpen ? 'open' : 'hidden'], {width, height}]}>
           <div style={styles.info}>
             <div style={styles.heading}>
-              <div style={styles.idContainer}>
-                <div style={styles.mapIcon} />
-                <p style={styles.mapId}>{mapId}</p>
+              <div>
+                <div style={styles.idContainer}>
+                  <div style={styles.mapIcon} />
+                  <p style={styles.mapId}>{mapId}</p>
+                </div>
+                <h2 style={[styles.title, {width: width - 165 + 'px'}]}>{video.title}</h2>
+                <i style={styles.closeIcon} className='material-icons' onClick={this.handleClose}>
+                  close
+                </i>
+                <div style={styles.clearfix} />
               </div>
-              <h2 style={[styles.title, {width: width - 165 + 'px'}]}>{video.title}</h2>
-              <i style={styles.closeIcon} className='material-icons' onClick={this.handleClose}>
-                close
-              </i>
+              <div style={styles.details}>
+                <p style={styles.infoBar}>
+                  <i className='material-icons' style={styles.infoBarIcon}>event</i>
+                  <span style={styles.infoBarText}>
+                    {publishedAtStr}
+                  </span>
+                </p>
+                <p style={[styles.infoBar, {marginLeft: '10px'}]}>
+                  <i className='material-icons' style={styles.infoBarIcon}>face</i>
+                  <span style={styles.infoBarText}>
+                    {channelTitle}
+                  </span>
+                </p>
+                <p style={[styles.infoBar, {float: 'right'}]}>
+                  <span style={[styles.infoBarText, {float: 'right'}]}>
+                    {viewCountStr}+ Views
+                  </span>
+                </p>
+                <div style={styles.clearfix} />
+              </div>
             </div>
           </div>
           <div style={{
                  width: width + 'px',
-                 height: height - 180 + 'px'
+                 height: height - 170 + 'px'
                }}>
             {isOpen ? <Video videoId={video.videoId} /> : null}
+          </div>
+          <div style={styles.actionBar}>
+
+            <button style={[styles.actionButton, styles.buttonLeft]}>
+              <i className='material-icons' style={styles.infoBarIcon}>thumb_up</i>
+              <span style={[styles.infoBarText, {float: 'left'}]}>Like</span>
+            </button>
+
+            <button style={[styles.actionButton, styles.buttonLeft]}>
+              <i className='material-icons' style={styles.infoBarIcon}>thumb_down</i>
+              <span style={[styles.infoBarText, {float: 'left'}]}>Dislike</span>
+            </button>
+
+            <button style={[styles.actionButton, styles.buttonRight]}>
+              <i className='material-icons' style={styles.infoBarIcon}>keyboard_arrow_up</i>
+              <span style={[styles.infoBarText, {float: 'left'}]}>More Details</span>
+            </button>
+
           </div>
           <div style={styles.clearfix} />
         </div>
@@ -92,6 +142,10 @@ export default Relay.createContainer(VideoModal, {
         videoId: rawId,
         title,
         description,
+        publishedAt,
+        channel {
+          title
+        },
         statistics {
           viewCount,
           likeCount
@@ -193,6 +247,56 @@ const styles = styler`
     margin-top: -2px
     float: right
     cursor: pointer
+
+  details
+    margin: 22px -18px 0
+    border-top: 1px solid rgba(0,0,0,0.18)
+
+  infoBar
+    float: left
+    padding: 11px 23px 0
+
+  infoBarIcon
+    float: left
+    display: block
+    font-size: 18px
+    line-height: 27px
+    margin-right: 8px
+    margin-left: -2px
+    text-align: left
+    color: rgba(0,0,0,0.4)
+
+  infoBarText
+    display: block
+    line-height: 27px
+    color: rgba(0,0,0,0.6)
+    font-size: 14px
+    text-transform: uppercase
+    letter-spacing: 1px
+    white-space: nowrap
+
+  actionBar
+    width: 100%
+    height: 50px
+
+  actionButton
+    background: none
+    border: none
+    outline: none
+    font-family: 'proxima-nova', sans-serif
+    font-weight: 700
+    font-size: 14px
+    color: rgba(0,0,0,0.6)
+    padding: 12px 23px
+    cursor: pointer
+
+  buttonLeft
+    border-right: 1px solid rgba(0,0,0,0.18)
+    float: left
+
+  buttonRight
+    border-left: 1px solid rgba(0,0,0,0.18)
+    float: right
 
   clearfix
     clear: both

@@ -5,17 +5,7 @@ import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
 import XDate from 'xdate';
-
-function roundCount(x) {
-  let len = x.toString().length
-    , magnitude = Math.pow(10, len - 1);
-
-  return Math.floor(x / magnitude) * magnitude;
-}
-
-function formatCount(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+import { roundCount, formatCount } from '../utils/numUtils.js';
 
 @Radium
 class VideoCard extends Component {
@@ -51,7 +41,7 @@ class VideoCard extends Component {
           </div>
           <h2 style={styles.title}>{title}</h2>
           <div style={styles.details}>
-            <p style={[styles.infoBar, styles.date]}>
+            <p style={styles.infoBar}>
               <i className='material-icons' style={styles.infoBarIcon}>event</i>
               <span style={styles.infoBarText}>
                 {publishedAtStr}

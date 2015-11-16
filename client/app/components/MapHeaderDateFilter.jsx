@@ -185,7 +185,7 @@ const styles = styler`
     background: linear-gradient(to top, rgba(255,255,255,.95) 0%,rgba(255,255,255,0.9) 100%)
     box-shadow: 0px 2px 2px 2px rgba(0,0,0,0.1)
     border-radius: 3px
-    padding: 14px
+    padding: 14px 16px
     transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out
 
     &hidden
