@@ -254,7 +254,7 @@ const styles = styler`
 
   infoBar
     float: left
-    padding: 11px 23px 0
+    padding: 10px 23px 0
 
   infoBarIcon
     float: left
