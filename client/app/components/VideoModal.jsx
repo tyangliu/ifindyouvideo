@@ -41,23 +41,40 @@ class VideoModal extends Component {
 
   handleResize = event => this.setState(this.calcDimensions());
 
+  handleBaseClick = event => {
+    this.setState({ detailsOpen: !this.state.detailsOpen });
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+  }
+
+  handleOuterClick = event => {
+    this.setState({ detailsOpen: false });
+  };
+
+  handlePopoverClick = event => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+  };
+
   componentDidMount() {
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('resize', this.handleResize);
+    document.addEventListener('click', this.handleOuterClick);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('keyup', this.handleKeyUp);
+    document.removeEventListener('click', this.handleOuterClick);
   }
 
   render() {
     const {isOpen, index: mapId} = this.props
-        , {width, height} = this.state;
+        , {width, height, detailsOpen} = this.state;
 
     let video = this.props.video || {};
 
-    const {title, thumbnails, publishedAt, statistics, channel } = video
+    const {title, thumbnails, publishedAt, statistics, channel, description } = video
         , viewCount = statistics ? statistics.viewCount : 0
         , channelTitle = channel ? channel.title : '';
 
@@ -111,21 +128,40 @@ class VideoModal extends Component {
           </div>
           <div style={styles.actionBar}>
 
-            <button style={[styles.actionButton, styles.buttonLeft]}>
+            <button style={[styles.actionButton.normal, styles.buttonLeft]}>
               <i className='material-icons' style={styles.infoBarIcon}>thumb_up</i>
               <span style={[styles.infoBarText, {float: 'left'}]}>Like</span>
             </button>
 
-            <button style={[styles.actionButton, styles.buttonLeft]}>
+            <button style={[styles.actionButton.normal, styles.buttonLeft]}>
               <i className='material-icons' style={styles.infoBarIcon}>thumb_down</i>
               <span style={[styles.infoBarText, {float: 'left'}]}>Dislike</span>
             </button>
 
-            <button style={[styles.actionButton, styles.buttonRight]}>
-              <i className='material-icons' style={styles.infoBarIcon}>keyboard_arrow_up</i>
+            <button style={[styles.actionButton[detailsOpen ? 'active' : 'normal'], styles.buttonRight]}
+                    onClick={this.handleBaseClick}>
+              <i className='material-icons'
+                 style={[
+                   styles.infoBarIcon,
+                   styles.popoverIcon[detailsOpen ? 'flipped' : 'normal']
+                 ]}>
+                keyboard_arrow_up
+              </i>
               <span style={[styles.infoBarText, {float: 'left'}]}>More Details</span>
             </button>
 
+          </div>
+          <div style={styles.moreDetails[detailsOpen ? 'open' : 'hidden']} onClick={this.handlePopoverClick}>
+            <div style={styles.descriptionContainer}>
+              <h3 style={styles.detailLabel}>Description</h3>
+              <p style={styles.contentBody}>
+                {description}
+              </p>
+              <div style={styles.contentBodyCover} />
+            </div>
+            <div style={styles.sidebarContainer}>
+            </div>
+            <div style={styles.clearfix} />
           </div>
           <div style={styles.clearfix} />
         </div>
@@ -270,7 +306,7 @@ const styles = styler`
     display: block
     line-height: 27px
     color: rgba(0,0,0,0.6)
-    font-size: 14px
+    font-size: 13px
     text-transform: uppercase
     letter-spacing: 1px
     white-space: nowrap
@@ -278,10 +314,11 @@ const styles = styler`
   actionBar
     width: 100%
     height: 50px
+    border-top: 1px solid rgba(0,0,0,0.18)
 
   actionButton
-    background: none
-    border: none
+    border-top: none
+    border-bottom: none
     outline: none
     font-family: 'proxima-nova', sans-serif
     font-weight: 700
@@ -290,13 +327,90 @@ const styles = styler`
     padding: 12px 23px
     cursor: pointer
 
+    &normal
+      background: rgba(255,255,255,0)
+
+    &active
+      background: linear-gradient(to top, rgba(215,215,215,1) 0%,rgba(215,215,215,1) 93%, rgba(195,195,195,1) 100%)
+
   buttonLeft
+    border-left: none
     border-right: 1px solid rgba(0,0,0,0.18)
     float: left
 
   buttonRight
     border-left: 1px solid rgba(0,0,0,0.18)
+    border-right: none
     float: right
+
+  popoverIcon
+    transition: transform 0.15s ease-in-out
+    font-size: 24px
+    margin-left: -10px
+    margin-top: -1px
+
+    &normal
+      transform: rotate(0deg)
+
+    &flipped
+      transform: rotate(180deg)
+
+
+  moreDetails
+    position: absolute
+    left: 0
+    right: 0
+    bottom: 50px
+    height: 250px
+    transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out
+    transform-origin: 100% 100%
+    box-shadow: 0 -1px 2px rgba(0,0,0,0.15)
+
+    &open
+      opacity: 1
+      pointer-events: auto
+      transform: scale(1)
+
+    &hidden
+      opacity: 0
+      pointer-events: none
+      transform: scale(0.5, 0.3)
+
+  descriptionContainer
+    width: 70%
+    padding: 23px 30px 23px 23px
+    border-right: 1px solid rgba(0,0,0,0.18)
+    background: linear-gradient(to bottom, rgba(255,255,255,.95) 0%, rgba(255,255,255,.95) 80%, rgba(255,255,255,0.9) 100%)
+    position: relative
+    overflow: hidden
+    height: 100%
+    float: left
+
+  detailLabel
+    font-size: 16px
+    font-weight: 700
+    text-transform: uppercase
+    letter-spacing: 1px
+    margin-bottom: 16px
+    color: rgba(0,0,0,0.4)
+
+  contentBody
+    white-space: pre-wrap
+
+  contentBodyCover
+    background: linear-gradient(to top, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%)
+    position: absolute
+    bottom: 0
+    left: 0
+    right: 0
+    height: 20%
+
+  sidebarContainer
+    width: 30%
+    height: 100%
+    padding: 20px 23px
+    background: rgba(255,255,255,0.95)
+    float: left
 
   clearfix
     clear: both

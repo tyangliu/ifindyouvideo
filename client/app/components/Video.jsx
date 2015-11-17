@@ -23,7 +23,7 @@ export default class Video extends Component {
     if (!document.getElementById('iframe')) {
       let iframe = document.createElement('iframe');
       iframe.setAttribute('id', 'iframe');
-      iframe.setAttribute('src', baseUrl + videoId);
+      iframe.setAttribute('src', baseUrl + videoId + '?iv_load_policy=3');
       iframe.setAttribute('allowfullscreen', 'allowfullscreen');
       iframe.width = '1600px';
       iframe.height = '900px';
