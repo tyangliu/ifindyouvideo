@@ -92,7 +92,7 @@ export default class UserWidget extends Component {
 
 const styles = styler`
   userWidget
-    margin-top: 4px
+    margin-top: 2px
     position: relative
 
   buttonContainer
