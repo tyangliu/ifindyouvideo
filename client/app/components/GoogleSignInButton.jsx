@@ -19,7 +19,7 @@ export default class GoogleSignInButton extends Component {
 
       platform.onload = () => gapi.load('auth2', () => {
         let auth2 = gapi.auth2.init({
-          client_id: authConfig.clientId,
+          client_id: config.clientId,
           cookiepolicy: 'single_host_origin',
           scope: 'https://www.googleapis.com/auth/youtube'
         });
