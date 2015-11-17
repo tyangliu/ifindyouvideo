@@ -379,7 +379,7 @@ const styles = styler`
   descriptionContainer
     width: 70%
     padding: 23px 30px 23px 23px
-    border-right: 1px solid rgba(0,0,0,0.18)
+    border-right: 1px solid rgba(180,180,180,0.8)
     background: linear-gradient(to bottom, rgba(255,255,255,.95) 0%, rgba(255,255,255,.95) 80%, rgba(255,255,255,0.9) 100%)
     position: relative
     overflow: hidden

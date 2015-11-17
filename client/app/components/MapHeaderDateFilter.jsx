@@ -186,17 +186,18 @@ const styles = styler`
     box-shadow: 0px 2px 2px 2px rgba(0,0,0,0.1)
     border-radius: 3px
     padding: 14px 16px
+    transform-origin: 0% 0%
     transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out
 
     &hidden
       opacity: 0
       pointer-events: none
-      transform: translateY(-5%)
+      transform: translateY(-5%) scale(0.85)
 
     &open
       opacity: 1
       pointer-events: auto
-      transform: translateY(0)
+      transform: translateY(0) scale(1)
 
   popoverLabel
     font-size: 10px
