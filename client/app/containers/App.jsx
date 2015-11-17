@@ -9,7 +9,6 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Map from '../components/Map.jsx';
 import Videos from './Videos.jsx';
 import UserWidget from '../components/UserWidget.jsx';
-import GoogleSignInButton from '../components/GoogleSignInButton.jsx';
 
 @Radium
 class App extends Component {
@@ -47,7 +46,7 @@ class App extends Component {
       <div style={styles.app}>
         <Style rules={styles.appRules} />
         <main style={styles.main}>
-          <div style={styles.userContainer.signIn}><GoogleSignInButton /></div>
+          <div style={styles.userContainer}><UserWidget /></div>
           <Map showOverlays={showOverlays}
                activeVideo={activeVideo}
                setActiveVideo={this.setActiveVideo}
@@ -173,10 +172,5 @@ const styles = styler`
     z-index: 15
     position: absolute
     right: 20px
-
-    &signIn
-      top: 21px
-
-    &user
-      top: 24px
+    top: 21px
 `;
