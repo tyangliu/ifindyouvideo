@@ -396,6 +396,7 @@ const styles = styler`
 
   contentBody
     white-space: pre-wrap
+    font-size: 14px
 
   contentBodyCover
     background: linear-gradient(to top, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%)

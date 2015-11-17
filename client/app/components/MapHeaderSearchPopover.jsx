@@ -32,7 +32,7 @@ export default class MapHeaderSearchPopover extends Component {
             </li>
           );
 
-    const noResultsEl = <li style={{color: 'rgba(0,0,0,0.3)'}}>No results found</li>
+    const noResultsEl = <li style={{color: 'rgba(0,0,0,0.3)', marginBottom: '8px'}}>No results found</li>
 
     return (
       <div style={styles.popOver[st.length <= 0 ? 'hidden' : 'active']}>
