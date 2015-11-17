@@ -16,8 +16,10 @@ class VideoModal extends Component {
       , height = window.innerHeight;
 
     return {
-      width: (height - 170 - 80) * 16/9,
-      height: height - 80
+      width: Math.round((height - 170 - 80) * 16/9),
+      height: height - 80,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight
     };
   };
 
@@ -70,7 +72,7 @@ class VideoModal extends Component {
 
   render() {
     const {isOpen, index: mapId} = this.props
-        , {width, height, detailsOpen} = this.state;
+        , {width, height, windowWidth, windowHeight, detailsOpen} = this.state;
 
     let video = this.props.video || {};
 
@@ -84,7 +86,12 @@ class VideoModal extends Component {
     return (
       <div style={styles.modalContainer}>
         <div style={styles.overlay[isOpen ? 'open' : 'hidden']} onClick={this.handleClose} />
-        <div style={[styles.modal[isOpen ? 'open' : 'hidden'], {width, height}]}>
+        <div style={[styles.modal[isOpen ? 'open' : 'hidden'], {
+                     width,
+                     height,
+                     top: (windowHeight - height) / 2,
+                     left: (windowWidth - width) / 2
+                   }]}>
           <div style={styles.info}>
             <div style={styles.heading}>
               <div>
@@ -220,8 +227,6 @@ const styles = styler`
     position: absolute
     box-shadow: 0 1px 2px rgba(0,0,0,0.2)
     border-radius: 3px
-    top: 50%
-    left: 50%
     background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.65) 50%,rgba(255,255,255,0.9) 100%)
     padding: 0
     overflow: hidden
@@ -231,11 +236,11 @@ const styles = styler`
     &open
       pointer-events: auto
       opacity: 1
-      transform: translate(-50%, -50%)
+      transform: translate(0)
 
     &hidden
       opacity: 0
-      transform: translate(-50%, 100%)
+      transform: translate(0, 100%)
 
   info
     height: 120px
@@ -314,7 +319,7 @@ const styles = styler`
   actionBar
     width: 100%
     height: 50px
-    border-top: 1px solid rgba(0,0,0,0.18)
+    border-top: 1px solid rgba(190,190,190,1)
 
   actionButton
     border-top: none
