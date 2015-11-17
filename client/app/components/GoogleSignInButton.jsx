@@ -3,13 +3,41 @@
 import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
+import config from '../config.js';
 
 @Radium
 export default class GoogleSignInButton extends Component {
 
+  componentDidMount() {
+    if (!document.getElementById('google-platform-script')) {
+      let platform = document.createElement('script');
+      platform.id = 'google-platform-script';
+      platform.src = 'https://apis.google.com/js/api:client.js';
+      platform.async = true; platform.defer = true;
+
+      document.head.appendChild(platform);
+
+      platform.onload = () => gapi.load('auth2', () => {
+        let auth2 = gapi.auth2.init({
+          client_id: authConfig.clientId,
+          cookiepolicy: 'single_host_origin',
+          scope: 'https://www.googleapis.com/auth/youtube'
+        });
+
+        let btn = document.getElementById('google-sign-in-button');
+
+        auth2.attachClickHandler(btn, {}, googleUser => {
+          console.log(googleUser.getBasicProfile().getName());
+        }, err => {
+          console.error(JSON.stringify(err, undefined, 2));
+        });
+      });
+    }
+  }
+
   render() {
     return (
-      <div style={styles.signInButton}>
+      <div style={styles.signInButton} id='google-sign-in-button'>
         <div style={styles.googleIcon} />
         <p style={styles.label}>Sign in with Google</p>
         <div style={styles.clearfix} />
