@@ -9,25 +9,29 @@ import config from '../config.js';
 export default class GoogleSignInButton extends Component {
 
   componentDidMount() {
+    const { setAuthObj } = this.props;
+
     if (!document.getElementById('google-platform-script')) {
       let platform = document.createElement('script');
       platform.id = 'google-platform-script';
       platform.src = 'https://apis.google.com/js/api:client.js';
-      platform.async = true; platform.defer = true;
-
+      
       document.head.appendChild(platform);
 
       platform.onload = () => gapi.load('auth2', () => {
+
         let auth2 = gapi.auth2.init({
           client_id: config.clientId,
           cookiepolicy: 'single_host_origin',
           scope: 'https://www.googleapis.com/auth/youtube'
         });
 
+        auth2.isSignedIn.listen(() => setAuthObj(auth2));
+
         let btn = document.getElementById('google-sign-in-button');
 
         auth2.attachClickHandler(btn, {}, googleUser => {
-          console.log(googleUser.getBasicProfile().getName());
+          setAuthObj(auth2);
         }, err => {
           console.error(JSON.stringify(err, undefined, 2));
         });
