@@ -38,6 +38,7 @@ export default class MapHeader extends Component {
             <i className='material-icons' style={styles.icon}>arrow_drop_down</i>
           </div>
           <div style={styles.clearfix} />
+
         </section>
       </div>
     );
