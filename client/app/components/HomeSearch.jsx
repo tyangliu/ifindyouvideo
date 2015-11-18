@@ -40,14 +40,13 @@ export default class HomeSearch extends Component {
       this.setState({index: oldIndex + 1});
     }
     else if (keyCode == 13 && oldIndex > -1){
-      console.log("Go to link");
       this.setState({enter: true});
     }
   };
 
   reduceIndex = () => {
     var oldIndex = this.state.index;
-    this.setState({index: oldIndex-1})
+    this.setState({index: oldIndex-1});
   };
 
   resetEnter = () => {
@@ -68,7 +67,7 @@ export default class HomeSearch extends Component {
     var length = textbox.value.length*2;
     if(this.state.index == -1){
       textbox.focus();
-      setTimeout(function() {
+      setTimeout(() => {
         textbox.setSelectionRange(length,length);
       }, 0);
     }
