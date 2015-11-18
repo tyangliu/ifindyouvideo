@@ -82,7 +82,11 @@ export default Relay.createContainer(VideoCard, {
           likeCount
         },
         title,
-        publishedAt
+        publishedAt,
+        location {
+          latitude,
+          longitude
+        }
       }
     `
   }
