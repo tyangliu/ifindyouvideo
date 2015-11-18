@@ -33,13 +33,17 @@ export default class Video extends Component {
       iframe.style.width = '100%';
       iframe.style.height = '100%';
 
-      let container = document.getElementById('iframeContainer');
+      // wait some time before reflowing the DOM to avoid hiccup
+      // with the CSS transition
+      setTimeout(() => {
+        let container = document.getElementById('iframeContainer');
 
-      while (container.hasChildNodes()) {
-        container.removeChild(container.lastChild);
-      }
+        while (container.hasChildNodes()) {
+          container.removeChild(container.lastChild);
+        }
 
-      container.appendChild(iframe);
+        container.appendChild(iframe);
+      }, 250);
     }
   }
 

@@ -214,7 +214,7 @@ const styles = styler`
     right: 0
     bottom: 0
     background-color: rgba(0,0,0,0.55)
-    transition: opacity 0.15s ease-in-out
+    transition: opacity 0.3s ease-in-out
 
     &open
       pointer-events: auto
@@ -231,7 +231,7 @@ const styles = styler`
     padding: 0
     overflow: hidden
     z-index: 21
-    transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out
 
     &open
       pointer-events: auto
