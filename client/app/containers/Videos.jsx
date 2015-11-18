@@ -14,12 +14,17 @@ class Videos extends Component {
 
   componentWillMount() {
     this.props.setShowOverlays(true);
-    let city = this.props.location.query.city || '';
-    this.props.initVideos(city);
+    let { city, year, month } = this.props.location.query;
+    this.props.initVideos(city, year, month);
   }
 
   render() {
-    const {videos, activeVideo, openVideo, setActiveVideo, setOpenVideo} = this.props;
+    const {
+      videos, activeVideo, openVideo, cities,
+      setActiveVideo, setOpenVideo, initVideos
+    } = this.props;
+
+    let { city, year, month } = this.props.location.query;
 
     return (
       <div style={styles.videos}>
@@ -27,7 +32,7 @@ class Videos extends Component {
                     video={openVideo ? videos[openVideo - 1] : null}
                     index={openVideo}
                     setOpenVideo={setOpenVideo} />
-        <MapHeader />
+        <MapHeader city={city} year={year} month={month} cities={cities} initVideos={initVideos} />
         <div style={styles.cardListContainer}>
           <VideoCardList videos={videos}
                          activeVideo={activeVideo}

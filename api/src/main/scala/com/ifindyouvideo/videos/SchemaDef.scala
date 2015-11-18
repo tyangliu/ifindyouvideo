@@ -7,7 +7,7 @@ import org.joda.time.format.ISODateTimeFormat
 
 object SchemaDef {
   val NodeDefinition(nodeInterface, nodeField) = Node.definition((id: GlobalId, ctx: Context[UserContext, Unit]) ⇒ {
-    if (id.typeName == "Video") ctx.ctx.videoRepo.getVideo(id.id)
+    if (id.typeName == "Video") ctx.ctx.videoRepo.get(id.id)
      // TODO: this is hardcoded to current user right now
     else if (id.typeName == "User") ctx.ctx.userRepo.getUser(id.id)
     else None
@@ -102,23 +102,23 @@ object SchemaDef {
     "Statistics",
     "Statistics for a video",
     fields[Unit, Statistics](
-      Field("viewCount", StringType,
+      Field("viewCount", OptionType(StringType),
         Some("The view count of a video"),
         resolve = _.value.viewCount
       ),
-      Field("likeCount", StringType,
+      Field("likeCount", OptionType(StringType),
         Some("The like count of a video"),
         resolve = _.value.likeCount
       ),
-      Field("dislikeCount", StringType,
+      Field("dislikeCount", OptionType(StringType),
         Some("The dislike count of a video"),
         resolve = _.value.dislikeCount
       ),
-      Field("favoriteCount", StringType,
+      Field("favoriteCount", OptionType(StringType),
         Some("The favorite count of a video"),
         resolve = _.value.favoriteCount
       ),
-      Field("commentCount", StringType,
+      Field("commentCount", OptionType(StringType),
         Some("The comment count of a video"),
         resolve = _.value.commentCount
       )
@@ -182,31 +182,16 @@ object SchemaDef {
   )
 
   val RawId = Argument("rawId", StringType, description = "id of the video")
-  val Latitude = Argument("latitude",
-    BigDecimalType,
-    description = "latitude of the search range"
-  )
-  val Longitude = Argument("longitude",
-    BigDecimalType,
-    description = "longitude of the search range"
-  )
-  val Radius = Argument("radius", StringType, "search radius")
-
-  val City = Argument("city", StringType, "name of a city")
-  val Year = Argument("year", IntType, "year to find videos from")
+  val City  = Argument("city", StringType, "name of a city")
+  val Year  = Argument("year", IntType, "year to find videos from")
   val Month = Argument("month", IntType, "month to find videos from")
 
   val UserType: ObjectType[UserContext,User] = ObjectType(
     "User",
     "A user",
     interfaces[UserContext, User](nodeInterface),
-    //idFields[User]("User") ++
     fields[UserContext, User](
       Node.globalIdField[UserContext, User]("User"),
-      // TODO: remove
-      Field("location", OptionType(LocationType),
-        resolve = ctx => ctx.ctx.location
-      ),
       Field("cityBounds", OptionType(BoundsType),
         arguments = City :: Nil,
         resolve = ctx => ctx.ctx.getCityBounds(ctx arg City)
@@ -223,11 +208,6 @@ object SchemaDef {
         resolve = ctx => ctx.ctx.videoRepo.getByYearMonthCity(
           ctx arg Year, ctx arg Month, ctx arg City
         )
-      ),
-      // TODO: remove
-      Field("videosByLocation", ListType(VideoType),
-        arguments = Latitude :: Longitude :: Radius :: Nil,
-        resolve = ctx => ctx.ctx.videoRepo.findVideos(ctx arg Latitude, ctx arg Longitude, ctx arg Radius)
       )
     )
   )

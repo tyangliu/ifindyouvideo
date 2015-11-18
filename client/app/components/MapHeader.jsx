@@ -4,18 +4,15 @@ import React, { Component } from 'react';
 import Radium from 'radium';
 import styler from 'react-styling';
 import SearchPopover from './SearchPopover.jsx';
+import CurrentCity from './CurrentCity.jsx';
+import MapHeaderSearch from './MapHeaderSearch.jsx';
+import MapHeaderDateFilter from './MapHeaderDateFilter.jsx';
 
 @Radium
 export default class MapHeader extends Component {
 
-  state = {
-    searchTerm: ''
-  };
-
-  handleChange = event => this.setState({searchTerm: event.target.value});
-
-
   render() {
+    const { city, year, month, cities, initVideos } = this.props;
     return (
       <div style={styles.mapHeader}>
         <section style={styles.header}>
@@ -28,28 +25,13 @@ export default class MapHeader extends Component {
 
         <section style={styles.optionsBar}>
 
+          {city && city.length > 0 ?
+            <CurrentCity city={city} initVideos={initVideos} year={year} month={month} /> :
+            <MapHeaderSearch cities={cities} year={year} month={month} initVideos={initVideos} />
+          }
 
-          <div style={styles.search}>
-            <SearchPopover searchTerm={this.state.searchTerm}
-                           cities={this.props.cities} />
-            <i className='material-icons' style={[styles.icon,styles.searchIcon]}>search</i>
-            <input type='text' style={styles.searchInput}
-                   placeholder='Search for a trendy city'
-                   onChange={this.handleChange}/>
-            <i className='material-icons' style={styles.icon}>more_vert</i>
-            <div style={styles.clearfix} />
-          </div>
+          <MapHeaderDateFilter initVideos={initVideos} year={year} month={month} city={city} />
 
-
-          <div style={styles.current}>
-            <i className='material-icons' style={styles.icon}>location_city</i>
-            <p style={styles.currentText}>Vancouver, BC</p>
-            <i className='material-icons' style={styles.icon}>close</i>
-          </div>
-          <div style={[styles.dropdown, {float: 'left'}]}>
-            <p style={styles.dropdownText}>Past Week</p>
-            <i className='material-icons' style={styles.icon}>arrow_drop_down</i>
-          </div>
           <div style={{float: 'right', borderLeft: '1px solid rgba(0,0,0,0.15)', padding: '0 20px 0 14px'}}>
             <i className='material-icons' style={[styles.icon, {marginRight: '7px'}]}>favorite</i>
             <p style={styles.dropdownText}>My Locations</p>
@@ -100,12 +82,6 @@ const styles = styler`
     background: rgba(255,255,255,0.9)
     box-shadow: 0 1px 2px rgba(0,0,0,0.2)
 
-  search
-    margin-left: 26px
-    padding-right: 20px
-    border-right: 1px solid rgba(0,0,0,0.15)
-    float: left
-
   icon
     background-image: linear-gradient(to bottom, rgba(239,46,81,1) 7%, rgba(241,72,75,1) 30%, rgba(248,152,56,1) 100%)
     background-clip: text
@@ -113,35 +89,6 @@ const styles = styler`
     font-size: 20px
     line-height: 44px
     float: left
-
-  searchInput
-    background: none
-    border: none
-    outline: none
-    float: left
-    line-height: 44px
-    padding: 0
-    margin-left: 14px
-    font-family: inherit
-    font-size: 13px
-    color: rgba(102,102,102,1)
-    position: relative
-    width: 240px
-
-  current
-    border-right: 1px solid rgba(0,0,0,0.15)
-    float: left
-    padding: 0 20px 0 26px
-
-  currentText
-    color: rgba(90,90,90,1)
-    font-size: 12px
-    font-weight: 700
-    text-transform: uppercase
-    letter-spacing: 1px
-    float: left
-    line-height: 42px
-    margin: 2px 20px 0 14px
 
   dropdown
     border-right: 1px solid rgba(0,0,0,0.15)

@@ -20,11 +20,11 @@ case class Location(latitude: BigDecimal, longitude: BigDecimal, altitude: BigDe
 case class Channel(id: String, title: String)
 
 case class Statistics(
-  viewCount: String,
-  likeCount: String,
-  dislikeCount: String,
-  favoriteCount: String,
-  commentCount: String
+  viewCount: Option[String],
+  likeCount: Option[String],
+  dislikeCount: Option[String],
+  favoriteCount: Option[String],
+  commentCount: Option[String]
 )
 
 case class Image(url: String, width: Int, height: Int)

@@ -4,10 +4,10 @@ import React, { Component } from 'react';
 import Relay from 'react-relay';
 import DocumentTitle from 'react-document-title';
 import GoogleMap from 'google-map-react';
+import { fitBounds } from 'google-map-react/utils';
 import Radium from 'radium';
 import styler from 'react-styling';
 import VideoOverlay from './VideoOverlay.jsx';
-import { fitBounds } from 'google-map-react/utils';
 
 const createMapOptions = maps => ({
   zoomControlOptions: {
@@ -25,21 +25,19 @@ class Map extends Component {
   };
 
   static defaultProps = {
-    zoom: 9,
+    defaultZoom: 9,
     showOverlays: true,
     videos: [],
     defaultCenter: {
-      latitude: 59.288331692,
-      longitude: -135.637207031
+      lat: 59.288331692,
+      lng: -135.637207031
     }
   };
 
-  handleResize = event => {
-    this.setState({
-      width: window.innerWidth,
-      height: window.innerHeight
-    })
-  };
+  handleResize = () => this.setState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
@@ -50,19 +48,12 @@ class Map extends Component {
   }
 
   render() {
-    console.log(this.props.bounds);
     const {
       showOverlays, activeVideo, setActiveVideo, setOpenVideo,
-      videos, bounds, defaultCenter
+      videos, bounds, defaultCenter, defaultZoom
     } = this.props;
 
     const { width, height } = this.state;
-
-    const activeVideoLocation = activeVideo !== null && videos[activeVideo-1]
-                              ? videos[activeVideo-1].location
-                              : null;
-
-    const {latitude: lat, longitude: lng} = (activeVideoLocation || defaultCenter);
 
     const overlays = showOverlays ? videos.map((video, index) =>
       <VideoOverlay lat={video.location.latitude}
@@ -75,19 +66,26 @@ class Map extends Component {
                     key={index + 1} />
     ) : [];
 
-    const {center, zoom} = (bounds) ?  fitBounds({
+    const { center, zoom } = !bounds ? {
+      center: defaultCenter,
+      zoom: defaultZoom
+    } : fitBounds({
       nw : { lat: bounds.nw.latitude, lng: bounds.nw.longitude},
       se : { lat: bounds.se.latitude, lng: bounds.se.longitude}
-    }, {width, height}) : {defaultCenter, defaultZoom: this.props.zoom}
+    }, { width, height });
 
-    console.log({center, zoom});
+    const activeLocation = activeVideo !== null && videos[activeVideo-1]
+                         ? videos[activeVideo-1].location
+                         : null;
+
+    const { latitude: activeLat, longitude: activeLng } = activeLocation || {};
 
     return (
       <div style={styles.map}>
         <GoogleMap defaultCenter={defaultCenter}
-                   defaultZoom={this.props.zoom}
+                   defaultZoom={defaultZoom}
                    zoom={zoom}
-                   center={(activeVideoLocation) ? {lat, lng} : center}
+                   center={activeLocation ? { lat: activeLat, lng: activeLng } : center}
                    options={createMapOptions}>
           {overlays}
         </GoogleMap>

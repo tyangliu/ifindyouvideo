@@ -22,10 +22,20 @@ class App extends Component {
   setActiveVideo  = index => this.setState({activeVideo: index});
   setOpenVideo    = index => this.setState({openVideo: index});
   setShowOverlays = show  => this.setState({showOverlays: !!show});
-  initVideos      = city  => {
-    this.props.history.replaceState({city},
-      (city && city.length > 0) ? `/videos?city=${city}` : '/videos'
-    );
+
+  initVideos = (city='', year=0, month=0) => {
+    let path = '/videos'
+      , params = [];
+
+    if (city && city.length > 0) { params.push(`city=${city}`); }
+    if (year) { params.push(`year=${year}`); }
+    if (month) { params.push(`month=${month}`); }
+
+    if (params.length > 0) { path += '?' + params.join('&'); }
+
+    this.props.history.replaceState({ city, year, month }, path);
+
+    this.setState({openVideo: null, activeVideo: null});
   };
 
   render() {
@@ -67,12 +77,14 @@ class App extends Component {
 
 export default Relay.createContainer(App, {
   initialVariables: {
-    city: ''
+    city: '',
+    year: 0,
+    month: 0
   },
   fragments: {
     viewer: () => Relay.QL`
       fragment on User {
-        videos: videosByCity(year: 0, month: 0, city: $city) {
+        videos: videosByCity(year: $year, month: $month, city: $city) {
           ${Videos.getFragment('videos')}
           ${Map.getFragment('videos')}
         },
@@ -159,6 +171,6 @@ const styles = styler`
   userContainer
     z-index: 15
     position: absolute
-    top: 24px
     right: 20px
+    top: 21px
 `;

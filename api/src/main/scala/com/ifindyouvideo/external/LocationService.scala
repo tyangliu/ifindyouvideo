@@ -90,8 +90,3 @@ class LocationService extends Actor {
     3958.761 * 1.60934 * greatCircleDistance
   }
 }
-
-
-
-
-
