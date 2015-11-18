@@ -39,9 +39,9 @@ export default class Home extends Component {
           <section style={styles.popListContainer}>
             <h3 style={styles.popListLabel}>Popular Cities</h3>
             <ul style={styles.popList}>
-              <li style={styles.popListItem}>Vancouver, BC</li>
-              <li style={styles.popListItem}>New York City, NY</li>
-              <li style={styles.popListItem}>San Francisco, CA</li>
+              <li style={styles.popListItem}>{this.props.cities[0]}</li>
+              <li style={styles.popListItem}>{this.props.cities[1]}</li>
+              <li style={styles.popListItem}>{this.props.cities[2]}</li>
             </ul>
           </section>
 

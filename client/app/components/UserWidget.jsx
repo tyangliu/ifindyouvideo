@@ -142,7 +142,7 @@ const styles = styler`
 
   popover
     position: absolute
-    top: 40px
+    top: 24px
     right: 0
     width: 160px
     background: linear-gradient(to top, rgba(255,255,255,.95) 0%,rgba(255,255,255,0.9) 100%)
