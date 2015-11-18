@@ -21,14 +21,29 @@ export default class SearchPopover extends Component {
     index: -1
   };
 
-  componentWillMount = () => this.setState({matches: []});
+  componentWillMount = () => this.setState({
+                                matches: []});
 
   componentWillReceiveProps = (nextProps) => {
+    if(nextProps.enter == true){
+      this.props.resetEnter();
+      var city = this.state.matches[this.props.index];
+      console.log(city);
+
+      console.log(this.context.history, this.context.location);
+
+      this.props.history.replaceState({city},
+          (city && city.length > 0) ? `/videos?city=${city}` : '/videos'
+      );
+
+      return;
+    }
+
     if(nextProps.searchTerm == this.props.searchTerm){
       if(nextProps.index > this.state.matches.length-1){
         this.props.reduceIndex();
       }
-      return true;
+      return;
     }
 
     const {searchTerm, cities} = nextProps
@@ -39,7 +54,6 @@ export default class SearchPopover extends Component {
     if(nextProps.index > items.length-1){
       this.props.reduceIndex();
     }
-    return true;
   };
 
   render() {

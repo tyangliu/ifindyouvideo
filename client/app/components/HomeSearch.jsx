@@ -19,7 +19,8 @@ export default class HomeSearch extends Component {
       'Virginia',
       'New York City, NY',
       'Seattle, WA'
-    ]
+    ],
+    enter: false
   };
 
   handleChange = event => {
@@ -30,20 +31,28 @@ export default class HomeSearch extends Component {
     var keyCode = event.keyCode | event.which;
     var oldIndex = this.state.index;
 
-    if(event.keyCode == 38){
+    if(keyCode == 38){
       if (oldIndex >= 0){
         this.setState({index: oldIndex-1});
       }
     }
-    else if (event.keyCode == 40){
+    else if (keyCode == 40){
       this.setState({index: oldIndex + 1});
+    }
+    else if (keyCode == 13 && oldIndex > -1){
+      console.log("Go to link");
+      this.setState({enter: true});
     }
   };
 
   reduceIndex = () => {
     var oldIndex = this.state.index;
     this.setState({index: oldIndex-1})
-  }
+  };
+
+  resetEnter = () => {
+    this.setState({enter: false});
+  };
 
   render() {
     return (
@@ -51,7 +60,10 @@ export default class HomeSearch extends Component {
         <SearchPopover searchTerm={this.state.searchTerm}
                        cities={this.props.cities}
                        index={this.state.index}
-                       reduceIndex={this.reduceIndex} />
+                       reduceIndex={this.reduceIndex}
+                       enter={this.state.enter}
+                       resetEnter={this.resetEnter}
+                       history={this.props.history} />
         <i className='material-icons' style={[styles.icon, styles.searchIcon]}>search</i>
         <input type='text' style={styles.searchInput}
                placeholder='Search for a trendy city'
