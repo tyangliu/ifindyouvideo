@@ -153,7 +153,7 @@ const styles = styler`
     user-select: none
 
     &normal
-      background: rgba(255,255,255,1)
+      background: rgba(255,255,255,0)
 
     &active
       background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,rgba(240,240,240,1) 93%, rgba(225,225,225,1) 100%)
