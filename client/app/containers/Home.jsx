@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import DocumentTitle from 'react-document-title';
 import Radium from 'radium';
 import styler from 'react-styling';
+import HomeSearch from '../components/HomeSearch.jsx';
 
 @Radium
 export default class Home extends Component {
@@ -31,16 +32,8 @@ export default class Home extends Component {
           </section>
 
           <section style={styles.search}>
-            <div style={styles.searchInner}>
-              <i className='material-icons' style={[styles.icon, styles.searchIcon]}>search</i>
-              <input type='text' style={styles.searchInput} placeholder='Search for a trendy city' />
-              <Link to='/videos'>
-                <button style={styles.optionsButton}>
-                  <i className='material-icons' style={styles.icon}>more_vert</i>
-                </button>
-              </Link>
-              <div style={styles.clearfix} />
-            </div>
+            <HomeSearch cities={this.props.cities}
+                        history={this.props.history} />
           </section>
 
           <section style={styles.popListContainer}>
@@ -66,7 +59,9 @@ const styles = styler`
   home
     width: 100%
     height: 100vh
-    position: relative
+    position: absolute
+    top: 0
+    left: 0
     overflow-y: hidden
     color: white
 
@@ -100,8 +95,8 @@ const styles = styler`
 
   textualLogoImg
     background: url(${require('../images/logo-text-white.svg')}) no-repeat left center;
-    height: 48px
-    margin-top: 28px
+    height: 54px
+    margin-top: 24px
     margin-bottom: 10px
 
   tagline
@@ -109,47 +104,7 @@ const styles = styler`
 
   search
     height: 60px
-    background: rgba(255,255,255,0.85)
-
-  searchInner
-    max-width: 600px
-    margin: 0 auto
-
-  icon
-    background: linear-gradient(to bottom, rgba(239,46,81,1) 7%, rgba(241,72,75,1) 30%, rgba(248,152,56,1) 100%)
-    background-clip: text
-    text-fill-color: transparent
-    font-size: 28px
-    line-height: 60px
-
-  searchIcon
-    width: 106px
-    margin-right: 44px
-    display: block
-    float: left
-    text-align: center
-
-  searchInput
-    background: none
-    border: none
-    outline: none
-    display: inline-block
-    line-height: 40px
-    padding: 10px 0
-    font-family: inherit
-    font-size: 16px
-    float: left
-    color: rgba(102,102,102,1)
-
-  optionsButton
-    width: 40px
-    float: right
-    display: block
-    text-align: center
-    background: none
-    outline: none
-    border: none
-    padding: 0
+    background: rgba(255,255,255,0.95)
 
   popListContainer
     max-width: 300px

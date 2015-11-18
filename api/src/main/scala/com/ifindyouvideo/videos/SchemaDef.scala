@@ -3,12 +3,15 @@ package com.ifindyouvideo.videos
 import sangria.relay._
 import sangria.schema._
 import scala.concurrent.Future
+import org.joda.time.format.ISODateTimeFormat
 
 object SchemaDef {
-  val NodeDefinition(nodeInterface, nodeField) = Node.definition((id: GlobalId, ctx: Context[VideoRepo, Unit]) ⇒ {
-    if (id.typeName == "Video") ctx.ctx.getVideo(id.id)
+  val NodeDefinition(nodeInterface, nodeField) = Node.definition((id: GlobalId, ctx: Context[UserContext, Unit]) ⇒ {
+    if (id.typeName == "Video") ctx.ctx.videoRepo.get(id.id)
+     // TODO: this is hardcoded to current user right now
+    else if (id.typeName == "User") ctx.ctx.userRepo.getUser(id.id)
     else None
-  }, Node.possibleNodeTypes[VideoRepo, Node](VideoType))
+  }, Node.possibleNodeTypes[UserContext, Node](VideoType, UserType))
 
   def idFields[T : Identifiable](name: String) = fields[Unit, T](
     Node.globalIdField(name),
@@ -99,25 +102,25 @@ object SchemaDef {
     "Statistics",
     "Statistics for a video",
     fields[Unit, Statistics](
-      Field("viewCount", StringType,
+      Field("viewCount", OptionType(StringType),
         Some("The view count of a video"),
         resolve = _.value.viewCount
       ),
-      Field("likeCount", StringType,
+      Field("likeCount", OptionType(StringType),
         Some("The like count of a video"),
-        resolve = _.value.viewCount
+        resolve = _.value.likeCount
       ),
-      Field("dislikeCount", StringType,
+      Field("dislikeCount", OptionType(StringType),
         Some("The dislike count of a video"),
-        resolve = _.value.viewCount
+        resolve = _.value.dislikeCount
       ),
-      Field("favoriteCount", StringType,
+      Field("favoriteCount", OptionType(StringType),
         Some("The favorite count of a video"),
-        resolve = _.value.viewCount
+        resolve = _.value.favoriteCount
       ),
-      Field("commentCount", StringType,
+      Field("commentCount", OptionType(StringType),
         Some("The comment count of a video"),
-        resolve = _.value.viewCount
+        resolve = _.value.commentCount
       )
     )
   )
@@ -138,7 +141,7 @@ object SchemaDef {
       ),
       Field("publishedAt", StringType,
         Some("The published date of the video"),
-        resolve = _.value.publishedAt
+        resolve = v => ISODateTimeFormat.dateTime().print(v.value.publishedAt)
       ),
       Field("tags", ListType(StringType),
         Some("The video's tags"),
@@ -163,25 +166,55 @@ object SchemaDef {
     )
   )
 
-  val RawId = Argument("rawId", StringType, description = "id of the video")
-  val Latitude = Argument("latitude",
-    BigDecimalType,
-    description = "latitude of the search range"
+  val BoundsType = ObjectType(
+    "Bounds",
+    "A geographic bound with northwest and southeast lat/long coordinates",
+    fields[Unit, Bounds](
+      Field("nw", LocationType,
+        Some("The northwest location point"),
+        resolve = _.value.nw
+      ),
+      Field("se", LocationType,
+        Some("The southeast location point"),
+        resolve = _.value.se
+      )
+    )
   )
-  val Longitude = Argument("longitude",
-    BigDecimalType,
-    description = "longitude of the search range"
-  )
-  val Radius = Argument("radius", StringType, "search radius")
 
-  val Query = ObjectType("Query", fields[VideoRepo, Unit](
-    Field("video", OptionType(VideoType),
-      arguments = RawId :: Nil,
-      resolve = ctx => ctx.ctx.getVideo(ctx arg RawId)
-    ),
-    Field("videosByLocation", ListType(VideoType),
-      arguments = Latitude :: Longitude :: Radius :: Nil,
-      resolve = ctx => ctx.ctx.findVideos(ctx arg Latitude, ctx arg Longitude, ctx arg Radius)
+  val RawId = Argument("rawId", StringType, description = "id of the video")
+  val City  = Argument("city", StringType, "name of a city")
+  val Year  = Argument("year", IntType, "year to find videos from")
+  val Month = Argument("month", IntType, "month to find videos from")
+
+  val UserType: ObjectType[UserContext,User] = ObjectType(
+    "User",
+    "A user",
+    interfaces[UserContext, User](nodeInterface),
+    fields[UserContext, User](
+      Node.globalIdField[UserContext, User]("User"),
+      Field("cityBounds", OptionType(BoundsType),
+        arguments = City :: Nil,
+        resolve = ctx => ctx.ctx.getCityBounds(ctx arg City)
+      ),
+      Field("cities", ListType(StringType),
+        resolve = ctx => ctx.ctx.getAvailableCities
+      ),
+      Field("video", OptionType(VideoType),
+        arguments = RawId :: Nil,
+        resolve = ctx => ctx.ctx.videoRepo.get(ctx arg RawId)
+      ),
+      Field("videosByCity", ListType(VideoType),
+        arguments = Year :: Month :: City :: Nil,
+        resolve = ctx => ctx.ctx.videoRepo.getByYearMonthCity(
+          ctx arg Year, ctx arg Month, ctx arg City
+        )
+      )
+    )
+  )
+
+  val Query = ObjectType("Query", fields[UserContext, Unit](
+    Field("viewer", UserType,
+      resolve = ctx => ctx.ctx.user
     ),
     nodeField
   ))

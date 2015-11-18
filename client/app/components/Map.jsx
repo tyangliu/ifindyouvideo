@@ -1,8 +1,10 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import DocumentTitle from 'react-document-title';
 import GoogleMap from 'google-map-react';
+import { fitBounds } from 'google-map-react/utils';
 import Radium from 'radium';
 import styler from 'react-styling';
 import VideoOverlay from './VideoOverlay.jsx';
@@ -15,46 +17,75 @@ const createMapOptions = maps => ({
 });
 
 @Radium
-export default class Map extends Component {
+class Map extends Component {
 
-  static defaultProps = {
-    center: {lat: 59.938043, lng: 30.337157},
-    zoom: 9,
-    showOverlays: true,
-    videos: [
-      {
-        title: "Cool Video",
-        mapId: 1,
-        thumbnailUrl: "http://img.lum.dolimg.com/v1/images/image_8230eadb.jpeg",
-        views: 100,
-        likes: 500
-      },
-      {
-        title: "Rainbow Gnome",
-        mapId: 2,
-        thumbnailUrl: "http://themysteryofgravityfalls.com/images/credits/001.jpg",
-        views: 100,
-        likes: 500
-      },
-      {
-        title: "Waddles",
-        mapId: 3,
-        thumbnailUrl: "http://emea.lum.dolimg.com/v1/images/image_2be5e783.jpeg",
-        views: 100,
-        likes: 500
-      }
-    ]
+  state = {
+    width: window.innerWidth,
+    height: window.innerHeight
   };
 
+  static defaultProps = {
+    defaultZoom: 9,
+    showOverlays: true,
+    videos: [],
+    defaultCenter: {
+      lat: 59.288331692,
+      lng: -135.637207031
+    }
+  };
+
+  handleResize = () => this.setState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
   render() {
-    let overlays = this.props.showOverlays ? this.props.videos.map((video, index) =>
-      <VideoOverlay lat={59.955413 + index * 0.25} lng={30.337844 - index * 0.25} video={video} />
+    const {
+      showOverlays, activeVideo, setActiveVideo, setOpenVideo,
+      videos, bounds, defaultCenter, defaultZoom
+    } = this.props;
+
+    const { width, height } = this.state;
+
+    const overlays = showOverlays ? videos.map((video, index) =>
+      <VideoOverlay lat={video.location.latitude}
+                    lng={video.location.longitude}
+                    video={video}
+                    index={index + 1}
+                    isActive={(index + 1) === activeVideo}
+                    setActiveVideo={setActiveVideo}
+                    setOpenVideo={setOpenVideo}
+                    key={index + 1} />
     ) : [];
+
+    const { center, zoom } = !bounds ? {
+      center: defaultCenter,
+      zoom: defaultZoom
+    } : fitBounds({
+      nw : { lat: bounds.nw.latitude, lng: bounds.nw.longitude},
+      se : { lat: bounds.se.latitude, lng: bounds.se.longitude}
+    }, { width, height });
+
+    const activeLocation = activeVideo !== null && videos[activeVideo-1]
+                         ? videos[activeVideo-1].location
+                         : null;
+
+    const { latitude: activeLat, longitude: activeLng } = activeLocation || {};
 
     return (
       <div style={styles.map}>
-        <GoogleMap defaultCenter={this.props.center}
-                   defaultZoom={this.props.zoom}
+        <GoogleMap defaultCenter={defaultCenter}
+                   defaultZoom={defaultZoom}
+                   zoom={zoom}
+                   center={activeLocation ? { lat: activeLat, lng: activeLng } : center}
                    options={createMapOptions}>
           {overlays}
         </GoogleMap>
@@ -63,6 +94,23 @@ export default class Map extends Component {
   }
 
 }
+
+export default Relay.createContainer(Map, {
+  fragments: {
+    videos: () => Relay.QL`
+      fragment on Video @relay(plural: true) {
+        title,
+        location { latitude, longitude }
+      }
+    `,
+    bounds: () => Relay.QL`
+      fragment on Bounds {
+        nw { latitude, longitude },
+        se { latitude, longitude }
+      }
+    `
+  }
+});
 
 const styles = styler`
   map

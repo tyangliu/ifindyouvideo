@@ -1,85 +1,45 @@
 package com.ifindyouvideo.videos
 
+import scala.concurrent.future
 import scala.concurrent.Future
-import sangria.relay.{Identifiable, Node}
-import com.websudos.phantom.dsl._
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
+import org.joda.time.DateTime
+import com.ifindyouvideo.database.Database
 
-case class Video(
-  id:          String,
-  title:       String,
-  description: String,
-  publishedAt: String,
-  tags:        List[String],
-  location:    Location,
-  channel:     Channel,
-  thumbnails:  Thumbnails,
-  statistics:  Statistics
-) extends Node
-
-case class Location(latitude: BigDecimal, longitude: BigDecimal, altitude: BigDecimal)
-case class Channel(id: String, title: String)
-
-case class Statistics(
-  viewCount: String,
-  likeCount: String,
-  dislikeCount: String,
-  favoriteCount: String,
-  commentCount: String
-)
-
-case class Image(url: String, width: Int, height: Int)
-
-case class Thumbnails(
-   default:  Option[Image],
-   medium:   Option[Image],
-   high:     Option[Image],
-   standard: Option[Image],
-   maxres:   Option[Image]
- )
+class UserRepo {
+  def getUser(id: String): Option[User] = Some(User("dummy"))
+}
 
 class VideoRepo {
   import VideoRepo._
 
-  def getVideo(id: String): Option[Video] = videos.find(v => v.id == id)
+  def get(id: String): Future[Option[Video]] = Database.videos.getById(id)
 
-  def findVideos(latitude: BigDecimal, longitude: BigDecimal, radius: String) = videos
+  def getByYearMonthCity(y: Int, m: Int, city: String): Future[List[Video]]  = {
+    (cities get city) match {
+      case Some(Bounds(nw, se)) => getByYearMonthLocation(y, m, nw, se)
+      case None => future { Nil }
+    }
+  }
 
+  def getByYearMonthLocation(y: Int, m: Int, nw: Location, se: Location): Future[List[Video]] = {
+    Database.videosByGeohash.getByYearMonthLocation(y, m, nw, se)
+  }
+}
+
+case class UserContext(userRepo: UserRepo, videoRepo: VideoRepo) {
+  def user = User("dummy")
+  def location = Some(Location(59.288331692,-135.637207031,0))
+
+  def getAvailableCities: List[String] = VideoRepo.cities.keySet.toList
+  def getCityBounds(city: String): Option[Bounds] = VideoRepo.cities get city
 }
 
 object VideoRepo {
-  val videos = List(
-    Video(
-      id = "1000",
-      title = "Awesome Video",
-      description = "test",
-      publishedAt = "test",
-      tags = List("tag1", "tag2"),
-      location = Location(5.3289,5.394,3.239),
-      channel = Channel("1234", "A Channel Title"),
-      thumbnails = Thumbnails(None,None,None,None,None),
-      statistics = Statistics("1","2","3","4","5")
-    ),
-    Video(
-      id = "1001",
-      title = "Test",
-      description = "test 2",
-      publishedAt = "test",
-      tags = List("tag3", "tag4"),
-      location = Location(5.3289,5.394,3.239),
-      channel = Channel("1234", "A Channel Title"),
-      thumbnails = Thumbnails(None,None,None,None,None),
-      statistics = Statistics("1","2","3","4","5")
-    ),
-    Video(
-      id = "1002",
-      title = "Another Test",
-      description = "test 3",
-      publishedAt = "test",
-      tags = List("tag5", "tag6"),
-      location = Location(5.3289,5.394,3.239),
-      channel = Channel("1234", "A Channel Title"),
-      thumbnails = Thumbnails(None,None,None,None,None),
-      statistics = Statistics("1","2","3","4","5")
-    )
+  val cities = Map(
+    "Vancouver, BC" -> Bounds(Location(49.314076,-123.224759,0), Location(49.198177,-123.023068,0)),
+    "San Francisco, CA" -> Bounds(Location(37.929771, -123.166067,0), Location(37.693129, -122.327915,0)),
+    "Seattle, WA" -> Bounds(Location(47.734145,-122.435908,0), Location(47.495551,-122.235903,0))
   )
 }

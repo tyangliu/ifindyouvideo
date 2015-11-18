@@ -1,8 +1,11 @@
 package com.ifindyouvideo.external
 
 import scala.concurrent.Future
-import scala.util.{Success, Failure}
+import scala.concurrent.future
+import scala.util.{Try, Success, Failure}
 import java.io.IOException
+import java.text._
+import org.joda.time.DateTime
 
 import akka.actor._
 import akka.stream.ActorMaterializer
@@ -16,29 +19,25 @@ import scala.async.Async.{async, await}
 
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization
+import org.json4s.ext.JodaTimeSerializers
 import org.json4s._
 
 import com.ifindyouvideo.videos._
 
-object YoutubeProtocol {
-  case class Search(location: Location, radius: String)
-}
+class YoutubeService(implicit val system: ActorSystem) {
 
-class YoutubeService extends Actor {
-
-  import YoutubeProtocol._
-  import scala.concurrent.ExecutionContext.Implicits.global
+  import system.dispatcher
   import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 
   implicit val materializer = ActorMaterializer()
   implicit val serialization = Serialization
-  implicit val formats = DefaultFormats
+  implicit val formats = new DefaultFormats {
+    override def dateFormatter = {
+      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    }
+  } ++ JodaTimeSerializers.all
 
-  def receive = {
-    case Search(location, radius) => search(location, radius)
-  }
-
-  def search(location: Location, radius: String): Unit = async {
+  def search(location: Location, radius: String): Future[List[Video]] = async {
     val locationStr = location match {
       case Location(lat,long,_) => List(lat,long).mkString(",")
     }
@@ -48,29 +47,25 @@ class YoutubeService extends Actor {
       "part"           -> "id",
       "order"          -> "viewCount",
       "type"           -> "video",
+      "maxResults"     -> "50",
       "location"       -> locationStr,
       "locationRadius" -> radius
     )
 
     val req = HttpRequest(uri = Uri("https://www.googleapis.com/youtube/v3/search").withQuery(params))
-    val res = await { Http(context.system).singleRequest(req) }
+    val res = await { Http(system).singleRequest(req) }
 
     res.status match {
-      case OK => Unmarshal(res.entity).to[JValue] map { resJson =>
+      case OK => {
+        val resJson = await { Unmarshal(res.entity).to[JValue] }
         val ids = (resJson \ "items" \ "id" \ "videoId").extract[List[String]]
-        getVideoDetails(ids)
+        await { getVideoDetails(ids) }
       }
-      /*
-      case BadRequest => Left("Invalid Request")
-      case _ => Unmarshal(response.entity).to[String].flatMap { entity =>
-        val error = s"YouTube request failed with status code ${response.status} and entity $entity"
-        new IOException(error)
-      }
-      */
+      case _ => Nil
     }
-  } onFailure { case e => println("An error has occured: " + e.getMessage) }
+  }
 
-  def getVideoDetails(ids: List[String]): Unit = async {
+  def getVideoDetails(ids: List[String]): Future[List[Video]] = async {
     val params = Map(
       "key"  -> "AIzaSyCyJJILurm5Pf6ZLFCoCfninmObBvqyiWk",
       "part" -> List("id","snippet","statistics","recordingDetails").mkString(","),
@@ -78,18 +73,19 @@ class YoutubeService extends Actor {
     )
 
     val req = HttpRequest(uri = Uri("https://www.googleapis.com/youtube/v3/videos").withQuery(params))
-    val res = await { Http(context.system).singleRequest(req) }
+    val res = await { Http(system).singleRequest(req) }
 
     res.status match {
-      case OK => Unmarshal(res.entity).to[JValue] map { resJson =>
-        val results = for {
+      case OK => {
+        val resJson = await { Unmarshal(res.entity).to[JValue] }
+        for {
           JArray(items)         <- resJson \ "items"
           item                  <- items
           snippet               =  item \ "snippet"
           JString(id)           <- item \ "id"
           JString(title)        <- snippet \ "title"
           JString(description)  <- snippet \ "description"
-          JString(publishedAt)  <- snippet \ "publishedAt"
+          publishedAt           =  (snippet \ "publishedAt").extract[DateTime]
           tags                  =  (snippet \ "tags").extract[List[String]]
           location              =  (item \ "recordingDetails" \ "location").extract[Location]
           JString(channelId)    <- snippet \ "channelId"
@@ -97,11 +93,13 @@ class YoutubeService extends Actor {
           channel               =  Channel(channelId, channelTitle)
           thumbnails            =  (snippet \ "thumbnails").extract[Thumbnails]
           statistics            =  (item \ "statistics").extract[Statistics]
-        } yield Video(id, title, description, publishedAt, tags, location, channel, thumbnails, statistics)
-
-        println(results)
+        } yield Video(
+          id, title, description, publishedAt, tags,
+          location, channel, thumbnails, statistics
+        )
       }
+      case _ => Nil
     }
-  } onFailure { case e => println("An error has occured: " + e.getMessage) }
+  }
 
 }
