@@ -54,6 +54,29 @@ export default class HomeSearch extends Component {
     this.setState({enter: false});
   };
 
+  componentDidMount = () => {
+    this.refs.citySearch.focus();
+    window.addEventListener('keydown', this.keyTyped, false);
+  };
+
+  componentWillUnmount = () => {
+    window.removeEventListener('keydown', this.keyTyped);
+  }
+
+  componentDidUpdate = () => {
+    var textbox = this.refs.citySearch;
+    var length = textbox.value.length*2;
+    if(this.state.index == -1){
+      textbox.focus();
+      setTimeout(function() {
+        textbox.setSelectionRange(length,length);
+      }, 0);
+    }
+    else {
+      textbox.blur();
+    }
+  };
+
   render() {
     return (
       <div style={styles.homeSearch}>
@@ -65,10 +88,9 @@ export default class HomeSearch extends Component {
                        resetEnter={this.resetEnter}
                        history={this.props.history} />
         <i className='material-icons' style={[styles.icon, styles.searchIcon]}>search</i>
-        <input type='text' style={styles.searchInput}
+        <input type='text' style={styles.searchInput} ref='citySearch'
                placeholder='Search for a trendy city'
-               onChange={this.handleChange}
-               onKeyDown={this.keyTyped}/>
+               onChange={this.handleChange} />
         <button style={styles.optionsButton}>
           <i className='material-icons' style={styles.icon}>more_vert</i>
         </button>
