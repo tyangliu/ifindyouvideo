@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+
 import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
@@ -175,6 +176,7 @@ class VideoModal extends Component {
       </div>
     );
   }
+
 
 }
 
