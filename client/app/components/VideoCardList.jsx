@@ -137,8 +137,8 @@ class VideoCardList extends Component {
         <div style={styles.bg} />
         <div style={[styles.videoCardList, {
                width: videoCards.length * 340 + 'px',
-               marginLeft: 0 - this.state.scrollPosition + 'px',
-               transition: this.state.shouldTransition ? 'margin-left 0.2s ease-in-out' : null
+               transform: `translateX(${0 - this.state.scrollPosition}px)`,
+               transition: this.state.shouldTransition ? 'transform 0.2s ease-in-out' : null
              }]}
              onWheel={this.handleWheel}
              onMouseDown={this.handleMouseDown}
