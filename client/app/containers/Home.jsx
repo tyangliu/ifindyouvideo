@@ -19,11 +19,11 @@ class Home extends Component {
 
     const { initVideos } = this.props;
 
-    const items = this.props.cities.slice(0,3).map((word, index) =>
+    const items = this.props.cities.slice(0,3).map((city, index) =>
             <li style={styles.popListItem}
                 key={'popListItem' + index}
-                onClick={() => initVideos(word)}>
-              {word}
+                onClick={() => initVideos(city.name)}>
+              {city.name}
             </li>
         );
     return (
