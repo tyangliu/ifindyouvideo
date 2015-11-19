@@ -1,13 +1,14 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import { Link } from 'react-router';
 import Radium from 'radium';
 import styler from 'react-styling';
 import SearchPopover from './SearchPopover.jsx';
 
 @Radium
-export default class HomeSearch extends Component {
+class HomeSearch extends Component {
 
   state = {
     searchTerm: '',
@@ -99,6 +100,16 @@ export default class HomeSearch extends Component {
   }
 
 }
+
+export default Relay.createContainer(HomeSearch, {
+  fragments: {
+    cities: () => Relay.QL`
+      fragment on City @relay(plural: true) {
+        ${SearchPopover.getFragment('cities')}
+      }
+    `
+  }
+});
 
 const styles = styler`
   homeSearch

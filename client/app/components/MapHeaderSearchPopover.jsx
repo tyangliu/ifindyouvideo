@@ -1,34 +1,28 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
 
 @Radium
-export default class MapHeaderSearchPopover extends Component {
+class MapHeaderSearchPopover extends Component {
 
   static defaultProps = {
     searchTerm: '',
-    cities: [
-      'Vancouver, BC',
-      'Vatican City',
-      'San Francisco, CA',
-      'Virginia',
-      'New York City, NY',
-      'Seattle, WA'
-    ]
+    cities: []
   };
 
   render() {
     const {searchTerm, cities, year, month, initVideos} = this.props
         , st = searchTerm.trim().toLowerCase()
-        , items = cities.filter(word =>
-            st != '' && word.trim().toLowerCase().indexOf(st) >= 0
-          ).map((word, index) =>
+        , items = cities.filter(city =>
+            st != '' && city.name.trim().toLowerCase().indexOf(st) >= 0
+          ).map((city, index) =>
             <li style={styles.resultListItem}
                 key={'searchResult' + index}
                 onClick={() => initVideos(word, year, month)}>
-              {word}
+              {city.name}
             </li>
           );
 
@@ -44,6 +38,16 @@ export default class MapHeaderSearchPopover extends Component {
   }
 
 }
+
+export default Relay.createContainer(MapHeaderSearchPopover, {
+  fragments: {
+    cities: () => Relay.QL`
+      fragment on City @relay(plural: true) {
+        name
+      }
+    `
+  }
+});
 
 const styles = styler`
   popOver

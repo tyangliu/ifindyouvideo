@@ -4,6 +4,7 @@ import sangria.relay._
 import sangria.schema._
 import scala.concurrent.Future
 import org.joda.time.format.ISODateTimeFormat
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object SchemaDef {
   val NodeDefinition(nodeInterface, nodeField) = Node.definition((id: GlobalId, ctx: Context[UserContext, Unit]) ⇒ {
@@ -181,8 +182,27 @@ object SchemaDef {
     )
   )
 
+  val CityType = ObjectType(
+    "City",
+    "A city containing name, region, and bounds",
+    fields[Unit, City](
+      Field("name", StringType,
+        Some("Name of the city"),
+        resolve = _.value.name
+      ),
+      Field("region", StringType,
+        Some("Geographic region the city is located in"),
+        resolve = _.value.region
+      ),
+      Field("bounds", BoundsType,
+        Some("Approximate rectangular bounds of the city"),
+        resolve = _.value.bounds
+      )
+    )
+  )
+
   val RawId = Argument("rawId", StringType, description = "id of the video")
-  val City  = Argument("city", StringType, "name of a city")
+  val CityName  = Argument("city", StringType, "name of a city")
   val Year  = Argument("year", IntType, "year to find videos from")
   val Month = Argument("month", IntType, "month to find videos from")
 
@@ -192,22 +212,27 @@ object SchemaDef {
     interfaces[UserContext, User](nodeInterface),
     fields[UserContext, User](
       Node.globalIdField[UserContext, User]("User"),
-      Field("cityBounds", OptionType(BoundsType),
-        arguments = City :: Nil,
-        resolve = ctx => ctx.ctx.getCityBounds(ctx arg City)
+      Field("city", OptionType(CityType),
+        arguments = CityName :: Nil,
+        resolve = ctx => ctx.ctx.cityRepo.get(ctx arg CityName)
       ),
-      Field("cities", ListType(StringType),
-        resolve = ctx => ctx.ctx.getAvailableCities
+      Field("cities", ListType(CityType),
+        resolve = ctx => ctx.ctx.cityRepo.getByRegion("North America")
       ),
       Field("video", OptionType(VideoType),
         arguments = RawId :: Nil,
         resolve = ctx => ctx.ctx.videoRepo.get(ctx arg RawId)
       ),
       Field("videosByCity", ListType(VideoType),
-        arguments = Year :: Month :: City :: Nil,
-        resolve = ctx => ctx.ctx.videoRepo.getByYearMonthCity(
-          ctx arg Year, ctx arg Month, ctx arg City
-        )
+        arguments = Year :: Month :: CityName :: Nil,
+        resolve = ctx => { ctx.ctx.cityRepo.get(ctx arg CityName) flatMap { _ match {
+          case Some(City(_, _, Bounds(nw, se))) => {
+            ctx.ctx.videoRepo.getByYearMonthLocation(
+              ctx arg Year, ctx arg Month, nw, se
+            )
+          }
+          case None => Future { Nil }
+        } } }
       )
     )
   )

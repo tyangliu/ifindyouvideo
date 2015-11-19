@@ -7,6 +7,7 @@ import styler from 'react-styling';
 import { Router, Link } from 'react-router';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Map from '../components/Map.jsx';
+import Home from './Home.jsx';
 import Videos from './Videos.jsx';
 import UserWidget from '../components/UserWidget.jsx';
 
@@ -52,7 +53,7 @@ class App extends Component {
                setActiveVideo={this.setActiveVideo}
                setOpenVideo={this.setOpenVideo}
                videos={viewer.videos}
-               bounds={viewer.bounds} />
+               city={viewer.city} />
           <ReactCSSTransitionGroup transitionName='main'
                                    transitionEnterTimeout={500}
                                    transitionLeaveTimeout={300} >
@@ -88,9 +89,11 @@ export default Relay.createContainer(App, {
           ${Videos.getFragment('videos')}
           ${Map.getFragment('videos')}
         },
-        cities,
-        bounds: cityBounds(city: $city) {
-          ${Map.getFragment('bounds')}
+        cities {
+          ${Home.getFragment('cities')}
+        },
+        city(city: $city) {
+          ${Map.getFragment('city')}
         }
       }
     `

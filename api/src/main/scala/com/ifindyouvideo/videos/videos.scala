@@ -1,6 +1,5 @@
 package com.ifindyouvideo.videos
 
-import scala.concurrent.future
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -16,10 +15,10 @@ class VideoRepo {
 
   def get(id: String): Future[Option[Video]] = Database.videos.getById(id)
 
-  def getByYearMonthCity(y: Int, m: Int, city: String): Future[List[Video]]  = {
+  def getByYearMonthCity(y: Int, m: Int, city: String): Future[List[Video]] = {
     (cities get city) match {
       case Some(Bounds(nw, se)) => getByYearMonthLocation(y, m, nw, se)
-      case None => future { Nil }
+      case None => Future { Nil }
     }
   }
 
@@ -28,7 +27,17 @@ class VideoRepo {
   }
 }
 
-case class UserContext(userRepo: UserRepo, videoRepo: VideoRepo) {
+class CityRepo {
+  def get(name: String): Future[Option[City]] = {
+    Database.cities.getByName(name)
+  }
+
+  def getByRegion(region: String): Future[List[City]] = {
+    Database.citiesByRegion.getByRegion(region)
+  }
+}
+
+case class UserContext(userRepo: UserRepo, videoRepo: VideoRepo, cityRepo: CityRepo) {
   def user = User("dummy")
   def location = Some(Location(59.288331692,-135.637207031,0))
 

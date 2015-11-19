@@ -1,5 +1,6 @@
 package com.ifindyouvideo.videos
 
+import java.util.UUID
 import org.joda.time.DateTime
 import scala.concurrent.Future
 import sangria.relay.{Identifiable, Node}
@@ -39,3 +40,4 @@ case class Thumbnails(
 
 case class User(id: String) extends Node
 case class Bounds(nw: Location, se: Location)
+case class City(name: String, region: String, bounds: Bounds)

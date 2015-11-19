@@ -1,12 +1,13 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import { Link } from 'react-router';
 import Radium from 'radium';
 import styler from 'react-styling';
 
 @Radium
-export default class SearchPopover extends Component {
+class SearchPopover extends Component {
 
   static defaultProps = {
     searchTerm: '',
@@ -29,7 +30,7 @@ export default class SearchPopover extends Component {
       this.props.resetEnter();
       var city = this.state.matches[this.props.index];
       this.props.history.pushState({city},
-          (city && city.length > 0) ? `/videos?city=${city}` : '/videos'
+        (city && city.length > 0) ? `/videos?city=${city}` : '/videos'
       );
 
       return;
@@ -44,8 +45,10 @@ export default class SearchPopover extends Component {
 
     const {searchTerm, cities} = nextProps
         , st = searchTerm.trim().toLowerCase()
-        , items = cities.filter(word =>
-            st != '' && word.trim().toLowerCase().indexOf(st) >= 0);
+        , items = cities.filter(city =>
+            st != '' && city.name.trim().toLowerCase().indexOf(st) >= 0
+          ).map(city => city.name);
+
     this.setState({matches : items});
     if(nextProps.index > items.length-1){
       this.props.reduceIndex();
@@ -71,6 +74,16 @@ export default class SearchPopover extends Component {
   }
 
 }
+
+export default Relay.createContainer(SearchPopover, {
+  fragments: {
+    cities: () => Relay.QL`
+      fragment on City @relay(plural: true) {
+        name
+      }
+    `
+  }
+});
 
 const styles = styler`
   popOver

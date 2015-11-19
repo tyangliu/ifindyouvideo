@@ -1,18 +1,27 @@
 package com.ifindyouvideo.database
 
+import scala.language.postfixOps
+import scala.concurrent.Future
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import com.websudos.phantom.db.DatabaseImpl
 import com.websudos.phantom.connectors._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Database(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace) {
 
   object videos extends ConcreteVideoTable with keyspace.Connector
   object videosByGeohash extends ConcreteVideoByGeohashTable with keyspace.Connector
 
+  object cities extends ConcreteCityTable with keyspace.Connector
+  object citiesByRegion extends ConcreteCityByRegionTable with keyspace.Connector
+
   def createTables = {
-    Await.result(videos.create.ifNotExists().future(), 5000 millis)
-    Await.result(videosByGeohash.create.ifNotExists().future(), 5000 millis)
+    val tables = List(videos, videosByGeohash, cities, citiesByRegion)
+    Await.result(
+      Future.sequence(tables map {_.create.ifNotExists.future}),
+      10000 millis
+    )
   }
 
 }

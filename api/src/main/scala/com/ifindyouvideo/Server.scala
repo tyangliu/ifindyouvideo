@@ -48,7 +48,7 @@ object Server extends App with CorsSupport {
 
   val executor = Executor(
     schema = SchemaDef.VideoSchema,
-    userContext = new UserContext(new UserRepo, new VideoRepo)
+    userContext = new UserContext(new UserRepo, new VideoRepo, new CityRepo)
   )
 
   import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
