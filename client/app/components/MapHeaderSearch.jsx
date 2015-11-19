@@ -66,7 +66,7 @@ class MapHeaderSearch extends Component {
   };
 
   render() {
-    const { cities, year, month, initVideos } = this.props;
+    const { cities, year, month, initVideos, history } = this.props;
 
     return (
       <div style={styles.search}>
@@ -79,7 +79,7 @@ class MapHeaderSearch extends Component {
                                 reduceIndex={this.reduceIndex}
                                 enter={this.state.enter}
                                 resetEnter={this.resetEnter}
-                                history={this.props.history} />
+                                history={history} />
         <i className='material-icons' style={[styles.icon,styles.searchIcon]}>search</i>
         <input type='text' style={styles.searchInput} ref='citySearch'
                placeholder='Search for a trendy city'

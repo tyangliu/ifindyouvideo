@@ -36,8 +36,10 @@ class MapHeaderSearchPopover extends Component {
     var searchTerm = nextProps.searchTerm
         , cities = nextProps.cities
         , st = searchTerm.trim().toLowerCase()
-        , items = cities.filter(word =>
-            st != '' && word.trim().toLowerCase().indexOf(st) >= 0);
+        , items = cities.filter(city =>
+            st != '' && city.name.trim().toLowerCase().indexOf(st) >= 0
+        ).map(city => city.name);
+
     this.setState({matches: items});
 
     if(nextProps.index > this.state.matches.length-1){
