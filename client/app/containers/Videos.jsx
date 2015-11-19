@@ -20,8 +20,8 @@ class Videos extends Component {
 
   render() {
     const {
-      videos, activeVideo, openVideo, cities,
-      setActiveVideo, setOpenVideo, initVideos, viewer
+      videos, activeVideo, openVideo, cities, viewer,
+      setActiveVideo, setOpenVideo, initVideos, history
     } = this.props;
 
     let { city, year, month } = this.props.location.query;
@@ -32,10 +32,13 @@ class Videos extends Component {
                     video={openVideo ? videos[openVideo - 1] : null}
                     index={openVideo}
                     setOpenVideo={setOpenVideo} />
+
         <MapHeader city={city} year={year} month={month}
                    cities={cities}
                    viewer={viewer}
+                   history={history}
                    initVideos={initVideos} />
+
         <div style={styles.cardListContainer}>
           <VideoCardList videos={videos}
                          activeVideo={activeVideo}

@@ -24,14 +24,6 @@ class SearchPopover extends Component {
       this.props.history.pushState({city},
         (city && city.length > 0) ? `/videos?city=${city}` : '/videos'
       );
-
-      return;
-    }
-
-    if(nextProps.searchTerm == this.props.searchTerm){
-      if(nextProps.index > this.state.matches.length-1){
-        this.props.reduceIndex();
-      }
       return;
     }
 
@@ -42,16 +34,17 @@ class SearchPopover extends Component {
           ).map(city => city.name);
 
     this.setState({matches : items});
-    if(nextProps.index > items.length-1){
+
+    if(nextProps.index > this.state.matches.length-1){
       this.props.reduceIndex();
     }
   };
 
   render() {
     var result = this.state.matches.map((word,index) =>
-      <Link to={`/videos?city=${word}`} key={'searchResult' + index}>
-        <li style={styles.resultListItem[(index==this.props.index) ? 'active' : 'normal']}>{word}</li>
-      </Link>
+        <Link to={`/videos?city=${word}`} key={'searchResult' + index}>
+          <li style={styles.resultListItem[index==this.props.index ? 'active' : 'normal']}>{word}</li>
+        </Link>
     )
 
     const noResultsEl = <li style={{color: 'rgba(0,0,0,0.3)'}}>No results found</li>

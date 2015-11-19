@@ -10,13 +10,63 @@ import MapHeaderSearchPopover from './MapHeaderSearchPopover.jsx';
 class MapHeaderSearch extends Component {
 
   state = {
-    searchTerm: ''
+    searchTerm: '',
+    index: -1,
+    enter: false
   };
 
   handleChange = event => this.setState({searchTerm: event.target.value});
 
+  keyTyped = event => {
+    var keyCode = event.keyCode | event.which;
+    var oldIndex = this.state.index;
+
+    if(keyCode == 38){
+      if (oldIndex >= 0){
+        this.setState({index: oldIndex-1});
+      }
+    }
+    else if (keyCode == 40){
+      this.setState({index: oldIndex + 1});
+    }
+    else if (keyCode == 13 && oldIndex > -1){
+      this.setState({enter: true});
+    }
+  };
+
+  reduceIndex = () => {
+    var oldIndex = this.state.index;
+    this.setState({index: oldIndex-1});
+  };
+
+  resetEnter = () => {
+    this.setState({enter: false});
+  };
+
+  componentDidMount = () => {
+    window.addEventListener('keydown', this.keyTyped, false);
+  };
+
+  componentWillUnmount = () => {
+    window.removeEventListener('keydown', this.keyTyped);
+  }
+
+  componentDidUpdate = () => {
+    var textbox = this.refs.citySearch;
+    var length = textbox.value.length*2;
+    if(this.state.index == -1){
+      textbox.focus();
+      setTimeout(() => {
+        textbox.setSelectionRange(length,length);
+      }, 0);
+    }
+    else {
+      textbox.blur();
+    }
+  };
+
   render() {
-    const { cities, year, month, initVideos } = this.props;
+    const { cities, year, month, initVideos, history } = this.props;
 
     return (
       <div style={styles.search}>
@@ -24,9 +74,14 @@ class MapHeaderSearch extends Component {
                                 cities={cities}
                                 initVideos={initVideos}
                                 year={year}
-                                month={month} />
+                                month={month}
+                                index={this.state.index}
+                                reduceIndex={this.reduceIndex}
+                                enter={this.state.enter}
+                                resetEnter={this.resetEnter}
+                                history={history} />
         <i className='material-icons' style={[styles.icon,styles.searchIcon]}>search</i>
-        <input type='text' style={styles.searchInput}
+        <input type='text' style={styles.searchInput} ref='citySearch'
                placeholder='Search for a trendy city'
                onChange={this.handleChange}/>
         <i className='material-icons' style={styles.icon}>more_vert</i>
