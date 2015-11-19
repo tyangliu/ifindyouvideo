@@ -15,6 +15,16 @@ export default class Home extends Component {
   }
 
   render() {
+
+    const { initVideos } = this.props;
+
+    const items = this.props.cities.slice(0,3).map((word, index) =>
+            <li style={styles.popListItem}
+                key={'popListItem' + index}
+                onClick={() => initVideos(word)}>
+              {word}
+            </li>
+        );
     return (
       <div style={styles.home}>
         <div style={styles.cover} />
@@ -39,9 +49,7 @@ export default class Home extends Component {
           <section style={styles.popListContainer}>
             <h3 style={styles.popListLabel}>Popular Cities</h3>
             <ul style={styles.popList}>
-              <li style={styles.popListItem}>{this.props.cities[0]}</li>
-              <li style={styles.popListItem}>{this.props.cities[1]}</li>
-              <li style={styles.popListItem}>{this.props.cities[2]}</li>
+              {items}
             </ul>
           </section>
 
