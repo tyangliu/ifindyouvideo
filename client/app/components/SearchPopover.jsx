@@ -21,8 +21,7 @@ export default class SearchPopover extends Component {
     index: -1
   };
 
-  componentWillMount = () => this.setState({
-                                matches: []});
+  componentWillMount = () => this.setState({matches: []});
 
   componentWillReceiveProps = (nextProps) => {
     if(nextProps.enter == true){
@@ -31,14 +30,6 @@ export default class SearchPopover extends Component {
       this.props.history.pushState({city},
           (city && city.length > 0) ? `/videos?city=${city}` : '/videos'
       );
-
-      return;
-    }
-
-    if(nextProps.searchTerm == this.props.searchTerm){
-      if(nextProps.index > this.state.matches.length-1){
-        this.props.reduceIndex();
-      }
       return;
     }
 
@@ -47,7 +38,8 @@ export default class SearchPopover extends Component {
         , items = cities.filter(word =>
             st != '' && word.trim().toLowerCase().indexOf(st) >= 0);
     this.setState({matches : items});
-    if(nextProps.index > items.length-1){
+
+    if(nextProps.index > this.state.matches.length-1){
       this.props.reduceIndex();
     }
   };
@@ -55,7 +47,7 @@ export default class SearchPopover extends Component {
   render() {
     var result = this.state.matches.map((word,index) =>
         <Link to={`/videos?city=${word}`} key={'searchResult' + index}>
-          <li style={styles.resultListItem[(index==this.props.index) ? 'active' : 'normal']}>{word}</li>
+          <li style={styles.resultListItem[index==this.props.index ? 'active' : 'normal']}>{word}</li>
         </Link>
     )
 

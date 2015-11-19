@@ -27,7 +27,10 @@ export default class MapHeader extends Component {
 
           {city && city.length > 0 ?
             <CurrentCity city={city} initVideos={initVideos} year={year} month={month} /> :
-            <MapHeaderSearch cities={cities} year={year} month={month} initVideos={initVideos} />
+            <MapHeaderSearch cities={cities}
+                             year={year} month={month}
+                             initVideos={initVideos}
+                             history={this.props.history} />
           }
 
           <MapHeaderDateFilter initVideos={initVideos} year={year} month={month} city={city} />

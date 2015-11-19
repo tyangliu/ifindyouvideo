@@ -32,7 +32,11 @@ class Videos extends Component {
                     video={openVideo ? videos[openVideo - 1] : null}
                     index={openVideo}
                     setOpenVideo={setOpenVideo} />
-        <MapHeader city={city} year={year} month={month} cities={cities} initVideos={initVideos} />
+        <MapHeader city={city}
+                   year={year} month={month}
+                   cities={cities}
+                   initVideos={initVideos}
+                   history={this.props.history} />
         <div style={styles.cardListContainer}>
           <VideoCardList videos={videos}
                          activeVideo={activeVideo}
