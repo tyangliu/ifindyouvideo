@@ -50,8 +50,10 @@ class Map extends Component {
   render() {
     const {
       showOverlays, activeVideo, setActiveVideo, setOpenVideo,
-      videos, bounds, defaultCenter, defaultZoom
+      videos, city, defaultCenter, defaultZoom
     } = this.props;
+
+    const bounds = city ? city.bounds : null;
 
     const { width, height } = this.state;
 
@@ -103,10 +105,12 @@ export default Relay.createContainer(Map, {
         location { latitude, longitude }
       }
     `,
-    bounds: () => Relay.QL`
-      fragment on Bounds {
-        nw { latitude, longitude },
-        se { latitude, longitude }
+    city: () => Relay.QL`
+      fragment on City {
+        bounds {
+          nw { latitude, longitude },
+          se { latitude, longitude }
+        }
       }
     `
   }

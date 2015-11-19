@@ -1,11 +1,12 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
 
 @Radium
-export default class MapHeaderSearchPopover extends Component {
+class MapHeaderSearchPopover extends Component {
 
   static defaultProps = {
     searchTerm: '',
@@ -69,10 +70,20 @@ export default class MapHeaderSearchPopover extends Component {
 
 }
 
+export default Relay.createContainer(MapHeaderSearchPopover, {
+  fragments: {
+    cities: () => Relay.QL`
+      fragment on City @relay(plural: true) {
+        name
+      }
+    `
+  }
+});
+
 const styles = styler`
   popOver
     position: absolute
-    top: -7px
+    top: -5px
     left: 21px
     right: 38px
     padding-top: 64px

@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import { Link } from 'react-router';
 import DocumentTitle from 'react-document-title';
 import Radium from 'radium';
@@ -8,13 +9,23 @@ import styler from 'react-styling';
 import HomeSearch from '../components/HomeSearch.jsx';
 
 @Radium
-export default class Home extends Component {
+class Home extends Component {
 
   componentWillMount() {
     this.props.setShowOverlays(false);
   }
 
   render() {
+
+    const { initVideos } = this.props;
+
+    const items = this.props.cities.slice(0,3).map((city, index) =>
+            <li style={styles.popListItem}
+                key={'popListItem' + index}
+                onClick={() => initVideos(city.name)}>
+              {city.name}
+            </li>
+        );
     return (
       <div style={styles.home}>
         <div style={styles.cover} />
@@ -39,9 +50,7 @@ export default class Home extends Component {
           <section style={styles.popListContainer}>
             <h3 style={styles.popListLabel}>Popular Cities</h3>
             <ul style={styles.popList}>
-              <li style={styles.popListItem}>{this.props.cities[0]}</li>
-              <li style={styles.popListItem}>{this.props.cities[1]}</li>
-              <li style={styles.popListItem}>{this.props.cities[2]}</li>
+              {items}
             </ul>
           </section>
 
@@ -54,6 +63,17 @@ export default class Home extends Component {
   }
 
 }
+
+export default Relay.createContainer(Home, {
+  fragments: {
+    cities: () => Relay.QL`
+      fragment on City @relay(plural: true) {
+        ${HomeSearch.getFragment('cities')},
+        name
+      }
+    `
+  }
+});
 
 const styles = styler`
   home

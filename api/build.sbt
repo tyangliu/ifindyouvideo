@@ -48,4 +48,6 @@ libraryDependencies ++= {
   )
 }
 
+scalacOptions ++= Seq("-deprecation", "-feature")
+
 Revolver.settings
