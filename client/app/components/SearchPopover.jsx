@@ -11,19 +11,11 @@ class SearchPopover extends Component {
 
   static defaultProps = {
     searchTerm: '',
-    cities: [
-      'Vancouver, BC',
-      'Vatican City',
-      'San Francisco, CA',
-      'Virginia',
-      'New York City, NY',
-      'Seattle, WA'
-    ],
+    cities: [],
     index: -1
   };
 
-  componentWillMount = () => this.setState({
-                                matches: []});
+  componentWillMount = () => this.setState({matches: []});
 
   componentWillReceiveProps = (nextProps) => {
     if(nextProps.enter == true){
@@ -57,9 +49,9 @@ class SearchPopover extends Component {
 
   render() {
     var result = this.state.matches.map((word,index) =>
-        <Link to={`/videos?city=${word}`} key={'searchResult' + index}>
-          <li style={styles.resultListItem[(index==this.props.index) ? 'active' : 'normal']}>{word}</li>
-        </Link>
+      <Link to={`/videos?city=${word}`} key={'searchResult' + index}>
+        <li style={styles.resultListItem[(index==this.props.index) ? 'active' : 'normal']}>{word}</li>
+      </Link>
     )
 
     const noResultsEl = <li style={{color: 'rgba(0,0,0,0.3)'}}>No results found</li>

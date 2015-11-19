@@ -86,11 +86,12 @@ export default Relay.createContainer(App, {
     viewer: () => Relay.QL`
       fragment on User {
         videos: videosByCity(year: $year, month: $month, city: $city) {
-          ${Videos.getFragment('videos')}
+          ${Videos.getFragment('videos')},
           ${Map.getFragment('videos')}
         },
         cities {
-          ${Home.getFragment('cities')}
+          ${Home.getFragment('cities')},
+          ${Videos.getFragment('cities')}
         },
         city(city: $city) {
           ${Map.getFragment('city')}

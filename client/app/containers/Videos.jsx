@@ -52,6 +52,11 @@ export default Relay.createContainer(Videos, {
         ${VideoModal.getFragment('video')}
         ${VideoCardList.getFragment('videos')}
       }
+    `,
+    cities: () => Relay.QL`
+      fragment on City @relay(plural: true) {
+        ${MapHeader.getFragment('cities')}
+      }
     `
   }
 });

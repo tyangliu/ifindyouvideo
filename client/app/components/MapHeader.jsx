@@ -1,6 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
 import SearchPopover from './SearchPopover.jsx';
@@ -9,7 +10,7 @@ import MapHeaderSearch from './MapHeaderSearch.jsx';
 import MapHeaderDateFilter from './MapHeaderDateFilter.jsx';
 
 @Radium
-export default class MapHeader extends Component {
+class MapHeader extends Component {
 
   render() {
     const { city, year, month, cities, initVideos } = this.props;
@@ -45,6 +46,16 @@ export default class MapHeader extends Component {
   }
 
 }
+
+export default Relay.createContainer(MapHeader, {
+  fragments: {
+    cities: () => Relay.QL`
+      fragment on City @relay(plural: true) {
+        ${MapHeaderSearch.getFragment('cities')}
+      }
+    `
+  }
+});
 
 const styles = styler`
   mapHeader

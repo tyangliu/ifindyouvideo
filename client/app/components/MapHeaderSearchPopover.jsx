@@ -21,7 +21,7 @@ class MapHeaderSearchPopover extends Component {
           ).map((city, index) =>
             <li style={styles.resultListItem}
                 key={'searchResult' + index}
-                onClick={() => initVideos(word, year, month)}>
+                onClick={() => initVideos(city.name, year, month)}>
               {city.name}
             </li>
           );
