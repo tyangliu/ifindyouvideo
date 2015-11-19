@@ -40,18 +40,40 @@ export default class HomeSearch extends Component {
       this.setState({index: oldIndex + 1});
     }
     else if (keyCode == 13 && oldIndex > -1){
-      console.log("Go to link");
       this.setState({enter: true});
     }
   };
 
   reduceIndex = () => {
     var oldIndex = this.state.index;
-    this.setState({index: oldIndex-1})
+    this.setState({index: oldIndex-1});
   };
 
   resetEnter = () => {
     this.setState({enter: false});
+  };
+
+  componentDidMount = () => {
+    this.refs.citySearch.focus();
+    window.addEventListener('keydown', this.keyTyped, false);
+  };
+
+  componentWillUnmount = () => {
+    window.removeEventListener('keydown', this.keyTyped);
+  }
+
+  componentDidUpdate = () => {
+    var textbox = this.refs.citySearch;
+    var length = textbox.value.length*2;
+    if(this.state.index == -1){
+      textbox.focus();
+      setTimeout(() => {
+        textbox.setSelectionRange(length,length);
+      }, 0);
+    }
+    else {
+      textbox.blur();
+    }
   };
 
   render() {
@@ -65,10 +87,9 @@ export default class HomeSearch extends Component {
                        resetEnter={this.resetEnter}
                        history={this.props.history} />
         <i className='material-icons' style={[styles.icon, styles.searchIcon]}>search</i>
-        <input type='text' style={styles.searchInput}
+        <input type='text' style={styles.searchInput} ref='citySearch'
                placeholder='Search for a trendy city'
-               onChange={this.handleChange}
-               onKeyDown={this.keyTyped}/>
+               onChange={this.handleChange} />
         <button style={styles.optionsButton}>
           <i className='material-icons' style={styles.icon}>more_vert</i>
         </button>

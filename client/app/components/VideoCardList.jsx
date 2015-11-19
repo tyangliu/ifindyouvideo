@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import Relay from 'react-relay';
 import Radium from 'radium';
 import styler from 'react-styling';
+import { haversineDistance } from '../utils/locationUtils.js';
 import VideoCard from './VideoCard.jsx';
 
 @Radium
@@ -108,10 +109,14 @@ class VideoCardList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.activeVideo !== this.props.activeVideo) {
-      this.scrollToCard(nextProps.activeVideo);
-    } else if (!nextProps.videos || nextProps.videos.length != this.props.videos.length) {
+    const { videos } = this.props;
+
+    if (!nextProps.videos || nextProps.videos.length != this.props.videos.length) {
       this.scrollToCard(1);
+    } else if (nextProps.activeVideo !== this.props.activeVideo) {
+      // delay scrolling animation by a reasonable time to avoid scrolling at the same time
+      // as map panning in most cases (which would cause animation stutter)
+      setTimeout(() => this.scrollToCard(nextProps.activeVideo), 200);
     }
   }
 
@@ -132,8 +137,8 @@ class VideoCardList extends Component {
         <div style={styles.bg} />
         <div style={[styles.videoCardList, {
                width: videoCards.length * 340 + 'px',
-               marginLeft: 0 - this.state.scrollPosition + 'px',
-               transition: this.state.shouldTransition ? 'margin-left 0.15s linear' : null
+               transform: `translateX(${0 - this.state.scrollPosition}px)`,
+               transition: this.state.shouldTransition ? 'transform 0.2s ease-in-out' : null
              }]}
              onWheel={this.handleWheel}
              onMouseDown={this.handleMouseDown}
@@ -156,6 +161,10 @@ export default Relay.createContainer(VideoCardList, {
   fragments: {
     videos: () => Relay.QL`
       fragment on Video @relay(plural: true) {
+        location {
+          latitude,
+          longitude
+        },
         ${VideoCard.getFragment('video')}
       }
     `

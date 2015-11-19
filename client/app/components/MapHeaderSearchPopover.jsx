@@ -48,7 +48,7 @@ export default class MapHeaderSearchPopover extends Component {
 const styles = styler`
   popOver
     position: absolute
-    top: -7px
+    top: -5px
     left: 21px
     right: 38px
     padding-top: 64px

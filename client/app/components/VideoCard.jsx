@@ -78,8 +78,7 @@ export default Relay.createContainer(VideoCard, {
           maxres { url, width, height }
         },
         statistics {
-          viewCount,
-          likeCount
+          viewCount
         },
         title,
         publishedAt
@@ -90,7 +89,8 @@ export default Relay.createContainer(VideoCard, {
 
 const styles = styler`
   videoCard
-    width: 340px
+    width: 341px
+    margin-right: -1px
     height: 100%
     overflow: hidden
     position: relative

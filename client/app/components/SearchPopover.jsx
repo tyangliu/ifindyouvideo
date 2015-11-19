@@ -28,11 +28,7 @@ export default class SearchPopover extends Component {
     if(nextProps.enter == true){
       this.props.resetEnter();
       var city = this.state.matches[this.props.index];
-      console.log(city);
-
-      console.log(this.context.history, this.context.location);
-
-      this.props.history.replaceState({city},
+      this.props.history.pushState({city},
           (city && city.length > 0) ? `/videos?city=${city}` : '/videos'
       );
 
@@ -57,16 +53,14 @@ export default class SearchPopover extends Component {
   };
 
   render() {
-    var result = [];
-    for (var i=0; i<this.state.matches.length; i++){
-      var word = this.state.matches[i];
-
-      result.push(<Link to={`/videos?city=${word}`} key={'searchResult' + i}>
-                    <li style={styles.resultListItem[(i==this.props.index) ? 'active' : 'normal']}>{word}</li>
-                  </Link>)
-    }
+    var result = this.state.matches.map((word,index) =>
+        <Link to={`/videos?city=${word}`} key={'searchResult' + index}>
+          <li style={styles.resultListItem[(index==this.props.index) ? 'active' : 'normal']}>{word}</li>
+        </Link>
+    )
 
     const noResultsEl = <li style={{color: 'rgba(0,0,0,0.3)'}}>No results found</li>
+
     return (
       <div style={styles.popOver[this.props.searchTerm.length <= 0 ? 'hidden' : 'active']}>
         <ul style={styles.resultList}>

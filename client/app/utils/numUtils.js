@@ -1,3 +1,5 @@
+'use strict';
+
 export function roundCount(x) {
   let len = x.toString().length
     , magnitude = Math.pow(10, len - 1);
