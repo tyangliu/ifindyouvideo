@@ -16,8 +16,19 @@ class Database(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace) {
   object cities extends ConcreteCityTable with keyspace.Connector
   object citiesByRegion extends ConcreteCityByRegionTable with keyspace.Connector
 
+  object users extends ConcreteUserTable with keyspace.Connector
+  object usersByEmail extends ConcreteUserByEmailTable with keyspace.Connector
+
   def createTables = {
-    val tables = List(videos, videosByGeohash, cities, citiesByRegion)
+    val tables = List(
+      videos,
+      videosByGeohash,
+      cities,
+      citiesByRegion,
+      users,
+      usersByEmail
+    )
+
     Await.result(
       Future.sequence(tables map {_.create.ifNotExists.future}),
       10000 millis

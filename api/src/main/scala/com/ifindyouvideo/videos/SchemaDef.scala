@@ -212,11 +212,20 @@ object SchemaDef {
     interfaces[UserContext, User](nodeInterface),
     fields[UserContext, User](
       Node.globalIdField[UserContext, User]("User"),
+      Field("email", StringType,
+        Some("Email of the user"),
+        resolve = _.value.email
+      ),
+      Field("favoriteCities", ListType(StringType),
+        Some("List of the user's favorite cities"),
+        resolve = _.value.favoriteCities
+      ),
       Field("city", OptionType(CityType),
         arguments = CityName :: Nil,
         resolve = ctx => ctx.ctx.cityRepo.get(ctx arg CityName)
       ),
       Field("cities", ListType(CityType),
+        Some("List of all supported cities in North America"),
         resolve = ctx => ctx.ctx.cityRepo.getByRegion("North America")
       ),
       Field("video", OptionType(VideoType),

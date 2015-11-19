@@ -38,6 +38,11 @@ case class Thumbnails(
   maxres:   Option[Image]
 )
 
-case class User(id: String) extends Node
 case class Bounds(nw: Location, se: Location)
 case class City(name: String, region: String, bounds: Bounds)
+
+case class User(
+  id:             String,
+  email:          String,
+  favoriteCities: List[String]
+) extends Node
