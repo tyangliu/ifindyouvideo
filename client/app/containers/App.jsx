@@ -66,7 +66,8 @@ class App extends Component {
               setOpenVideo: this.setOpenVideo,
               initVideos: this.initVideos,
               videos: viewer.videos,
-              cities: viewer.cities
+              cities: viewer.cities,
+              viewer
             })}
           </ReactCSSTransitionGroup>
         </main>
@@ -85,6 +86,7 @@ export default Relay.createContainer(App, {
   fragments: {
     viewer: () => Relay.QL`
       fragment on User {
+        ${Videos.getFragment('viewer')},
         videos: videosByCity(year: $year, month: $month, city: $city) {
           ${Videos.getFragment('videos')},
           ${Map.getFragment('videos')}

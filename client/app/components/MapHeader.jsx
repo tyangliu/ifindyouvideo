@@ -8,12 +8,13 @@ import SearchPopover from './SearchPopover.jsx';
 import CurrentCity from './CurrentCity.jsx';
 import MapHeaderSearch from './MapHeaderSearch.jsx';
 import MapHeaderDateFilter from './MapHeaderDateFilter.jsx';
+import MapHeaderFavoriteList from './MapHeaderFavoriteList.jsx';
 
 @Radium
 class MapHeader extends Component {
 
   render() {
-    const { city, year, month, cities, initVideos } = this.props;
+    const { city, year, month, cities, initVideos, viewer } = this.props;
     return (
       <div style={styles.mapHeader}>
         <section style={styles.header}>
@@ -31,14 +32,12 @@ class MapHeader extends Component {
             <MapHeaderSearch cities={cities} year={year} month={month} initVideos={initVideos} />
           }
 
-          <MapHeaderDateFilter initVideos={initVideos} year={year} month={month} city={city} />
+          <MapHeaderDateFilter   year={year} month={month} city={city}
+                                 initVideos={initVideos} />
 
-          <div style={{float: 'right', borderLeft: '1px solid rgba(0,0,0,0.15)', padding: '0 20px 0 14px'}}>
-            <i className='material-icons' style={[styles.icon, {marginRight: '7px'}]}>favorite</i>
-            <p style={styles.dropdownText}>My Locations</p>
-            <i className='material-icons' style={styles.icon}>arrow_drop_down</i>
-          </div>
-          <div style={styles.clearfix} />
+          <MapHeaderFavoriteList year={year} month={month} city={city}
+                                 initVideos={initVideos}
+                                 viewer={viewer} />
 
         </section>
       </div>
@@ -52,6 +51,11 @@ export default Relay.createContainer(MapHeader, {
     cities: () => Relay.QL`
       fragment on City @relay(plural: true) {
         ${MapHeaderSearch.getFragment('cities')}
+      }
+    `,
+    viewer: () => Relay.QL`
+      fragment on User {
+        ${MapHeaderFavoriteList.getFragment('viewer')}
       }
     `
   }
@@ -93,25 +97,6 @@ const styles = styler`
     height: 44px
     background: rgba(255,255,255,0.9)
     box-shadow: 0 1px 2px rgba(0,0,0,0.2)
-
-  icon
-    background-image: linear-gradient(to bottom, rgba(239,46,81,1) 7%, rgba(241,72,75,1) 30%, rgba(248,152,56,1) 100%)
-    background-clip: text
-    text-fill-color: transparent
-    font-size: 20px
-    line-height: 44px
-    float: left
-
-  dropdown
-    border-right: 1px solid rgba(0,0,0,0.15)
-    padding: 0 14px
-
-  dropdownText
-    color: rgba(90,90,90,1)
-    font-size: 13px
-    float: left
-    line-height: 42px
-    margin: 2px 7px 0
 
   clearfix
     clear: both

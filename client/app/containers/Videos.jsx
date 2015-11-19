@@ -21,7 +21,7 @@ class Videos extends Component {
   render() {
     const {
       videos, activeVideo, openVideo, cities,
-      setActiveVideo, setOpenVideo, initVideos
+      setActiveVideo, setOpenVideo, initVideos, viewer
     } = this.props;
 
     let { city, year, month } = this.props.location.query;
@@ -32,7 +32,10 @@ class Videos extends Component {
                     video={openVideo ? videos[openVideo - 1] : null}
                     index={openVideo}
                     setOpenVideo={setOpenVideo} />
-        <MapHeader city={city} year={year} month={month} cities={cities} initVideos={initVideos} />
+        <MapHeader city={city} year={year} month={month}
+                   cities={cities}
+                   viewer={viewer}
+                   initVideos={initVideos} />
         <div style={styles.cardListContainer}>
           <VideoCardList videos={videos}
                          activeVideo={activeVideo}
@@ -56,6 +59,11 @@ export default Relay.createContainer(Videos, {
     cities: () => Relay.QL`
       fragment on City @relay(plural: true) {
         ${MapHeader.getFragment('cities')}
+      }
+    `,
+    viewer: () => Relay.QL`
+      fragment on User {
+        ${MapHeader.getFragment('viewer')}
       }
     `
   }
