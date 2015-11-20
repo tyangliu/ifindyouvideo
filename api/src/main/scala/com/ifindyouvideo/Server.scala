@@ -22,6 +22,7 @@ import sangria.integration.json4s.native._
 import scala.util.{Success, Failure}
 
 import com.ifindyouvideo.videos._
+import com.ifindyouvideo.external.YoutubeService
 
 object Server extends App with CorsSupport {
   implicit val system = ActorSystem("ifindyouvideo")
@@ -48,7 +49,11 @@ object Server extends App with CorsSupport {
 
   val executor = Executor(
     schema = SchemaDef.VideoSchema,
-    userContext = new UserContext(new UserRepo, new VideoRepo, new CityRepo)
+    userContext = new UserContext(
+      new UserRepo,
+      new VideoRepo(new YoutubeService),
+      new CityRepo
+    )
   )
 
   import de.heikoseeberger.akkahttpjson4s.Json4sSupport._

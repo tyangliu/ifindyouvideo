@@ -93,8 +93,9 @@ abstract class ConcreteVideoByGeohashTable extends VideoByGeohashTable with Root
     f map(Success(_)) recover {case e => Failure(e)}
   }
 
-  def getByYearMonthLocation(y: Int, m: Int, nw: Location, se: Location): Future[List[Video]] = {
+  def getByYearMonthLocation(y: Int, m: Int, bounds: Bounds): Future[List[Video]] = {
     val yearMonth = y * 100 + m
+    val Bounds(nw, se) = bounds
     val hashes = GeoHash.coverBoundingBoxMaxHashes(
       nw.latitude.toDouble,
       nw.longitude.toDouble,

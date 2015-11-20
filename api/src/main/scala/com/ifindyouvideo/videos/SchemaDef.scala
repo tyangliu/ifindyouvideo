@@ -235,9 +235,9 @@ object SchemaDef {
       Field("videosByCity", ListType(VideoType),
         arguments = Year :: Month :: CityName :: Nil,
         resolve = ctx => { ctx.ctx.cityRepo.get(ctx arg CityName) flatMap { _ match {
-          case Some(City(_, _, Bounds(nw, se))) => {
+          case Some(City(_, _, bounds)) => {
             ctx.ctx.videoRepo.getByYearMonthLocation(
-              ctx arg Year, ctx arg Month, nw, se
+              ctx arg Year, ctx arg Month, bounds
             )
           }
           case None => Future { Nil }
