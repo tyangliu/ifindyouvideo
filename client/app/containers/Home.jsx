@@ -15,17 +15,19 @@ class Home extends Component {
     this.props.setShowOverlays(false);
   }
 
-  render() {
 
-    const { initVideos } = this.props;
+
+  render() {
 
     const items = this.props.cities.slice(0,3).map((city, index) =>
             <li style={styles.popListItem}
                 key={'popListItem' + index}
-                onClick={() => initVideos(city.name)}>
+                onClick={() =>this.props.history.pushState(city.name, '/videos?city=' + city.name)}>
               {city.name}
             </li>
         );
+
+
     return (
       <div style={styles.home}>
         <div style={styles.cover} />
