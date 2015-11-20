@@ -24,8 +24,7 @@ class VideoRepo(youtubeService: YoutubeService) {
     val Bounds(nw, se) = bounds
     val (center, radius) = LocationUtils.boundingBoxCenterRadius(nw, se)
 
-    // TODO: youtube service needs to take year and month as parameters
-    val results = await { youtubeService.search(center, radius) }
+    val results = await { youtubeService.search(center, radius, y, m) }
     await { Database.videos.multiStore(results) }
     await { Database.videosByGeohash.multiStore(results, isAllTime(y, m)) }
 

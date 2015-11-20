@@ -1,7 +1,6 @@
 package com.ifindyouvideo.external
 
 import scala.concurrent.Future
-import scala.concurrent.future
 import scala.util.{Try, Success, Failure}
 import java.io.IOException
 import java.text._
@@ -37,8 +36,8 @@ class YoutubeService(implicit val system: ActorSystem) {
     }
   } ++ JodaTimeSerializers.all
 
-  def search(location: Location, radius: String): Future[List[Video]] = async {
-    val locationStr = location match {
+  def search(center: Location, radius: String, y: Int = 0, m: Int = 0): Future[List[Video]] = async {
+    val locationStr = center match {
       case Location(lat,long,_) => List(lat,long).mkString(",")
     }
 
@@ -51,6 +50,15 @@ class YoutubeService(implicit val system: ActorSystem) {
       "location"       -> locationStr,
       "locationRadius" -> radius
     )
+
+    if (y > 0 && m > 0) params ++ {
+      val startDate = new DateTime(y, m, 1, 0, 0, 0, 0)
+      val endDate   = startDate.dayOfMonth.withMaximumValue
+      Map(
+        "publishedAfter"  -> startDate.toString,
+        "publishedBefore" -> endDate.toString
+      )
+    }
 
     val req = HttpRequest(uri = Uri("https://www.googleapis.com/youtube/v3/search").withQuery(params))
     val res = await { Http(system).singleRequest(req) }
