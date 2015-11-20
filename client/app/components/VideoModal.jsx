@@ -8,6 +8,7 @@ import styler from 'react-styling';
 import XDate from 'xdate';
 import Video from './Video.jsx';
 import { roundCount, formatCount } from '../utils/numUtils.js';
+import LikeDislikeFeature from './LikeDislikeFeature.jsx';
 
 @Radium
 class VideoModal extends Component {
