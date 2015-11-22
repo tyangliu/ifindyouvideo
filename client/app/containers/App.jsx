@@ -17,12 +17,14 @@ class App extends Component {
   state = {
     showOverlays: false,
     activeVideo: null,
-    openVideo: null
+    openVideo: null,
+    authObj: null
   };
 
   setActiveVideo  = index => this.setState({activeVideo: index});
   setOpenVideo    = index => this.setState({openVideo: index});
   setShowOverlays = show  => this.setState({showOverlays: !!show});
+  setAuthObj = authObj => this.setState({ authObj });
 
   initVideos = (city='', year=0, month=0) => {
     let path = '/videos'
@@ -41,13 +43,15 @@ class App extends Component {
 
   render() {
     const {viewer, children} = this.props
-        , {showOverlays, activeVideo, openVideo} = this.state;
+        , {showOverlays, activeVideo, openVideo, authObj} = this.state;
 
     return (
       <div style={styles.app}>
         <Style rules={styles.appRules} />
         <main style={styles.main}>
-          <div style={styles.userContainer}><UserWidget /></div>
+          <div style={styles.userContainer}>
+            <UserWidget authObj={authObj} setAuthObj={this.setAuthObj} />
+          </div>
           <Map showOverlays={showOverlays}
                activeVideo={activeVideo}
                setActiveVideo={this.setActiveVideo}
@@ -61,6 +65,7 @@ class App extends Component {
               key: this.props.location.pathname,
               activeVideo,
               openVideo,
+              authObj,
               setShowOverlays: this.setShowOverlays,
               setActiveVideo: this.setActiveVideo,
               setOpenVideo: this.setOpenVideo,
