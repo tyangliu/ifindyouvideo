@@ -31,6 +31,24 @@ class VideoModal extends Component {
     video: {}
   };
 
+  rateVideo = rating => {
+    const { authObj, video } = this.props
+        , isSignedIn = authObj && authObj.isSignedIn.get();
+
+    if ( !isSignedIn || !video ) return;
+
+    const accessToken = authObj.currentUser.get().getAuthResponse().access_token
+        , { videoId } = video;
+
+    let req = new XMLHttpRequest();
+    req.open("POST", `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=${rating}`, true);
+    req.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.onload = () => {console.log("Success")};
+    req.send();
+
+  };
+
   handleKeyUp = event => {
     const ESC = 27;
     if (event.key == ESC || event.code == 'Escape' || event.keyCode == ESC) {
@@ -77,7 +95,7 @@ class VideoModal extends Component {
 
     let video = this.props.video || {};
 
-    const {title, thumbnails, publishedAt, statistics, channel, description } = video
+    const { title, thumbnails, publishedAt, statistics, channel, description } = video
         , viewCount = statistics ? statistics.viewCount : 0
         , channelTitle = channel ? channel.title : '';
 
@@ -136,12 +154,12 @@ class VideoModal extends Component {
           </div>
           <div style={styles.actionBar}>
 
-            <button style={[styles.actionButton.normal, styles.buttonLeft]}>
+            <button style={[styles.actionButton.normal, styles.buttonLeft]} onClick={() => this.rateVideo('like')}>
               <i className='material-icons' style={styles.infoBarIcon}>thumb_up</i>
               <span style={[styles.infoBarText, {float: 'left'}]}>Like</span>
             </button>
 
-            <button style={[styles.actionButton.normal, styles.buttonLeft]}>
+            <button style={[styles.actionButton.normal, styles.buttonLeft]} onClick={ () => this.rateVideo('dislike')}>
               <i className='material-icons' style={styles.infoBarIcon}>thumb_down</i>
               <span style={[styles.infoBarText, {float: 'left'}]}>Dislike</span>
             </button>

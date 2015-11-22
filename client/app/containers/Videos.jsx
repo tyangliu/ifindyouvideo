@@ -20,7 +20,7 @@ class Videos extends Component {
 
   render() {
     const {
-      videos, activeVideo, openVideo, cities, viewer,
+      videos, activeVideo, openVideo, cities, viewer, authObj,
       setActiveVideo, setOpenVideo, initVideos, history
     } = this.props;
 
@@ -31,7 +31,8 @@ class Videos extends Component {
         <VideoModal isOpen={openVideo !== null}
                     video={openVideo ? videos[openVideo - 1] : null}
                     index={openVideo}
-                    setOpenVideo={setOpenVideo} />
+                    setOpenVideo={setOpenVideo}
+                    authObj={authObj} />
 
         <MapHeader city={city} year={year} month={month}
                    cities={cities}
