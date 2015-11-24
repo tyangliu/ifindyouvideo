@@ -6,11 +6,29 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.async.Async.{async, await}
 import org.joda.time.DateTime
 import com.ifindyouvideo.database.Database
-import com.ifindyouvideo.external.YoutubeService
+import com.ifindyouvideo.external.{ YoutubeService, AuthService, AuthResult }
 import com.ifindyouvideo.utils.LocationUtils
 
-class UserRepo {
-  def getUser(id: String): Option[User] = Some(User("dummy", "dummy@gmail.com", Nil))
+class UserRepo(authService: AuthService) {
+  def getUser(id: String): Option[User] = Some(User("dummy", "dummy@gmail.com", Nil, Nil))
+  def getUserByToken(idToken: String) : Future[User] =  async {
+    val idTokenResult = await {authService.validate(idToken)}
+    idTokenResult match {
+      case None => User("stupid", "stupidFace@thatsnotnice.com", Nil, Nil)
+      case Some(AuthResult(id, email)) => {
+        val userOpt = await { Database.usersByEmail.getByEmail(email) }
+        userOpt match {
+          case None => {
+            val newUser = User(id, email, Nil, Nil)
+            await { Database.usersByEmail.store(newUser) }
+            await { Database.users.store(newUser) }
+            newUser
+          }
+          case Some(user) => user
+        }
+      }
+    }
+  }
 }
 
 class VideoRepo(youtubeService: YoutubeService) {
@@ -45,5 +63,5 @@ class CityRepo {
 }
 
 case class UserContext(userRepo: UserRepo, videoRepo: VideoRepo, cityRepo: CityRepo) {
-  def user = User("dummy", "dummy@gmail.com", List("Vancouver, BC", "Seattle, WA"))
+  def user = User("dummy", "dummy@gmail.com", List("Vancouver, BC", "Seattle, WA"), Nil)
 }

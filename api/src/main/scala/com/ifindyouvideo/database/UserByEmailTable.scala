@@ -19,12 +19,14 @@ class UserByEmailTable extends CassandraTable[UserByEmailTable, User] {
   object email extends StringColumn(this) with PartitionKey[String]
   object id extends StringColumn(this)
   object favoriteCities extends ListColumn[UserByEmailTable, User, String](this)
+  object roles extends ListColumn[UserByEmailTable, User, String](this)
 
   def fromRow(row: Row): User = {
     User(
       id(row),
       email(row),
-      favoriteCities(row)
+      favoriteCities(row),
+      roles(row)
     )
   }
 
@@ -42,6 +44,7 @@ abstract class ConcreteUserByEmailTable extends UserByEmailTable with RootConnec
       .value(_.email, user.email)
       .value(_.id, user.id)
       .value(_.favoriteCities, user.favoriteCities)
+      .value(_.roles, user.roles)
       .future
   }
 

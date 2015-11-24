@@ -44,5 +44,6 @@ case class City(name: String, region: String, bounds: Bounds)
 case class User(
   id:             String,
   email:          String,
-  favoriteCities: List[String]
+  favoriteCities: List[String],
+  roles:          List[String]
 ) extends Node

@@ -205,6 +205,7 @@ object SchemaDef {
   val CityName  = Argument("city", StringType, "name of a city")
   val Year  = Argument("year", IntType, "year to find videos from")
   val Month = Argument("month", IntType, "month to find videos from")
+  val IdToken = Argument("idToken", OptionInputType(StringType), "Google token")
 
   val UserType: ObjectType[UserContext,User] = ObjectType(
     "User",
@@ -219,6 +220,10 @@ object SchemaDef {
       Field("favoriteCities", ListType(StringType),
         Some("List of the user's favorite cities"),
         resolve = _.value.favoriteCities
+      ),
+      Field("roles", ListType(StringType),
+        Some("List of user's roles"),
+        resolve = _.value.roles
       ),
       Field("city", OptionType(CityType),
         arguments = CityName :: Nil,
@@ -248,7 +253,13 @@ object SchemaDef {
 
   val Query = ObjectType("Query", fields[UserContext, Unit](
     Field("viewer", UserType,
-      resolve = ctx => ctx.ctx.user
+      arguments = IdToken :: Nil,
+      resolve = ctx => {
+        ctx argOpt IdToken match {
+          case None => ctx.ctx.user
+          case Some(idToken) => ctx.ctx.userRepo.getUserByToken(idToken)
+        }
+      }
     ),
     nodeField
   ))
