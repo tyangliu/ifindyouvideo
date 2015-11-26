@@ -9,13 +9,13 @@ import config from '../config.js';
 export default class GoogleSignInButton extends Component {
 
   componentDidMount() {
-    const { setAuthObj } = this.props;
+    const { setAuthObj, setIdToken } = this.props;
 
     if (!document.getElementById('google-platform-script')) {
       let platform = document.createElement('script');
       platform.id = 'google-platform-script';
       platform.src = 'https://apis.google.com/js/api:client.js';
-      
+
       document.head.appendChild(platform);
 
       platform.onload = () => gapi.load('auth2', () => {
@@ -26,7 +26,10 @@ export default class GoogleSignInButton extends Component {
           scope: 'https://www.googleapis.com/auth/youtube'
         });
 
-        auth2.isSignedIn.listen(() => setAuthObj(auth2));
+        auth2.isSignedIn.listen(() => {
+          setAuthObj(auth2);
+          setIdToken(auth2.currentUser.get().getAuthResponse().id_token);
+        });
 
         let btn = document.getElementById('google-sign-in-button');
 

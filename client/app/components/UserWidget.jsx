@@ -9,7 +9,8 @@ import GoogleSignInButton from './GoogleSignInButton.jsx';
 export default class UserWidget extends Component {
 
   state = {
-    popoverOpen: false
+    popoverOpen: false,
+    loggedIn: false
   };
 
   handleBaseClick = event => {
@@ -36,14 +37,14 @@ export default class UserWidget extends Component {
   }
 
   render() {
-    const { authObj, setAuthObj } = this.props;
+    const { authObj, setAuthObj, setIdToken } = this.props;
     const { popoverOpen } = this.state;
     const isSignedIn = authObj && authObj.isSignedIn.get();
 
     let els = [
       <div key='signInButtonContainer'
            style={styles.buttonContainer[isSignedIn ? 'hidden' : 'normal']}>
-        <GoogleSignInButton setAuthObj={setAuthObj} />
+        <GoogleSignInButton setAuthObj={setAuthObj} setIdToken={setIdToken} />
       </div>
     ];
 

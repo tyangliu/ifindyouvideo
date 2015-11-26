@@ -18,7 +18,8 @@ class App extends Component {
     showOverlays: false,
     activeVideo: null,
     openVideo: null,
-    authObj: null
+    authObj: null,
+    idToken: null
   };
 
   setActiveVideo  = index => this.setState({activeVideo: index});
@@ -27,6 +28,9 @@ class App extends Component {
   setAuthObj = authObj => this.setState({ authObj });
 
   initVideos = (city='', year=0, month=0) => {
+    const { location } = this.props
+        , { idToken }  = this.state;
+
     let path = '/videos'
       , params = [];
 
@@ -36,21 +40,34 @@ class App extends Component {
 
     if (params.length > 0) { path += '?' + params.join('&'); }
 
-    this.props.history.replaceState({ city, year, month }, path);
+    this.props.history.replaceState({ city, year, month, idToken }, path);
+  };
 
-    this.setState({openVideo: null, activeVideo: null});
+  setIdToken = idToken => {
+    this.setState({ idToken });
+    const { location } = this.props;
+
+    if (location.state) {
+      const { city, year, month } = location.state
+          , { pathname, search } = location
+          , path = pathname + search;
+
+      this.props.history.replaceState({ city, year, month, idToken }, path);
+    }
   };
 
   render() {
     const {viewer, children} = this.props
-        , {showOverlays, activeVideo, openVideo, authObj} = this.state;
+        , {showOverlays, activeVideo, openVideo, authObj, idToken} = this.state;
 
     return (
       <div style={styles.app}>
         <Style rules={styles.appRules} />
         <main style={styles.main}>
           <div style={styles.userContainer}>
-            <UserWidget authObj={authObj} setAuthObj={this.setAuthObj} />
+            <UserWidget authObj={authObj}
+                        setAuthObj={this.setAuthObj}
+                        setIdToken={this.setIdToken} />
           </div>
           <Map showOverlays={showOverlays}
                activeVideo={activeVideo}
@@ -66,6 +83,7 @@ class App extends Component {
               activeVideo,
               openVideo,
               authObj,
+              idToken,
               setShowOverlays: this.setShowOverlays,
               setActiveVideo: this.setActiveVideo,
               setOpenVideo: this.setOpenVideo,

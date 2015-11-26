@@ -10,7 +10,7 @@ import { App, Test, Home, Videos } from './containers';
 
 const ViewerQueries = {
   viewer: () => Relay.QL`
-    query root { viewer }
+    query root { viewer(idToken: $idToken) }
   `
 }
 
@@ -19,14 +19,15 @@ Relay.injectNetworkLayer(
 );
 
 const prepareVideoParams = (params, route) => {
-  let city  = params.city || ''
-    , year  = parseInt(params.year)
-    , month = parseInt(params.month);
+  let city    = params.city || ''
+    , year    = parseInt(params.year)
+    , month   = parseInt(params.month)
+    , idToken = params.idToken;
 
   if (!year)  { year = 0; }
   if (!month) { month = 0; }
 
-  return { city, year, month };
+  return { city, year, month, idToken };
 };
 
 ReactDOM.render(
@@ -35,7 +36,7 @@ ReactDOM.render(
     <Route path='/' component={App}
            queries={ViewerQueries}
            prepareParams={prepareVideoParams}
-           stateParams={['city', 'year', 'month']}>
+           stateParams={['city', 'year', 'month', 'idToken']}>
       <IndexRoute component={Home} />
       <Route path='videos' component={Videos} />
       <Route path='test' component={Test} />

@@ -38,6 +38,8 @@ export default class Video extends Component {
       setTimeout(() => {
         let container = document.getElementById('iframeContainer');
 
+        if (!container) return;
+
         while (container.hasChildNodes()) {
           container.removeChild(container.lastChild);
         }
