@@ -40,6 +40,12 @@ class HomeSearch extends Component {
     else if (keyCode == 40){
       this.setState({index: oldIndex + 1});
     }
+    else if (keyCode == 13 && oldIndex == -1) {
+      var searchCity = this.state.searchTerm
+      this.props.history.pushState({ city: searchCity},
+        (searchCity && searchCity.length > 0) ? `/videos?city=${searchCity}` : '/videos'
+      )}
+
     else if (keyCode == 13 && oldIndex > -1){
       this.setState({enter: true});
     }

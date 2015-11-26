@@ -29,6 +29,13 @@ class MapHeaderSearch extends Component {
     else if (keyCode == 40){
       this.setState({index: oldIndex + 1});
     }
+    else if (keyCode == 13 && oldIndex == -1){
+      console.log("yhaydh")
+      var searchCity = this.state.searchTerm
+      console.log(searchCity)
+      this.props.history.replaceState({ city: searchCity },
+        (searchCity && searchCity.length > 0) ? `/videos?city=${searchCity}` : '/videos'
+      )}
     else if (keyCode == 13 && oldIndex > -1){
       this.setState({enter: true});
     }
