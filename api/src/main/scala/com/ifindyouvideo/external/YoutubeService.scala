@@ -41,7 +41,7 @@ class YoutubeService(implicit val system: ActorSystem) {
       case Location(lat,long,_) => List(lat,long).mkString(",")
     }
 
-    val params = Map(
+    val partialParams = Map(
       "key"            -> "AIzaSyCyJJILurm5Pf6ZLFCoCfninmObBvqyiWk",
       "part"           -> "id",
       "order"          -> "viewCount",
@@ -51,13 +51,17 @@ class YoutubeService(implicit val system: ActorSystem) {
       "locationRadius" -> radius
     )
 
-    if (y > 0 && m > 0) params ++ {
-      val startDate = new DateTime(y, m, 1, 0, 0, 0, 0)
-      val endDate   = startDate.dayOfMonth.withMaximumValue
-      Map(
-        "publishedAfter"  -> startDate.toString,
-        "publishedBefore" -> endDate.toString
-      )
+    val params = if (y > 0 && m > 0) {
+      partialParams ++ {
+        val startDate = new DateTime(y, m, 1, 0, 0, 0, 0)
+        val endDate   = startDate.dayOfMonth.withMaximumValue
+        Map(
+          "publishedAfter"  -> startDate.toString,
+          "publishedBefore" -> endDate.toString
+        )
+      }
+    } else {
+      partialParams
     }
 
     val req = HttpRequest(uri = Uri("https://www.googleapis.com/youtube/v3/search").withQuery(params))

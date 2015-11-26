@@ -80,7 +80,7 @@ const styles = styler`
     position: absolute
     top: 0
     left: 0
-    overflow-y: hidden
+    overflow: hidden
     pointer-events: none
 
   cardListContainer
