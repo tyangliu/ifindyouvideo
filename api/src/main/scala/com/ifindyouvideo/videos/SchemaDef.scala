@@ -5,6 +5,7 @@ import sangria.schema._
 import scala.concurrent.Future
 import org.joda.time.format.ISODateTimeFormat
 import scala.concurrent.ExecutionContext.Implicits.global
+import com.ifindyouvideo.external.{ LocationService }
 
 object SchemaDef {
   val NodeDefinition(nodeInterface, nodeField) = Node.definition((id: GlobalId, ctx: Context[UserContext, Unit]) ⇒ {
@@ -221,6 +222,22 @@ object SchemaDef {
         Some("List of the user's favorite cities"),
         resolve = _.value.favoriteCities
       ),
+//      Field("addFavoriteCity", Future[String],
+//        Some("list of favorite cities"),
+//        arguments = CityName :: Nil,
+//        resolve = ctx => {
+//          val cityFuture = ctx.ctx.cityRepo.get(ctx arg CityName)
+//          val user = ctx.value
+//          cityFuture flatMap { _ match {
+//             case None    => Future { user.favoriteCities }
+//             case Some(_) => {
+//               UpdateCtx(ctx.ctx.userRepo.addFavouriteCity(user, ctx arg CityName).map(_.favoriteCities)) { favoriteCities =>
+//                 // do nuthing
+//               }
+//             }
+//          } }
+//        }
+//      ),
       Field("roles", ListType(StringType),
         Some("List of user's roles"),
         resolve = _.value.roles
@@ -237,6 +254,10 @@ object SchemaDef {
         arguments = RawId :: Nil,
         resolve = ctx => ctx.ctx.videoRepo.get(ctx arg RawId)
       ),
+      Field("videosByLocation", ListType(VideoType),
+        arguments = CityName :: Nil,
+        resolve = ctx => { ctx.ctx.videoRepo.getByLocation(ctx arg CityName, ctx arg Year, ctx arg Month) }
+      ),
       Field("videosByCity", ListType(VideoType),
         arguments = Year :: Month :: CityName :: Nil,
         resolve = ctx => { ctx.ctx.cityRepo.get(ctx arg CityName) flatMap { _ match {
@@ -245,7 +266,7 @@ object SchemaDef {
               ctx arg Year, ctx arg Month, bounds
             )
           }
-          case None => Future { Nil }
+          case None => { ctx.ctx.videoRepo.getByLocation(ctx arg CityName, ctx arg Year, ctx arg Month) }
         } } }
       )
     )

@@ -47,5 +47,4 @@ abstract class ConcreteUserByEmailTable extends UserByEmailTable with RootConnec
       .value(_.roles, user.roles)
       .future
   }
-
 }

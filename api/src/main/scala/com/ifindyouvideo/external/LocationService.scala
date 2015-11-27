@@ -17,7 +17,7 @@ import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization
 import org.json4s._
 
-import com.ifindyouvideo.videos.Location
+import com.ifindyouvideo.videos._
 
 /**
  * Created by thomasliu on 10/21/15.
@@ -29,34 +29,29 @@ object GoogleGeocode {
 }
 
 
-class LocationService extends Actor {
+class LocationService(implicit val system: ActorSystem) {
   import GoogleGeocode._
-  import scala.concurrent.ExecutionContext.Implicits.global
+  import system.dispatcher
   import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
 
   implicit val materializer = ActorMaterializer()
   implicit val serialization = Serialization
   implicit val formats = DefaultFormats
 
-  def receive = {
-    case Search(city) => searchLatLong(city)
-    case _ => println("Invalid message received")
-  }
-
-  def searchLatLong(city : String) : Unit = async {
+  def searchLatLong(city : String) : Future[Option[Bounds]] = async {
 
     val params = Map(
       "key" -> "AIzaSyDo_kdE05psxggmYqbqMyctx3eL85-axq0",
       "query" -> city)
 
     val req = HttpRequest(uri = Uri("https://maps.googleapis.com/maps/api/place/textsearch/json").withQuery(params))
-
     val res = await {
-      Http(context.system).singleRequest(req)
+      Http(system).singleRequest(req)
     }
 
     res.status match {
-      case OK => Unmarshal(res.entity).to[JValue] map { resJson =>
+      case OK => {
+        val resJson = await { Unmarshal(res.entity).to[JValue] }
         println(pretty(render(resJson)))
         val results = for {
           JArray(items) <- resJson \ "results"
@@ -68,14 +63,16 @@ class LocationService extends Actor {
           northEast = item \ "geometry" \ "viewport" \ "northeast"
           JDouble(neLat) <- northEast \ "lat"
           JDouble(neLon) <- northEast \ "lng"
-          northEast = item \ "geometry" \ "viewport" \ "southwest"
-          JDouble(swLat) <- northEast \ "lat"
-          JDouble(swLon) <- northEast \ "lng"
-        } {
-          println(haversineDistance((lat, long), (swLat, swLon)))
+          southWest = item \ "geometry" \ "viewport" \ "southwest"
+          JDouble(swLat) <- southWest \ "lat"
+          JDouble(swLon) <- southWest \ "lng"
+        } yield { Some(Bounds(Location(neLat, swLon, 0), Location(swLat, neLon, 0))) }
+        results match {
+          case Nil => {None}
+          case _ => results.head
         }
       }
-      case _ => val error = "Invalid Request"
+      case _ => None
     }
   }
 

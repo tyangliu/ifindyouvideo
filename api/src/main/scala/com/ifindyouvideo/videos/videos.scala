@@ -6,7 +6,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.async.Async.{async, await}
 import org.joda.time.DateTime
 import com.ifindyouvideo.database.Database
-import com.ifindyouvideo.external.{ YoutubeService, AuthService, AuthResult }
+import com.ifindyouvideo.external.{ YoutubeService, AuthService, AuthResult , LocationService}
 import com.ifindyouvideo.utils.LocationUtils
 
 class UserRepo(authService: AuthService) {
@@ -29,13 +29,36 @@ class UserRepo(authService: AuthService) {
       }
     }
   }
+
+//  def addFavouriteCity(user: User, city: String): Future[User = async {
+//    val newUser = user.copy(favoriteCities = city :: user.favoriteCities)
+//    await { Database.usersByEmail.store(newUser) }
+//    await { Database.users.store(newUser) }
+//    newUser
+//  }
 }
 
-class VideoRepo(youtubeService: YoutubeService) {
+class VideoRepo(youtubeService: YoutubeService, locationService: LocationService) {
   def get(id: String): Future[Option[Video]] = Database.videos.getById(id)
 
   def getByYearMonthLocation(y: Int, m: Int, bounds: Bounds): Future[List[Video]] = {
     Database.videosByGeohash.getByYearMonthLocation(y, m, bounds)
+  }
+
+  def getByLocation(cityName : String, y: Int, m: Int): Future[List[Video]] = async {
+    if (cityName.length == 0) { Nil }
+    else {
+      val bound = await {
+        locationService.searchLatLong(cityName)
+      }
+      val (center, radius) = bound match {
+        case Some(Bounds(nw, se)) => LocationUtils.boundingBoxCenterRadius(nw, se)
+        case None => (Location(0, 0, 0), "1km")
+      }
+      await {
+        youtubeService.search(center, radius, y, m)
+      }
+    }
   }
 
   def retrieveAndStore(y: Int, m: Int, bounds: Bounds): Future[List[Video]] = async {
