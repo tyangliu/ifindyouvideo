@@ -272,7 +272,7 @@ object SchemaDef {
     )
   )
 
-  val Query = ObjectType("Query", fields[UserContext, Unit](
+  val QueryType = ObjectType("Query", fields[UserContext, Unit](
     Field("viewer", UserType,
       arguments = IdToken :: Nil,
       resolve = ctx => {
@@ -285,5 +285,5 @@ object SchemaDef {
     nodeField
   ))
 
-  val VideoSchema = Schema(Query)
+  val VideoSchema = Schema(QueryType)
 }

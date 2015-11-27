@@ -8,6 +8,13 @@ import styler from 'react-styling';
 @Radium
 class MapHeaderFavoriteList extends Component {
 
+  state = {
+    favoriteCities: []
+  };
+
+  addFavoriteCity    = city => this.setState({ favoriteCities: this.state.favoriteCities.concat(city) });
+  removeFavoriteCity = city => this.setState({ favoriteCities: this.state.favoriteCities.filter(c => c != city) });
+
   handleBaseClick = event => {
     this.setState({ open: !this.state.open });
     event.stopPropagation();
@@ -41,8 +48,7 @@ class MapHeaderFavoriteList extends Component {
 
   render() {
     const { viewer, city } = this.props
-        , { open } = this.state
-        , favoriteCities = viewer ? viewer.favoriteCities : []
+        , { open, favoriteCities } = this.state
         , favoritesContainsCurrent = favoriteCities.filter(favCity =>
             city == favCity
           ).length > 0;
@@ -53,7 +59,7 @@ class MapHeaderFavoriteList extends Component {
           onClick={() => this.handleChoiceClick(city)}>
         <span>{city}</span>
         <button style={styles.deleteButton}>
-          <i className='material-icons' style={styles.iconSmall}>remove</i>
+          <i className='material-icons' style={styles.iconSmall} onClick={() => this.removeFavoriteCity(city)}>remove</i>
         </button>
       </li>
     );
@@ -73,7 +79,7 @@ class MapHeaderFavoriteList extends Component {
             <div style={[styles.popoverItem, styles.currCityItem]}>
               <span>{city}</span>
               <button style={styles.deleteButton}>
-                <i className='material-icons' style={styles.iconSmallGray}>add</i>
+                <i className='material-icons' style={styles.iconSmallGray} onClick={() => this.addFavoriteCity(city)}>add</i>
               </button>
             </div>
           }
